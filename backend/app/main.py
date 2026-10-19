@@ -30,13 +30,17 @@ rate_limit_records = defaultdict(list)
 
 class RateLimiterMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        # In development or for localhost, allow high throughput for real-time slider adjustments
+        if settings.ENVIRONMENT == "development":
+            return await call_next(request)
+
         client_ip = request.client.host if request.client else "unknown"
         now = time.time()
         
         # Clean older than 60s
         rate_limit_records[client_ip] = [t for t in rate_limit_records[client_ip] if now - t < 60.0]
         
-        if len(rate_limit_records[client_ip]) >= 40:
+        if len(rate_limit_records[client_ip]) >= 120:
             return JSONResponse(
                 status_code=429,
                 content={"detail": "Too many requests. Please slow down to prevent abuse."}
@@ -106,5 +110,7 @@ async def root():
     }
 
 @app.get("/health")
+@app.get("/api/health")
 async def health_check():
     return {"status": "healthy"}
+

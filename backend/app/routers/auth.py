@@ -60,6 +60,24 @@ async def get_current_user(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User account not found.")
     return user
 
+async def get_optional_current_user(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+    db: AsyncSession = Depends(get_db)
+) -> Optional[User]:
+    if not credentials:
+        return None
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        user_id: str = payload.get("sub")
+        if not user_id:
+            return None
+        stmt = select(User).where(User.id == user_id, User.is_active == True)
+        result = await db.execute(stmt)
+        return result.scalar_one_or_none()
+    except Exception:
+        return None
+
 @router.post("/send-otp", response_model=SendOTPResponse)
 async def send_email_otp(req: SendOTPRequest, db: AsyncSession = Depends(get_db)):
     email_clean = req.email.lower().strip()

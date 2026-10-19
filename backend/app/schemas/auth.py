@@ -8,6 +8,8 @@ class SendOTPRequest(BaseModel):
 class SendOTPResponse(BaseModel):
     status: str
     message: str
+    hint: Optional[str] = None
+    dev_code: Optional[str] = None
 
 class VerifyOTPRequest(BaseModel):
     email: EmailStr
