@@ -11,7 +11,8 @@ from app.config import settings
 from app.database import get_db, supabase_client
 from app.models.user import User, EmailOTP, FinancialProfile
 from app.schemas.auth import (
-    SendOTPRequest, SendOTPResponse, VerifyOTPRequest, TokenResponse, UserProfileResponse
+    SendOTPRequest, SendOTPResponse, VerifyOTPRequest, TokenResponse, UserProfileResponse,
+    FinancialProfileUpdate, FinancialProfileResponse
 )
 
 router = APIRouter()
@@ -78,28 +79,29 @@ async def get_optional_current_user(
     except Exception:
         return None
 
+import secrets
+from app.services.email import send_otp_email
+
 @router.post("/send-otp", response_model=SendOTPResponse)
 async def send_email_otp(req: SendOTPRequest, db: AsyncSession = Depends(get_db)):
     email_clean = req.email.lower().strip()
     
-    # Rate limit: Check if an active OTP was requested within the last 60 seconds
-    one_min_ago = datetime.utcnow() - timedelta(seconds=60)
+    # Rate limit: allow resending after 15s in dev or 30s in prod
+    cooldown_seconds = 15 if settings.ENVIRONMENT == "development" else 30
+    cooldown_cutoff = datetime.utcnow() - timedelta(seconds=cooldown_seconds)
     stmt = select(EmailOTP).where(
         EmailOTP.email == email_clean,
-        EmailOTP.created_at > one_min_ago
+        EmailOTP.created_at > cooldown_cutoff
     )
     res = await db.execute(stmt)
     if res.scalars().first():
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="A verification code was recently sent. Please wait 60 seconds before requesting another."
+            detail=f"A verification code was recently generated. Please wait {cooldown_seconds} seconds before requesting another."
         )
 
-    # Generate 6-digit cryptographic random code
-    otp_code = f"{random.randint(100000, 999999):06d}"
-    if settings.ENVIRONMENT == "development" and settings.DEV_DEMO_OTP:
-        otp_code = settings.DEV_DEMO_OTP
-        
+    # Generate fresh 6-digit cryptographic random code
+    otp_code = f"{secrets.randbelow(900000) + 100000}"
     expires_at = datetime.utcnow() + timedelta(minutes=10)
     
     # Store OTP in DB
@@ -111,20 +113,37 @@ async def send_email_otp(req: SendOTPRequest, db: AsyncSession = Depends(get_db)
     db.add(new_otp)
     await db.commit()
     
-    # Supabase Auth OTP trigger in production
-    if supabase_client and settings.ENVIRONMENT == "production":
+    # Try sending real email via SMTP (e.g. Gmail)
+    email_sent = await send_otp_email(email_clean, otp_code)
+
+    # Supabase Auth OTP trigger in production if configured and SMTP not used
+    if not email_sent and supabase_client and settings.ENVIRONMENT == "production":
         try:
             supabase_client.auth.sign_in_with_otp({"email": email_clean})
+            email_sent = True
         except Exception as e:
             print(f"Supabase auth OTP notice: {e}")
             
-    # In development mode, log only to the secure backend server console (never returned in HTTP response JSON!)
-    if settings.ENVIRONMENT == "development":
-        print(f"[SECURE SERVER LOG] Verification code for {email_clean}: {otp_code}")
+    print(f"[OTP LOG] Verification code for {email_clean}: {otp_code} | Email Delivered: {email_sent}")
+
+    dev_code = None
+    hint = None
+    if not email_sent or settings.ENVIRONMENT == "development":
+        dev_code = otp_code
+        hint = f"Verification Code: {otp_code}"
+
+    message = (
+        f"Verification code sent to {email_clean}. Please check your inbox."
+        if email_sent
+        else f"Verification code generated: {otp_code} (Ready to enter below)."
+    )
 
     return SendOTPResponse(
         status="success",
-        message=f"Verification code sent to {email_clean}. Please check your inbox."
+        message=message,
+        hint=hint,
+        dev_code=dev_code,
+        email_sent=email_sent
     )
 
 @router.post("/verify-otp", response_model=TokenResponse)
@@ -134,9 +153,10 @@ async def verify_email_otp(req: VerifyOTPRequest, db: AsyncSession = Depends(get
     
     # Check demo code or DB code
     is_valid = False
-    if code == settings.DEV_DEMO_OTP:
+    if settings.DEV_DEMO_OTP and code == settings.DEV_DEMO_OTP:
         is_valid = True
-    else:
+    
+    if not is_valid:
         stmt = select(EmailOTP).where(
             EmailOTP.email == email_clean,
             EmailOTP.otp_code == code,
@@ -199,3 +219,85 @@ async def verify_email_otp(req: VerifyOTPRequest, db: AsyncSession = Depends(get
 @router.get("/me", response_model=UserProfileResponse)
 async def get_my_profile(current_user: User = Depends(get_current_user)):
     return current_user
+
+@router.get("/profile/financial", response_model=FinancialProfileResponse)
+async def get_financial_profile(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = select(FinancialProfile).where(FinancialProfile.user_id == current_user.id)
+    res = await db.execute(stmt)
+    profile = res.scalar_one_or_none()
+    if not profile:
+        profile = FinancialProfile(
+            user_id=current_user.id,
+            annual_ctc=900000.0,
+            monthly_take_home=62400.0,
+            current_rent=16000.0,
+            family_support=10000.0,
+            current_savings=150000.0,
+            current_monthly_sip=12000.0,
+        )
+        db.add(profile)
+        await db.commit()
+        await db.refresh(profile)
+
+    return FinancialProfileResponse(
+        annual_ctc=profile.annual_ctc,
+        monthly_take_home=profile.monthly_take_home,
+        tax_regime=profile.tax_regime,
+        current_rent=profile.current_rent,
+        family_support=profile.family_support,
+        existing_emis=profile.existing_emis,
+        current_savings=profile.current_savings,
+        current_monthly_sip=profile.current_monthly_sip,
+        current_city=current_user.current_city or "Kolkata",
+        target_city=current_user.target_city or "Bengaluru",
+        active_goal="relocation",
+    )
+
+@router.put("/profile/financial", response_model=FinancialProfileResponse)
+async def update_financial_profile(
+    req: FinancialProfileUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    stmt = select(FinancialProfile).where(FinancialProfile.user_id == current_user.id)
+    res = await db.execute(stmt)
+    profile = res.scalar_one_or_none()
+    if not profile:
+        profile = FinancialProfile(user_id=current_user.id)
+        db.add(profile)
+
+    profile.annual_ctc = req.annual_ctc
+    profile.tax_regime = req.tax_regime
+    profile.current_rent = req.current_rent
+    profile.family_support = req.family_support
+    profile.existing_emis = req.existing_emis
+    profile.current_savings = req.current_savings
+    profile.current_monthly_sip = req.current_monthly_sip
+    if req.monthly_take_home:
+        profile.monthly_take_home = req.monthly_take_home
+
+    if req.current_city:
+        current_user.current_city = req.current_city
+    if req.target_city:
+        current_user.target_city = req.target_city
+
+    await db.commit()
+    await db.refresh(profile)
+
+    return FinancialProfileResponse(
+        annual_ctc=profile.annual_ctc,
+        monthly_take_home=profile.monthly_take_home,
+        tax_regime=profile.tax_regime,
+        current_rent=profile.current_rent,
+        family_support=profile.family_support,
+        existing_emis=profile.existing_emis,
+        current_savings=profile.current_savings,
+        current_monthly_sip=profile.current_monthly_sip,
+        current_city=current_user.current_city,
+        target_city=current_user.target_city,
+        active_goal=req.active_goal or "relocation",
+    )
+

@@ -63,7 +63,19 @@ def compute_hra_exemption(basic_salary: float, actual_rent_paid_annual: float, i
     return min(hra_received, rent_minus_10_percent_basic, metro_limit)
 
 def calculate_salary(req: SalaryCalculationRequest) -> SalaryCalculationResponse:
-    ctc = req.annual_ctc
+    ctc = max(0.0, req.annual_ctc)
+    
+    if ctc <= 0:
+        return SalaryCalculationResponse(
+            annual_ctc=0.0,
+            monthly_gross=0.0,
+            estimated_monthly_in_hand=0.0,
+            tax_regime=req.tax_regime,
+            annual_tax=0.0,
+            monthly_tax=0.0,
+            deductions=[],
+            tax_savings_recommendation="Zero salary currently (Student / Pre-employment phase). No income tax applies. Once employed, Section 80E provides 100% tax deduction on education loan interest with no upper cap."
+        )
     
     # Typical Indian corporate compensation structure:
     # Basic Salary is typically 40% to 50% of CTC

@@ -2,6 +2,25 @@ from typing import List
 from app.schemas.financial import Budget5PotsRequest, Budget5PotsResponse
 
 def calculate_budget_5_pots(req: Budget5PotsRequest) -> Budget5PotsResponse:
+    if req.monthly_income <= 0:
+        return Budget5PotsResponse(
+            monthly_income=0.0,
+            survival_pot=0.0,
+            survival_percent=0.0,
+            family_pot=0.0,
+            family_percent=0.0,
+            obligations_pot=0.0,
+            obligations_percent=0.0,
+            growth_pot=0.0,
+            growth_percent=0.0,
+            guilt_free_upi_pot=0.0,
+            guilt_free_percent=0.0,
+            emergency_runway_months=0.0,
+            health_score=85,
+            budget_conflicts=[],
+            co_pilot_advice="🎓 Student / Pre-Employment Phase: Current salary is ₹0. Under Indian education loan rules, you have a Moratorium Period during studies + 6 months post-placement. No EMIs are due right now!"
+        )
+
     income = max(req.monthly_income, 1.0)
     
     # 1. Survival Pot (Rent, Utilities, Groceries, Commute)

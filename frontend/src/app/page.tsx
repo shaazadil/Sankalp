@@ -1,388 +1,829 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
-import { HeroOmnibar } from "@/components/HeroOmnibar";
-import { SmartPotsDashboard } from "@/components/SmartPotsDashboard";
-import { WhatIfSliders } from "@/components/WhatIfSliders";
-import { VisualDemonstration } from "@/components/VisualDemonstration";
-import { AiChatDrawer } from "@/components/AiChatDrawer";
 import { AuthModal } from "@/components/AuthModal";
-import { SavedPlansModal } from "@/components/SavedPlansModal";
+import { VisualDemonstration } from "@/components/VisualDemonstration";
 import {
-  calculateSalary,
-  calculateRelocation,
-  calculate5Pots,
-  calculateGoal,
-  calculateLoan,
-  savePlan,
-  getMyPlans,
-  SalaryCalculationResponse,
-  RelocationCalculationResponse,
-  Budget5PotsResponse,
-  LivingScenario,
-} from "@/lib/api";
-import { Bookmark, Sparkles, Share2, Check, ArrowRight } from "lucide-react";
+  FinancialProfileModal,
+  FinancialProfileFormValues,
+} from "@/components/FinancialProfileModal";
+import {
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
+  TrendingUp,
+  Zap,
+  Sliders,
+  DollarSign,
+  HeartHandshake,
+  Clock,
+  Building2,
+  Layers,
+  Lock,
+  Mail,
+  Check,
+  Coffee,
+  PiggyBank,
+  Home as HomeIcon,
+  CreditCard,
+} from "lucide-react";
 
-export default function Home() {
-  // User Session State
+export default function LandingPage() {
+  const router = useRouter();
+
+  // User session state
   const [user, setUser] = useState<{ email: string; token: string; full_name?: string } | null>(null);
-
-  // Modal Visibility States
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isDemoOpen, setIsDemoOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isPlansOpen, setIsPlansOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  // Core Financial Planning State (100% Real Numbers, Zero Dummy Data)
-  const [annualCtc, setAnnualCtc] = useState<number>(900000); // 9 LPA
-  const [taxRegime, setTaxRegime] = useState<string>("new");
-  const [monthlyRent, setMonthlyRent] = useState<number>(16000);
-  const [familySupport, setFamilySupport] = useState<number>(10000);
-  const [monthlySip, setMonthlySip] = useState<number>(12000);
-  const [activeEmis, setActiveEmis] = useState<number>(0);
-  const [liquidSavings, setLiquidSavings] = useState<number>(150000);
-  const [goalCategory, setGoalCategory] = useState<string>("relocation");
-  const [activeTitle, setActiveTitle] = useState<string>("Kolkata to Bengaluru Relocation Plan (@ ₹9 LPA)");
+  // Live Interactive Simulator State on Landing Page
+  const [demoCtc, setDemoCtc] = useState<number>(900000); // 9 LPA
+  const [demoRent, setDemoRent] = useState<number>(16000);
+  const [demoFamily, setDemoFamily] = useState<number>(10000);
+  const [demoSip, setDemoSip] = useState<number>(12000);
+  const [demoRegime, setDemoRegime] = useState<string>("new");
+  const [demoEmis, setDemoEmis] = useState<number>(0);
+  const [demoSavings, setDemoSavings] = useState<number>(150000);
+  const [demoCity, setDemoCity] = useState<string>("Kolkata");
+  const [demoTargetCity, setDemoTargetCity] = useState<string>("Bengaluru");
+  const [demoGoal, setDemoGoal] = useState<string>("relocation");
 
-  // Computed Real Data from FastAPI Backend
-  const [salaryData, setSalaryData] = useState<SalaryCalculationResponse | null>(null);
-  const [relocationData, setRelocationData] = useState<RelocationCalculationResponse | null>(null);
-  const [activeScenario, setActiveScenario] = useState<LivingScenario | null>(null);
-  const [potsData, setPotsData] = useState<Budget5PotsResponse | null>(null);
-  const [savedPlans, setSavedPlans] = useState<any[]>([]);
+  const handleSaveDemoProfile = (values: FinancialProfileFormValues) => {
+    setDemoCtc(values.annual_ctc);
+    setDemoRent(values.current_rent);
+    setDemoFamily(values.family_support);
+    setDemoSip(values.current_monthly_sip);
+    setDemoRegime(values.tax_regime);
+    setDemoEmis(values.existing_emis);
+    setDemoSavings(values.current_savings);
+    setDemoCity(values.current_city);
+    setDemoTargetCity(values.target_city);
+    setDemoGoal(values.active_goal);
+    sessionStorage.setItem(
+      "sankalp_applied_preview",
+      JSON.stringify({
+        annual_ctc: values.annual_ctc,
+        balanced_rent: values.current_rent,
+        recommended_regime: values.tax_regime,
+      })
+    );
+  };
 
-  // UI state
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
-
-  // 1. Core Mathematical Recalculation Engine
-  const runCalculations = useCallback(async (
-    ctcVal: number,
-    rentVal: number,
-    familyVal: number,
-    sipVal: number,
-    regimeVal: string,
-    emisVal: number
-  ) => {
-    setIsLoading(true);
-    try {
-      // Step A: Calculate Real Salary Take-Home
-      const salRes = await calculateSalary({
-        annual_ctc: ctcVal,
-        tax_regime: regimeVal,
-        monthly_rent: rentVal,
-        is_metro: true,
-      });
-      setSalaryData(salRes);
-
-      // Step B: Calculate Relocation Scenarios (If relocation goal)
-      const reloRes = await calculateRelocation({
-        origin_city: "Kolkata",
-        destination_city: "Bengaluru",
-        annual_ctc: ctcVal,
-        expected_rent: rentVal,
-        family_support: familyVal,
-        current_savings: liquidSavings,
-      });
-      setRelocationData(reloRes);
-      setActiveScenario(reloRes.scenarios[1]); // Default to Balanced scenario
-
-      // Step C: Calculate 5 Smart Pots & Runway
-      const potsRes = await calculate5Pots({
-        monthly_income: salRes.estimated_monthly_in_hand,
-        rent_and_bills: rentVal + 3500, // rent + utilities/wifi
-        groceries_and_essentials: 8000,
-        family_remittance: familyVal,
-        active_emis: emisVal,
-        existing_sip: sipVal,
-        current_emergency_fund: liquidSavings,
-      });
-      setPotsData(potsRes);
-    } catch (err) {
-      console.error("Backend calculation failed, retrying:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [liquidSavings]);
-
-  // Initial load on mount
+  // Read saved user session
   useEffect(() => {
-    // Check local storage for user token
-    const savedUser = localStorage.getItem("sankalp_user");
-    if (savedUser) {
+    const saved = localStorage.getItem("sankalp_user");
+    if (saved) {
       try {
-        const parsed = JSON.parse(savedUser);
-        setUser(parsed);
-        // Load saved plans
-        getMyPlans(parsed.token).then(setSavedPlans).catch(() => {});
+        setUser(JSON.parse(saved));
       } catch (e) {
         localStorage.removeItem("sankalp_user");
       }
     }
-
-    // Check if an AI Co-Pilot blueprint was applied from /chat
-    const appliedPreviewRaw = sessionStorage.getItem("sankalp_applied_preview");
-    if (appliedPreviewRaw) {
-      try {
-        const p = JSON.parse(appliedPreviewRaw);
-        sessionStorage.removeItem("sankalp_applied_preview");
-        const newCtc = p.annual_ctc || annualCtc;
-        const newRent = p.balanced_rent || monthlyRent;
-        const newRegime = p.recommended_regime || taxRegime;
-        setAnnualCtc(newCtc);
-        setMonthlyRent(newRent);
-        setTaxRegime(newRegime);
-        setActiveTitle(`AI Plan: ₹${(newCtc / 100000).toFixed(1)}L CTC in Bengaluru`);
-        runCalculations(newCtc, newRent, familySupport, monthlySip, newRegime, activeEmis);
-        return;
-      } catch (e) {}
-    }
-
-    // Run initial deterministic calculations for 9 LPA benchmark
-    runCalculations(annualCtc, monthlyRent, familySupport, monthlySip, taxRegime, activeEmis);
   }, []);
 
-  // Handle Natural Language Prompt Selection
-  const handleSelectPrompt = async (promptText: string) => {
-    const lower = promptText.toLowerCase();
-
-    if (lower.includes("wedding") || lower.includes("marriage")) {
-      setGoalCategory("wedding");
-      setActiveTitle("₹15 Lakh Wedding Goal (18 Months)");
-      setMonthlyRent(15000);
-      setFamilySupport(8000);
-      setMonthlySip(18000);
-      setActiveEmis(0);
-      runCalculations(900000, 15000, 8000, 18000, taxRegime, 0);
-    } else if (lower.includes("education") || lower.includes("loan")) {
-      setGoalCategory("education_loan");
-      setActiveTitle("₹25L Higher Education Loan (60/40 Split)");
-      setMonthlyRent(12000);
-      setFamilySupport(5000);
-      setMonthlySip(8000);
-      setActiveEmis(16344); // User's 40% share of 25L EMI
-      runCalculations(900000, 12000, 5000, 8000, "old", 16344); // Switch to Old for Section 80E
-      setTaxRegime("old");
-    } else if (lower.includes("car") || lower.includes("vehicle")) {
-      setGoalCategory("vehicle");
-      setActiveTitle("₹8 Lakh First Car (Loan vs. Cash Outright)");
-      setMonthlyRent(16000);
-      setFamilySupport(10000);
-      setMonthlySip(15000);
-      setActiveEmis(12500); // Car EMI
-      runCalculations(900000, 16000, 10000, 15000, taxRegime, 12500);
-    } else {
-      // Default: Bengaluru relocation
-      setGoalCategory("relocation");
-      setActiveTitle("Kolkata to Bengaluru Relocation Plan (@ ₹9 LPA)");
-      setMonthlyRent(16000);
-      setFamilySupport(10000);
-      setMonthlySip(12000);
-      setActiveEmis(0);
-      runCalculations(900000, 16000, 10000, 12000, taxRegime, 0);
-    }
-  };
-
-  // Slider Handlers
-  const handleRentChange = (newRent: number) => {
-    setMonthlyRent(newRent);
-    runCalculations(annualCtc, newRent, familySupport, monthlySip, taxRegime, activeEmis);
-  };
-
-  const handleFamilySupportChange = (newFamily: number) => {
-    setFamilySupport(newFamily);
-    runCalculations(annualCtc, monthlyRent, newFamily, monthlySip, taxRegime, activeEmis);
-  };
-
-  const handleSipChange = (newSip: number) => {
-    setMonthlySip(newSip);
-    runCalculations(annualCtc, monthlyRent, familySupport, newSip, taxRegime, activeEmis);
-  };
-
-  const handleTaxRegimeChange = (newRegime: string) => {
-    setTaxRegime(newRegime);
-    runCalculations(annualCtc, monthlyRent, familySupport, monthlySip, newRegime, activeEmis);
-  };
-
-  const handleReset = () => {
-    setMonthlyRent(16000);
-    setFamilySupport(10000);
-    setMonthlySip(12000);
-    setTaxRegime("new");
-    setActiveEmis(0);
-    runCalculations(900000, 16000, 10000, 12000, "new", 0);
-  };
-
-  // Login handler
   const handleLoginSuccess = (userData: { email: string; token: string; full_name?: string }) => {
     setUser(userData);
     localStorage.setItem("sankalp_user", JSON.stringify(userData));
-    getMyPlans(userData.token).then(setSavedPlans).catch(() => {});
+    router.push("/dashboard");
   };
 
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem("sankalp_user");
-    setSavedPlans([]);
   };
 
-  // Save Current Plan
-  const handleSavePlan = async () => {
-    if (!user) {
-      setIsAuthOpen(true);
-      return;
-    }
-    if (!potsData) return;
+  // Live Math calculations for interactive simulator
+  const monthlyGross = Math.round(demoCtc / 12);
+  const estimatedTax =
+    demoRegime === "new"
+      ? Math.max(0, Math.round(((demoCtc - 775000) * 0.1) / 12))
+      : Math.round(monthlyGross * 0.12);
+  const epfDeduction = Math.round(Math.min(monthlyGross * 0.5, 15000) * 0.12);
+  const monthlyInHand = Math.max(20000, monthlyGross - estimatedTax - epfDeduction - 200);
 
-    try {
-      const planPayload = {
-        title: activeTitle,
-        goal_category: goalCategory,
-        monthly_income: potsData.monthly_income,
-        total_fixed_expenses: potsData.survival_pot,
-        total_emis: potsData.obligations_pot,
-        family_support: potsData.family_pot,
-        monthly_savings_potential: potsData.growth_pot,
-        emergency_runway_months: potsData.emergency_runway_months,
-        health_score: potsData.health_score,
-        summary: potsData.co_pilot_advice,
-        scenarios: relocationData?.scenarios.map((sc) => ({
-          name: sc.name,
-          survival_pot: sc.monthly_rent + sc.monthly_food_groceries + sc.monthly_transport_utilities,
-          family_pot: sc.monthly_family_support,
-          obligations_pot: 0,
-          growth_pot: sc.monthly_savings_potential,
-          guilt_free_upi_pot: sc.monthly_guilt_free_upi,
-          one_time_cost: sc.sunk_moving_cost,
-          locked_deposit: sc.locked_security_deposit,
-          recovery_months: sc.deposit_recovery_months,
-          notes: sc.description,
-        })) || [],
-      };
-
-      await savePlan(planPayload, user.token);
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
-      const updated = await getMyPlans(user.token);
-      setSavedPlans(updated);
-    } catch (err) {
-      console.error("Save plan error:", err);
-    }
-  };
+  const survivalPot = demoRent + 8000 + 3500;
+  const obligationsPot = demoEmis;
+  const familyPot = demoFamily;
+  const growthPot = demoSip;
+  const guiltFreeUpiPot = Math.max(0, monthlyInHand - (survivalPot + obligationsPot + familyPot + growthPot));
+  const emergencyMonths = (((demoSavings || 150000) / (survivalPot + familyPot + demoEmis)) || 4.5).toFixed(1);
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors">
-      {/* 1. Top Navbar */}
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors selection:bg-emerald-500 selection:text-white">
+      {/* 1. Uncrowded Global Navbar with single Sign In button */}
       <Navbar
         user={user}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenDemo={() => setIsDemoOpen(true)}
-        onOpenPlans={() => setIsPlansOpen(true)}
         onLogout={handleLogout}
-        onToggleChat={() => setIsChatOpen(!isChatOpen)}
       />
 
-      {/* 2. Main Content */}
-      <main className="pb-24 space-y-8">
-        {/* Hero Omnibar & Scenario Chips */}
-        <HeroOmnibar onSelectPrompt={handleSelectPrompt} isLoading={isLoading} />
+      {/* 2. Hero Section */}
+      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28 border-b border-zinc-200/80 dark:border-zinc-800/80">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-emerald-500/15 via-teal-500/10 to-transparent blur-3xl pointer-events-none -z-10" />
 
-        {/* Plan Header Bar */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-3">
-          <div>
-            <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-              Active Life Plan
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+          {/* Eyebrow Pill */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100/80 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold tracking-wide uppercase shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Zero-Based Cashflow Architecture, Built for Indian Life Milestones</span>
+          </div>
+
+          {/* Master Headline in Outfit Font */}
+          <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 leading-[1.1]">
+            Gain total control of your money. <br />
+            <span className="bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400 bg-clip-text text-transparent">
+              Give every rupee a purpose.
             </span>
-            <h2 className="text-lg sm:text-xl font-extrabold text-zinc-900 dark:text-zinc-50">
-              {activeTitle}
+          </h1>
+
+          {/* Subheading in Plain English */}
+          <p className="max-w-3xl mx-auto text-base sm:text-xl text-zinc-600 dark:text-zinc-300 font-normal leading-relaxed">
+            Traditional budgets look backward and make you feel guilty. Sankalp brings proactive{" "}
+            <strong>zero-based cashflow planning</strong> to Indian professionals—handling real in-hand salaries,
+            metro landlord deposit shocks, family remittances, and ambitious milestones with total clarity.
+          </p>
+
+          {/* Clean Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
+              >
+                <span>Go to My Personal Dashboard</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            ) : (
+              <button
+                onClick={() => setIsAuthOpen(true)}
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                <Mail className="w-5 h-5" />
+                <span>Sign In with Email Code</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            )}
+
+            <a
+              href="#live-simulator"
+              className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200 font-bold text-base transition-all flex items-center justify-center gap-2"
+            >
+              <Sliders className="w-4 h-4 text-emerald-600" />
+              <span>Try Live Interactive Budget</span>
+            </a>
+          </div>
+
+          {/* Trust Highlights */}
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+            <span className="flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-500" />
+              Zero Bank Passwords Needed
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              100% Free &amp; Private
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Clock className="w-4 h-4 text-emerald-500" />
+              Instant Email Code Access
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Zap className="w-4 h-4 text-emerald-500" />
+              Deterministic Indian Tax Math
+            </span>
+          </div>
+
+          {/* Hero Visual Image Asset (Replacing raw icons with high-end graphic) */}
+          <div className="pt-8 max-w-4xl mx-auto">
+            <div className="relative rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800 shadow-2xl bg-zinc-900 group">
+              <img
+                src="/images/smart_pots_visual.jpg"
+                alt="Smart Zero-Based Budgeting 5 Pots Architecture"
+                className="w-full h-auto object-cover group-hover:scale-102 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent flex items-end p-6">
+                <div className="text-left">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 block mb-1">
+                    Visual Methodology
+                  </span>
+                  <p className="text-white font-heading font-bold text-sm sm:text-base">
+                    The 5 Smart Pots: Every single rupee is assigned to Survival, Obligations, Family, Guilt-Free UPI, or Wealth Growth.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. The 4 Simple Pillars of Sankalp */}
+      <section className="py-20 bg-white dark:bg-zinc-900/50 border-b border-zinc-200/80 dark:border-zinc-800/80">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+              The Proven Philosophy
+            </span>
+            <h2 className="font-heading text-3xl sm:text-4xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
+              The 4 Pillars of Sankalp
+            </h2>
+            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
+              Money isn&apos;t math; it&apos;s behavior. These 4 habits take the stress out of your finances forever.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Pillar 1 */}
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4 hover:border-emerald-500/50 transition-all hover:shadow-lg">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-black text-lg flex items-center justify-center font-heading">
+                1
+              </div>
+              <h3 className="font-heading font-extrabold text-lg text-zinc-900 dark:text-zinc-100">
+                Give Every Rupee a Job
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                As soon as your salary hits your account, assign every single rupee to a specific pot—rent, food, parents, EMIs, or guilt-free fun. No money is left to disappear.
+              </p>
+            </div>
+
+            {/* Pillar 2 */}
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4 hover:border-emerald-500/50 transition-all hover:shadow-lg">
+              <div className="w-12 h-12 rounded-2xl bg-teal-100 dark:bg-teal-950/60 text-teal-700 dark:text-teal-400 font-black text-lg flex items-center justify-center font-heading">
+                2
+              </div>
+              <h3 className="font-heading font-extrabold text-lg text-zinc-900 dark:text-zinc-100">
+                Embrace True Expenses
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Break massive upcoming shocks—like a 6–10 month Bengaluru landlord deposit, annual term insurance, or Diwali trips—into predictable monthly bites.
+              </p>
+            </div>
+
+            {/* Pillar 3 */}
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4 hover:border-emerald-500/50 transition-all hover:shadow-lg">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-black text-lg flex items-center justify-center font-heading">
+                3
+              </div>
+              <h3 className="font-heading font-extrabold text-lg text-zinc-900 dark:text-zinc-100">
+                Roll With The Punches
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Life happens. If you overspent on dining out or had an emergency doctor visit, adjust money between pots in one tap. No guilt. No broken budgets.
+              </p>
+            </div>
+
+            {/* Pillar 4 */}
+            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4 hover:border-emerald-500/50 transition-all hover:shadow-lg">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 font-black text-lg flex items-center justify-center font-heading">
+                4
+              </div>
+              <h3 className="font-heading font-extrabold text-lg text-zinc-900 dark:text-zinc-100">
+                Age Your Money
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Increase your emergency runway until you are living on the money you earned last month, breaking the paycheck-to-paycheck cycle forever.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Live Interactive Budget Simulator Sandbox */}
+      <section id="live-simulator" className="py-20 border-b border-zinc-200/80 dark:border-zinc-800/80">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+                Interactive Cashflow Sandbox
+              </span>
+              <h2 className="font-heading text-3xl sm:text-4xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight mt-1">
+                Experience Zero-Based Budgeting in Real Time
+              </h2>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                Slide the controls below to see how every rupee of your Indian salary is allocated with surgical precision.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => setIsProfileOpen(true)}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-zinc-950 font-black text-xs shadow-md transition hover:scale-105 active:scale-95 cursor-pointer font-heading"
+              >
+                <Sliders className="w-3.5 h-3.5" />
+                <span>Input My Exact Numbers</span>
+              </button>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-zinc-500">Tax Regime:</span>
+                <div className="bg-zinc-200 dark:bg-zinc-800 p-1 rounded-xl flex items-center text-xs font-bold">
+                  <button
+                    onClick={() => setDemoRegime("new")}
+                    className={`px-3 py-1 rounded-lg transition ${
+                      demoRegime === "new" ? "bg-emerald-600 text-white shadow-sm" : "text-zinc-600 dark:text-zinc-400"
+                    }`}
+                  >
+                    New Regime
+                  </button>
+                  <button
+                    onClick={() => setDemoRegime("old")}
+                    className={`px-3 py-1 rounded-lg transition ${
+                      demoRegime === "old" ? "bg-emerald-600 text-white shadow-sm" : "text-zinc-600 dark:text-zinc-400"
+                    }`}
+                  >
+                    Old Regime (HRA)
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Card */}
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden p-6 sm:p-8 space-y-8">
+            {/* Top Stat Bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-800">
+              <div>
+                <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">
+                  Annual CTC
+                </span>
+                <span className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-zinc-100 font-mono font-heading">
+                  ₹{(demoCtc / 100000).toFixed(1)} LPA
+                </span>
+              </div>
+
+              <div>
+                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
+                  Monthly In-Hand
+                </span>
+                <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono font-heading">
+                  ₹{monthlyInHand.toLocaleString("en-IN")}
+                </span>
+              </div>
+
+              <div>
+                <span className="text-[11px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider block">
+                  Emergency Runway
+                </span>
+                <span className="text-xl sm:text-2xl font-black text-teal-600 dark:text-teal-400 font-mono font-heading">
+                  {emergencyMonths} Months
+                </span>
+              </div>
+
+              <div>
+                <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">
+                  Zero-Balance Check
+                </span>
+                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 inline-flex items-center gap-1 mt-1 border border-emerald-300 dark:border-emerald-800">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> All Rupee Assigned!
+                </span>
+              </div>
+            </div>
+
+            {/* Sliders Area */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800">
+                <div className="flex justify-between text-xs font-bold">
+                  <span className="text-zinc-700 dark:text-zinc-300">Annual Salary (CTC)</span>
+                  <span className="text-emerald-600 font-mono">₹{(demoCtc / 100000).toFixed(1)} Lakhs</span>
+                </div>
+                <input
+                  type="range"
+                  min={500000}
+                  max={3500000}
+                  step={50000}
+                  value={demoCtc}
+                  onChange={(e) => setDemoCtc(Number(e.target.value))}
+                  className="w-full accent-emerald-600 cursor-pointer"
+                />
+                <div className="flex justify-between text-[10px] text-zinc-400 font-medium">
+                  <span>₹5 LPA</span>
+                  <span>₹20 LPA</span>
+                  <span>₹35 LPA</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800">
+                <div className="flex justify-between text-xs font-bold">
+                  <span className="text-zinc-700 dark:text-zinc-300">Monthly Rent</span>
+                  <span className="text-rose-600 font-mono">₹{demoRent.toLocaleString("en-IN")}</span>
+                </div>
+                <input
+                  type="range"
+                  min={8000}
+                  max={50000}
+                  step={1000}
+                  value={demoRent}
+                  onChange={(e) => setDemoRent(Number(e.target.value))}
+                  className="w-full accent-rose-500 cursor-pointer"
+                />
+                <div className="flex justify-between text-[10px] text-zinc-400 font-medium">
+                  <span>₹8,000</span>
+                  <span>₹25,000</span>
+                  <span>₹50,000</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800">
+                <div className="flex justify-between text-xs font-bold">
+                  <span className="text-zinc-700 dark:text-zinc-300">Family Remittance</span>
+                  <span className="text-amber-600 font-mono">₹{demoFamily.toLocaleString("en-IN")}</span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={30000}
+                  step={1000}
+                  value={demoFamily}
+                  onChange={(e) => setDemoFamily(Number(e.target.value))}
+                  className="w-full accent-amber-500 cursor-pointer"
+                />
+                <div className="flex justify-between text-[10px] text-zinc-400 font-medium">
+                  <span>₹0</span>
+                  <span>₹15,000</span>
+                  <span>₹30,000</span>
+                </div>
+              </div>
+            </div>
+
+            {/* The 5 Smart Pots Visualization */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-extrabold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                Where Every Rupee Is Assigned This Month
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div className="p-4 rounded-2xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/40 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-rose-700 dark:text-rose-300 flex items-center gap-1.5 font-heading">
+                      <HomeIcon className="w-3.5 h-3.5" /> Survival Pot
+                    </span>
+                    <span className="text-xs font-bold text-zinc-500">
+                      {Math.round((survivalPot / monthlyInHand) * 100)}%
+                    </span>
+                  </div>
+                  <div className="text-lg font-black text-rose-700 dark:text-rose-300 font-mono font-heading">
+                    ₹{survivalPot.toLocaleString("en-IN")}
+                  </div>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                    Rent, electricity, wifi &amp; essentials
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/40 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1.5 font-heading">
+                      <CreditCard className="w-3.5 h-3.5" /> Obligations
+                    </span>
+                    <span className="text-xs font-bold text-zinc-500">
+                      {obligationsPot > 0 ? Math.round((obligationsPot / monthlyInHand) * 100) : 0}%
+                    </span>
+                  </div>
+                  <div className="text-lg font-black text-blue-700 dark:text-blue-300 font-mono font-heading">
+                    ₹{obligationsPot.toLocaleString("en-IN")}
+                  </div>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                    Active EMIs &amp; Credit Cards
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/40 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1.5 font-heading">
+                      <HeartHandshake className="w-3.5 h-3.5" /> Family Pot
+                    </span>
+                    <span className="text-xs font-bold text-zinc-500">
+                      {Math.round((familyPot / monthlyInHand) * 100)}%
+                    </span>
+                  </div>
+                  <div className="text-lg font-black text-amber-700 dark:text-amber-300 font-mono font-heading">
+                    ₹{familyPot.toLocaleString("en-IN")}
+                  </div>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                    Parents support &amp; home transfers
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-purple-50/60 dark:bg-purple-950/20 border border-purple-200/80 dark:border-purple-900/40 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1.5 font-heading">
+                      <Coffee className="w-3.5 h-3.5" /> Guilt-Free UPI
+                    </span>
+                    <span className="text-xs font-bold text-zinc-500">
+                      {Math.round((guiltFreeUpiPot / monthlyInHand) * 100)}%
+                    </span>
+                  </div>
+                  <div className="text-lg font-black text-purple-700 dark:text-purple-300 font-mono font-heading">
+                    ₹{guiltFreeUpiPot.toLocaleString("en-IN")}
+                  </div>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                    Dining, Swiggy, movies &amp; travel
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-900/40 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5 font-heading">
+                      <PiggyBank className="w-3.5 h-3.5" /> Wealth &amp; SIP
+                    </span>
+                    <span className="text-xs font-bold text-zinc-500">
+                      {Math.round((growthPot / monthlyInHand) * 100)}%
+                    </span>
+                  </div>
+                  <div className="text-lg font-black text-emerald-700 dark:text-emerald-300 font-mono font-heading">
+                    ₹{growthPot.toLocaleString("en-IN")}
+                  </div>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                    Emergency runway, SIPs &amp; Gold
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Launch Dashboard Action: Opens AuthModal if not signed in */}
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-zinc-200 dark:border-zinc-800">
+              <div className="text-xs text-zinc-500 dark:text-zinc-400 text-center sm:text-left">
+                Sign in to save this plan, calculate metro deposit shocks, and model wedding or loan goals.
+              </div>
+
+              {user ? (
+                <Link
+                  href="/dashboard"
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-600/30 transition-all hover:scale-105 active:scale-95"
+                >
+                  <span>Open My Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              ) : (
+                <button
+                  onClick={() => setIsAuthOpen(true)}
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>Sign In to Unlock Full Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Dedicated Large-Scale AI Assistant Showcase (with High-Tech Graphic Asset) */}
+      <section className="py-20 bg-gradient-to-b from-zinc-900 to-zinc-950 text-white border-b border-zinc-800">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="max-w-3xl space-y-4">
+            <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">
+              Dedicated Webpage Feature
+            </span>
+            <h2 className="font-heading text-3xl sm:text-5xl font-black tracking-tight text-white">
+              Meet Your 24/7 AI Financial Co-Pilot
+            </h2>
+            <p className="text-sm sm:text-base text-zinc-300 leading-relaxed">
+              Have doubts about rent affordability, Old vs New Tax Regime, or how much to send parents? Ask in simple English. The AI generates complete financial blueprints that you can apply to your live dashboard with one click.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            {/* Visual AI Graphic Asset */}
+            <div className="relative rounded-3xl overflow-hidden border border-zinc-800 shadow-2xl bg-zinc-900 group">
+              <img
+                src="/images/ai_advisor_visual.jpg"
+                alt="AI Financial Co-Pilot Dashboard Interface"
+                className="w-full h-auto object-cover group-hover:scale-102 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent flex items-end p-6">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 block mb-1">
+                    Context-Aware Intelligence
+                  </span>
+                  <p className="text-white font-heading font-bold text-sm">
+                    Trained on Indian Tax Sections (80C, 80D, 80E) and Bangalore/Mumbai Metro Rent Dynamics.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature Highlights */}
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-heading font-bold text-base text-white">Instant One-Click Plan Application</h4>
+                  <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+                    When the AI generates a budget blueprint, simply click &ldquo;Apply Plan to My Dashboard&rdquo; and your live pots, rent sliders, and tax regime sync immediately.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-heading font-bold text-base text-white">100% Deterministic Tax &amp; HRA Calculations</h4>
+                  <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+                    The AI combines natural language advice with our verified mathematical engine—no hallucinated tax brackets or bogus deduction numbers.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-heading font-bold text-base text-white">Full Screen Dedicated Assistant Experience</h4>
+                  <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+                    A comprehensive, large-scale workspace at <code>/chat</code> with milestone starters, saved chats, exportable plans, and financial profile integration.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href="/chat"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95"
+                >
+                  <Sparkles className="w-4 h-4 fill-zinc-950" />
+                  <span>Open Dedicated AI Advisor Webpage</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Comparison Table: Sankalp vs Spreadsheets */}
+      <section className="py-20 border-b border-zinc-200/80 dark:border-zinc-800/80">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+          <div className="text-center space-y-3">
+            <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+              Why We Are Different
+            </span>
+            <h2 className="font-heading text-3xl sm:text-4xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
+              Spreadsheets Look Backward. Sankalp Looks Forward.
             </h2>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleSavePlan}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm cursor-pointer ${
-                saveSuccess
-                  ? "bg-emerald-600 text-white"
-                  : "bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-              }`}
-            >
-              {saveSuccess ? (
-                <>
-                  <Check className="w-3.5 h-3.5" />
-                  <span>Saved to Account!</span>
-                </>
-              ) : (
-                <>
-                  <Bookmark className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>{user ? "Save Plan" : "Sign In to Save"}</span>
-                </>
-              )}
-            </button>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs sm:text-sm border-collapse rounded-2xl overflow-hidden shadow-lg border border-zinc-200 dark:border-zinc-800">
+              <thead className="bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-extrabold uppercase tracking-wider text-[11px] font-heading">
+                <tr>
+                  <th className="p-4 sm:p-5">Feature</th>
+                  <th className="p-4 sm:p-5 text-zinc-500">Traditional Spreadsheets</th>
+                  <th className="p-4 sm:p-5 bg-emerald-600 text-white">Sankalp Zero-Based Method</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 bg-white dark:bg-zinc-950">
+                <tr>
+                  <td className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-zinc-100 font-heading">Approach</td>
+                  <td className="p-4 sm:p-5 text-zinc-500">Looking back at past expenses with guilt</td>
+                  <td className="p-4 sm:p-5 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20">
+                    Proactive zero-based assignment of every rupee
+                  </td>
+                </tr>
+                <tr>
+                  <td className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-zinc-100 font-heading">Indian Tax Math</td>
+                  <td className="p-4 sm:p-5 text-zinc-500">Manual error-prone formulas</td>
+                  <td className="p-4 sm:p-5 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20">
+                    Automatic Old vs New Tax comparison &amp; EPF
+                  </td>
+                </tr>
+                <tr>
+                  <td className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-zinc-100 font-heading">Metro Landlord Deposits</td>
+                  <td className="p-4 sm:p-5 text-zinc-500">Ignored until you face a cash crisis</td>
+                  <td className="p-4 sm:p-5 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20">
+                    Calculated deposit shock &amp; amortized recovery
+                  </td>
+                </tr>
+                <tr>
+                  <td className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-zinc-100 font-heading">Family Remittance</td>
+                  <td className="p-4 sm:p-5 text-zinc-500">Treated as a generic expense</td>
+                  <td className="p-4 sm:p-5 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20">
+                    First-class priority pot built into your runway
+                  </td>
+                </tr>
+                <tr>
+                  <td className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-zinc-100 font-heading">AI Financial Co-Pilot</td>
+                  <td className="p-4 sm:p-5 text-zinc-500">None</td>
+                  <td className="p-4 sm:p-5 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20">
+                    24/7 dedicated advisor with one-click plan apply
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </section>
 
-        {/* 3. The 5 Jupiter-Style Smart Pots Dashboard */}
-        <SmartPotsDashboard
-          potsData={potsData}
-          salaryData={salaryData}
-          activeScenario={activeScenario}
-          goalCategory={goalCategory}
-        />
+      {/* 7. Final Call to Action */}
+      <section className="py-20 bg-gradient-to-tr from-emerald-950 via-teal-950 to-zinc-950 text-white text-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <h2 className="font-heading text-3xl sm:text-5xl font-black tracking-tight text-white">
+            Stop wondering where your salary went. <br />
+            <span className="text-emerald-400">Tell it where to go today.</span>
+          </h2>
+          <p className="text-sm sm:text-base text-zinc-300 max-w-2xl mx-auto font-normal">
+            No bank passwords. No spreadsheets. Log in with your email address in 10 seconds and unlock your personalized private financial dashboard.
+          </p>
 
-        {/* 4. Interactive What-If Sliders */}
-        <WhatIfSliders
-          rent={monthlyRent}
-          onRentChange={handleRentChange}
-          familySupport={familySupport}
-          onFamilySupportChange={handleFamilySupportChange}
-          sipInvestment={monthlySip}
-          onSipChange={handleSipChange}
-          taxRegime={taxRegime}
-          onTaxRegimeChange={handleTaxRegimeChange}
-          onReset={handleReset}
-        />
-      </main>
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-extrabold text-base shadow-xl transition hover:scale-105 active:scale-95 font-heading"
+              >
+                Go to My Dashboard →
+              </Link>
+            ) : (
+              <button
+                onClick={() => setIsAuthOpen(true)}
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-extrabold text-base shadow-xl transition hover:scale-105 active:scale-95 cursor-pointer font-heading flex items-center justify-center gap-2"
+              >
+                <Mail className="w-5 h-5" />
+                <span>Sign In with Email Code (Free)</span>
+              </button>
+            )}
 
-      {/* Modals & Drawers */}
-      <VisualDemonstration
-        isOpen={isDemoOpen}
-        onClose={() => setIsDemoOpen(false)}
-        onApplyPreset={() => handleSelectPrompt("I am moving from Kolkata to Bengaluru for a ₹9 LPA job offer.")}
-      />
+            <Link
+              href="/chat"
+              className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-zinc-900/80 border border-zinc-700 text-zinc-200 hover:bg-zinc-800 font-bold text-base transition flex items-center justify-center gap-2"
+            >
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+              <span>Talk to AI Assistant</span>
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      <AiChatDrawer
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        token={user?.token}
-        onApplyPlanFromChat={(preview) => {
-          if (preview?.annual_ctc) setAnnualCtc(preview.annual_ctc);
-          if (preview?.balanced_rent) setMonthlyRent(preview.balanced_rent);
-          setIsChatOpen(false);
-        }}
-      />
+      {/* 8. Clean Footer */}
+      <footer className="py-12 bg-zinc-100 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="h-8 w-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-heading font-black text-sm">
+              सं
+            </div>
+            <div>
+              <span className="font-heading font-extrabold text-zinc-900 dark:text-zinc-100 text-sm">
+                Sankalp
+              </span>
+              <p className="text-[11px] text-zinc-500">India-First Zero-Based Financial Life Planner</p>
+            </div>
+          </div>
 
+          <div className="flex items-center gap-6 font-semibold">
+            <Link href="/" className="hover:text-emerald-600 transition">
+              Overview
+            </Link>
+            <Link href="/chat" className="hover:text-emerald-600 transition">
+              AI Advisor
+            </Link>
+            <button onClick={() => setIsAuthOpen(true)} className="hover:text-emerald-600 transition cursor-pointer">
+              Email Sign In
+            </button>
+          </div>
+
+          <div className="text-[11px] text-zinc-400">
+            &copy; 2026 Sankalp Financial AI. All calculations 100% deterministic.
+          </div>
+        </div>
+      </footer>
+
+      {/* Modals */}
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         onLoginSuccess={handleLoginSuccess}
       />
 
-      <SavedPlansModal
-        isOpen={isPlansOpen}
-        onClose={() => setIsPlansOpen(false)}
-        plans={savedPlans}
-        onLoadPlan={(plan) => {
-          setActiveTitle(plan.title);
-          setGoalCategory(plan.goal_category);
-          setMonthlyRent(plan.total_fixed_expenses - 3500);
-          setFamilySupport(plan.family_support);
-          setMonthlySip(plan.monthly_savings_potential);
+      <VisualDemonstration
+        isOpen={isDemoOpen}
+        onClose={() => setIsDemoOpen(false)}
+      />
+
+      <FinancialProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        initialValues={{
+          annual_ctc: demoCtc,
+          tax_regime: demoRegime,
+          current_rent: demoRent,
+          family_support: demoFamily,
+          existing_emis: demoEmis,
+          current_savings: demoSavings,
+          current_monthly_sip: demoSip,
+          current_city: demoCity,
+          target_city: demoTargetCity,
+          active_goal: demoGoal,
         }}
-        onDeletePlan={(planId) => {
-          setSavedPlans((prev) => prev.filter((p) => p.id !== planId));
-        }}
+        onSave={handleSaveDemoProfile}
       />
     </div>
   );

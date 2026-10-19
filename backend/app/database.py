@@ -47,6 +47,7 @@ async def get_db():
 
 async def init_db():
     global engine, AsyncSessionLocal
+    import app.models  # Ensure all model tables are registered with Base.metadata
     try:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)

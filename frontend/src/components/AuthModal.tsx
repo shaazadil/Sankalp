@@ -15,14 +15,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [code, setCode] = useState("");
+  const [generatedCode, setGeneratedCode] = useState<string | null>(null);
+  const [emailDelivered, setEmailDelivered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successNotice, setSuccessNotice] = useState("");
 
   if (!isOpen) return null;
 
-  const handleSendCode = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSendCode = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!email || isLoading) return;
     setIsLoading(true);
     setErrorMsg("");
@@ -30,6 +32,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
     try {
       const res = await sendOtp(email.trim().toLowerCase());
       setSuccessNotice(res.message);
+      setEmailDelivered(!!res.email_sent);
+      if (res.dev_code) {
+        setGeneratedCode(res.dev_code);
+        setCode(res.dev_code);
+      }
       setStep("code");
     } catch (err: any) {
       setErrorMsg(err.message || "Failed to send verification code. Try again.");
@@ -140,10 +147,32 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
           </form>
         ) : (
           <form onSubmit={handleVerifyCode} className="space-y-4">
-            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
-              <span>{successNotice || `Verification code sent to ${email}`}</span>
+            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-xs text-emerald-800 dark:text-emerald-300 flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 mt-0.5" />
+              <div>
+                <p className="font-semibold">{successNotice || `Verification code for ${email}`}</p>
+                {emailDelivered ? (
+                  <p className="text-[11px] text-emerald-700 dark:text-emerald-400 mt-0.5">
+                    Delivered to your Gmail inbox. Please check Spam / Promotions folder if not in Primary.
+                  </p>
+                ) : (
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">
+                    Code ready! (To deliver directly to your real Gmail inbox, configure SMTP_USER &amp; SMTP_PASSWORD in backend/.env)
+                  </p>
+                )}
+              </div>
             </div>
+
+            {generatedCode && (
+              <div className="p-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-center">
+                <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 block mb-1">
+                  Generated Verification Code
+                </span>
+                <span className="text-2xl font-black tracking-widest text-emerald-600 dark:text-emerald-400 font-mono">
+                  {generatedCode}
+                </span>
+              </div>
+            )}
 
             <div>
               <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
@@ -158,12 +187,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   placeholder="123456"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-sm font-bold tracking-widest text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-base font-bold tracking-widest text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
                 />
               </div>
-              <p className="text-[11px] text-zinc-400 mt-1.5 text-center">
-                (In development mode, use demo code: <strong className="text-emerald-600">123456</strong>)
-              </p>
             </div>
 
             <button
@@ -181,13 +207,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
               )}
             </button>
 
-            <button
-              type="button"
-              onClick={() => setStep("email")}
-              className="w-full text-center text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition"
-            >
-              Change Email Address
-            </button>
+            <div className="flex items-center justify-between pt-1">
+              <button
+                type="button"
+                onClick={() => setStep("email")}
+                className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition"
+              >
+                Change Email Address
+              </button>
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={() => handleSendCode()}
+                className="text-xs font-medium text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 transition"
+              >
+                Resend Code
+              </button>
+            </div>
           </form>
         )}
       </div>

@@ -18,7 +18,7 @@ import {
 interface VisualDemonstrationProps {
   isOpen: boolean;
   onClose: () => void;
-  onApplyPreset: () => void;
+  onApplyPreset?: () => void;
 }
 
 export const VisualDemonstration: React.FC<VisualDemonstrationProps> = ({
@@ -283,7 +283,7 @@ export const VisualDemonstration: React.FC<VisualDemonstrationProps> = ({
           <button
             onClick={() => {
               onClose();
-              onApplyPreset();
+              onApplyPreset?.();
             }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition shadow-md shadow-emerald-600/30 active:scale-95 cursor-pointer"
           >
