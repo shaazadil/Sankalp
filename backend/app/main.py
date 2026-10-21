@@ -94,11 +94,15 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"detail": "An internal server error occurred. Please try again or contact support."}
     )
 
+from app.routers import auth, calculate, plan, chat, features
+
 # Include Routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication & User"])
 app.include_router(calculate.router, prefix="/api/calculate", tags=["Deterministic Calculators"])
 app.include_router(plan.router, prefix="/api/plan", tags=["Financial Plans & Scenarios"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Conversational AI Co-Pilot"])
+app.include_router(features.router, prefix="/api/features", tags=["13 Advanced Features"])
+app.include_router(features.router, prefix="/features", tags=["13 Advanced Features"])
 
 @app.get("/")
 async def root():

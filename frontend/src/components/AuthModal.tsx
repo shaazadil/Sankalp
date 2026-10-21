@@ -67,33 +67,33 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl p-6 sm:p-7 space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-md bg-[#0c111e] rounded-3xl border border-white/[0.08] shadow-2xl p-6 sm:p-7 space-y-6 text-slate-100">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold text-sm">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm">
               सं
             </div>
             <div>
-              <h3 className="font-extrabold text-base text-zinc-900 dark:text-zinc-100">
+              <h3 className="font-extrabold text-base text-white">
                 Your Private Sankalp Account
               </h3>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
+              <p className="text-[11px] text-slate-400">
                 Passwordless Email Code (OTP) Login
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {errorMsg && (
-          <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-xs font-medium text-rose-700 dark:text-rose-300">
+          <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-800/40 text-xs font-medium text-rose-300">
             {errorMsg}
           </div>
         )}
@@ -101,7 +101,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
         {step === "email" ? (
           <form onSubmit={handleSendCode} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Your Name (Optional)
               </label>
               <input
@@ -109,23 +109,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Rahul Sharma"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#080d17] border border-white/[0.08] text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Email Address
               </label>
               <div className="relative flex items-center">
-                <Mail className="absolute left-3.5 w-4 h-4 text-zinc-400 pointer-events-none" />
+                <Mail className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#080d17] border border-white/[0.08] text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
                 />
               </div>
             </div>
@@ -133,7 +133,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
             <button
               type="submit"
               disabled={isLoading || !email}
-              className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-300 dark:disabled:bg-zinc-800 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/30 transition cursor-pointer disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-800 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 transition cursor-pointer disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -164,22 +164,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
             </div>
 
             {generatedCode && (
-              <div className="p-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-center">
-                <span className="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 block mb-1">
+              <div className="p-3.5 rounded-xl bg-[#080d17] border border-emerald-500/20 text-center">
+                <span className="text-[11px] font-medium text-slate-400 block mb-1">
                   Generated Verification Code
                 </span>
-                <span className="text-2xl font-black tracking-widest text-emerald-600 dark:text-emerald-400 font-mono">
+                <span className="text-2xl font-black tracking-widest text-emerald-400 font-mono">
                   {generatedCode}
                 </span>
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Enter 6-Digit Verification Code
               </label>
               <div className="relative flex items-center">
-                <KeyRound className="absolute left-3.5 w-4 h-4 text-zinc-400 pointer-events-none" />
+                <KeyRound className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
                 <input
                   type="text"
                   maxLength={6}
@@ -187,7 +187,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   placeholder="123456"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-base font-bold tracking-widest text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 text-center focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#080d17] border border-white/[0.08] text-base font-bold tracking-widest text-white placeholder-slate-500 text-center focus:outline-none focus:border-emerald-500 transition font-mono"
                 />
               </div>
             </div>
@@ -195,7 +195,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
             <button
               type="submit"
               disabled={isLoading || code.length < 6}
-              className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-300 dark:disabled:bg-zinc-800 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/30 transition cursor-pointer disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-800 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 transition cursor-pointer disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

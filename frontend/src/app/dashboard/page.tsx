@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Navbar } from "@/components/Navbar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { HeroOmnibar } from "@/components/HeroOmnibar";
 import { SmartPotsDashboard } from "@/components/SmartPotsDashboard";
 import { WhatIfSliders } from "@/components/WhatIfSliders";
@@ -14,6 +14,22 @@ import {
   FinancialProfileModal,
   FinancialProfileFormValues,
 } from "@/components/FinancialProfileModal";
+
+// 13 Full Real Backend Interactive & Benchmark Engines
+import { JobOfferBattleRoyale } from "@/components/JobOfferBattleRoyale";
+import { TaxTugOfWar } from "@/components/TaxTugOfWar";
+import { FamilyRemittanceCalibrator } from "@/components/FamilyRemittanceCalibrator";
+import { LifestyleCreepTimeMachine } from "@/components/LifestyleCreepTimeMachine";
+import { CommuteRentElasticity } from "@/components/CommuteRentElasticity";
+import { ImpulseCoolingSandbox } from "@/components/ImpulseCoolingSandbox";
+import { SabbaticalRunwayTank } from "@/components/SabbaticalRunwayTank";
+import { ReverseMilestoneStudio } from "@/components/ReverseMilestoneStudio";
+import { EmergencyChaosSimulator } from "@/components/EmergencyChaosSimulator";
+import { AnonymousCohortRadar } from "@/components/AnonymousCohortRadar";
+import { AccountAggregatorSync } from "@/components/AccountAggregatorSync";
+import { OneTapBrokerExecution } from "@/components/OneTapBrokerExecution";
+import { SankalpScoreMeter } from "@/components/SankalpScoreMeter";
+
 import {
   calculateSalary,
   calculateRelocation,
@@ -35,12 +51,22 @@ import {
   ShieldCheck,
   Lock,
   Mail,
-  Home,
-  CheckCircle2,
   Sliders,
   Edit3,
   UserCheck,
+  Building2,
   TrendingUp,
+  AlertTriangle,
+  Compass,
+  Swords,
+  Scale,
+  Users,
+  Flame,
+  Zap,
+  Target,
+  Landmark,
+  Layers,
+  Award,
 } from "lucide-react";
 
 export default function DashboardPage() {
@@ -79,6 +105,7 @@ export default function DashboardPage() {
   // UI state
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
+  const [activeCategory, setActiveCategory] = useState<string>("all");
 
   // Core Mathematical Recalculation Engine
   const runCalculations = useCallback(
@@ -216,7 +243,9 @@ export default function DashboardPage() {
     setIsCustomProfile(true);
 
     const titlePrefix = user?.full_name ? `${user.full_name}'s Plan` : "Personalized Life Plan";
-    setActiveTitle(`${titlePrefix}: ₹${(values.annual_ctc / 100000).toFixed(1)}L (${values.current_city} → ${values.target_city})`);
+    setActiveTitle(
+      `${titlePrefix}: ₹${(values.annual_ctc / 100000).toFixed(1)}L (${values.current_city} → ${values.target_city})`
+    );
 
     // Sync to backend if logged in
     if (user?.token) {
@@ -304,7 +333,6 @@ export default function DashboardPage() {
     setUser(userData);
     localStorage.setItem("sankalp_user", JSON.stringify(userData));
     getMyPlans(userData.token).then(setSavedPlans).catch(() => {});
-    // Fetch profile
     getFinancialProfile(userData.token)
       .then((profile) => {
         if (profile) {
@@ -364,7 +392,7 @@ export default function DashboardPage() {
     }
   };
 
-  const monthlyInHand = salaryData?.estimated_monthly_in_hand || 62400;
+  const monthlyInHand = salaryData?.estimated_monthly_in_hand || 67116;
   const totalAllocated =
     (potsData?.survival_pot || 0) +
     (potsData?.obligations_pot || 0) +
@@ -372,53 +400,60 @@ export default function DashboardPage() {
     (potsData?.growth_pot || 0) +
     (potsData?.guilt_free_upi_pot || 0);
 
-  // If user is NOT logged in, show secure login gate
+  // If user is NOT logged in, show secure login gate inside the clean dark shell
   if (isAuthChecked && !user) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 flex flex-col transition-colors">
-        <Navbar
+      <div className="flex min-h-screen bg-[#080c14] text-slate-100">
+        <AppSidebar
           user={null}
           onOpenAuth={() => setIsAuthOpen(true)}
+          onOpenProfile={() => setIsProfileOpen(true)}
+          onOpenPlans={() => setIsPlansOpen(true)}
+          onOpenDemo={() => setIsDemoOpen(true)}
+          onOpenChat={() => setIsChatOpen(true)}
           onLogout={handleLogout}
+          currentCtc={annualCtc}
+          currentCity={currentCity}
+          targetCity={targetCity}
         />
 
-        <main className="flex-1 flex items-center justify-center p-4 sm:p-6">
-          <div className="max-w-md w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-7 sm:p-8 shadow-2xl text-center space-y-6">
-            <div className="w-16 h-16 rounded-3xl bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-inner">
-              <Lock className="w-7 h-7" />
+        <main className="flex-1 flex items-center justify-center p-4 sm:p-8">
+          <div className="max-w-md w-full bg-[#0d1322] border border-white/[0.08] rounded-3xl p-7 sm:p-8 shadow-2xl text-center space-y-6">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto shadow-inner">
+              <Lock className="w-6 h-6" />
             </div>
 
             <div className="space-y-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                Private Workspace
+              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 font-mono">
+                Private Financial Workspace
               </span>
-              <h2 className="text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight font-heading">
-                Sign In to View Your Dashboard
+              <h2 className="text-2xl font-black text-white tracking-tight font-heading">
+                Unlock Your Dashboard
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                To keep your monthly salary, landlord deposit calculations, and family support allocations 100% private, please enter your email address to unlock your dashboard.
+              <p className="text-xs text-slate-400 leading-relaxed">
+                To keep your monthly salary, landlord deposit calculations, and family support allocations private, enter your email address for an instant 6-digit access code.
               </p>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-800/80 text-left space-y-2 text-xs">
-              <div className="flex items-center gap-2 text-zinc-700 dark:text-zinc-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Zero passwords — fast 6-digit email code</span>
+            <div className="p-4 rounded-2xl bg-[#080c14] border border-white/[0.06] text-left space-y-2.5 text-xs text-slate-300">
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Zero bank logins or passwords required</span>
               </div>
-              <div className="flex items-center gap-2 text-zinc-700 dark:text-zinc-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Custom financial profile tailored to your real salary</span>
+              <div className="flex items-center gap-2.5">
+                <Sliders className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Instant deterministic Indian tax calculations</span>
               </div>
-              <div className="flex items-center gap-2 text-zinc-700 dark:text-zinc-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Save and reload multiple custom life plans</span>
+              <div className="flex items-center gap-2.5">
+                <Bookmark className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Save multiple life plans &amp; scenarios securely</span>
               </div>
             </div>
 
-            <div className="space-y-3 pt-1">
+            <div className="space-y-3 pt-2">
               <button
                 onClick={() => setIsAuthOpen(true)}
-                className="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-2 transition hover:scale-105 active:scale-95 cursor-pointer font-heading"
+                className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition cursor-pointer"
               >
                 <Mail className="w-4 h-4" />
                 <span>Sign In with Email Code</span>
@@ -427,10 +462,10 @@ export default function DashboardPage() {
 
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-300 transition"
               >
-                <Home className="w-3.5 h-3.5" />
-                <span>Back to Overview</span>
+                <Compass className="w-3.5 h-3.5" />
+                <span>Explore Overview &amp; Public Demo</span>
               </Link>
             </div>
           </div>
@@ -446,184 +481,386 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors">
-      {/* 1. Global Navbar */}
-      <Navbar
+    <div className="flex min-h-screen bg-[#080c14] text-slate-100 font-sans">
+      {/* 1. Desktop & Mobile Modern Sidebar */}
+      <AppSidebar
         user={user}
         onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenProfile={() => setIsProfileOpen(true)}
         onOpenPlans={() => setIsPlansOpen(true)}
+        onOpenDemo={() => setIsDemoOpen(true)}
+        onOpenChat={() => setIsChatOpen(true)}
         onLogout={handleLogout}
+        currentCtc={annualCtc}
+        currentCity={currentCity}
+        targetCity={targetCity}
       />
 
-      {/* 2. User Command Bar / Master Header Banner */}
-      <section className="bg-gradient-to-r from-emerald-900 via-teal-900 to-zinc-900 text-white border-b border-emerald-800/40 px-4 sm:px-6 lg:px-8 py-5">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <div className="flex flex-wrap items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold uppercase tracking-wider border border-emerald-400/30">
-                Zero-Based Cashflow System
-              </span>
-              {isCustomProfile && (
-                <span className="px-2 py-0.5 rounded-full bg-teal-500/30 text-teal-200 text-[10px] font-bold uppercase tracking-wider border border-teal-400/30 flex items-center gap-1">
-                  <UserCheck className="w-3 h-3" />
-                  Your Custom Numbers
+      {/* 2. Main Content Flight Deck */}
+      <main className="flex-1 min-w-0 pb-20 overflow-y-auto">
+        {/* Top Cockpit Command Header */}
+        <header className="sticky top-0 z-20 backdrop-blur-xl bg-[#080c14]/90 border-b border-white/[0.08] px-4 sm:px-8 py-4">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 text-[10px] font-mono font-bold uppercase tracking-wider border border-emerald-500/20">
+                  Zero-Based Engine
                 </span>
-              )}
-              {user && (
-                <span className="text-xs text-zinc-300 font-medium">
-                  Signed in as <strong className="text-white">{user.email}</strong>
-                </span>
-              )}
-            </div>
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2 font-heading">
-              <span>{activeTitle}</span>
-            </h1>
-            <p className="text-xs text-zinc-300 mt-0.5">
-              Every rupee of your ₹{(annualCtc / 100000).toFixed(1)}L CTC is assigned according to your real commitments.
-            </p>
-          </div>
-
-          {/* Action buttons & Stats */}
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Primary Command Button: Enter Your Numbers */}
-            <button
-              onClick={() => setIsProfileOpen(true)}
-              className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 text-zinc-950 font-black text-xs shadow-lg shadow-emerald-400/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer font-heading"
-            >
-              <Edit3 className="w-4 h-4 text-zinc-950" />
-              <span>Input My Exact Numbers</span>
-            </button>
-
-            {/* Ready to Assign Meter */}
-            <div className="flex items-center gap-3 bg-zinc-900/80 backdrop-blur-md p-3 rounded-2xl border border-emerald-500/30 shadow-lg">
-              <div className="pr-3 border-r border-zinc-700/60">
-                <span className="text-[10px] uppercase font-bold text-zinc-400 block tracking-wider">
-                  In-Hand
-                </span>
-                <span className="text-base sm:text-lg font-black text-white font-mono">
-                  ₹{monthlyInHand.toLocaleString("en-IN")}
-                </span>
-              </div>
-
-              <div className="pr-3 border-r border-zinc-700/60">
-                <span className="text-[10px] uppercase font-bold text-emerald-400 block tracking-wider">
-                  Allocated
-                </span>
-                <span className="text-base sm:text-lg font-black text-emerald-300 font-mono">
-                  ₹{totalAllocated.toLocaleString("en-IN")}
-                </span>
-              </div>
-
-              <div>
-                <span className="text-[10px] uppercase font-bold text-teal-400 block tracking-wider">
-                  Runway
-                </span>
-                <span className="text-base sm:text-lg font-black text-teal-300 font-mono">
-                  {potsData?.emergency_runway_months || 5.2} Mo
-                </span>
-              </div>
-
-              <button
-                onClick={handleSavePlan}
-                className={`ml-1 px-3 py-1.5 rounded-xl text-xs font-bold transition shadow cursor-pointer flex items-center gap-1.5 ${
-                  saveSuccess
-                    ? "bg-emerald-500 text-white"
-                    : "bg-emerald-600 hover:bg-emerald-500 text-white"
-                }`}
-              >
-                {saveSuccess ? (
-                  <>
-                    <Check className="w-3.5 h-3.5" />
-                    <span>Saved!</span>
-                  </>
-                ) : (
-                  <>
-                    <Bookmark className="w-3.5 h-3.5" />
-                    <span>Save Plan</span>
-                  </>
+                {isCustomProfile && (
+                  <span className="px-2 py-0.5 rounded-md bg-teal-500/10 text-teal-300 text-[10px] font-mono font-bold uppercase tracking-wider border border-teal-500/20 flex items-center gap-1">
+                    <UserCheck className="w-3 h-3" />
+                    Custom Profile Loaded
+                  </span>
                 )}
+                {user && (
+                  <span className="text-[11px] text-slate-400 font-medium">
+                    Signed in as <strong className="text-slate-200">{user.email}</strong>
+                  </span>
+                )}
+              </div>
+              <h1 className="text-lg sm:text-xl font-black tracking-tight text-white flex items-center gap-2 font-heading">
+                <span>{activeTitle}</span>
+              </h1>
+            </div>
+
+            {/* In-Hand, Allocated, Runway Metrics Ribbon */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 bg-[#0d1322] px-3.5 py-2 rounded-xl border border-white/[0.08] shadow-inner">
+                <div className="pr-3 border-r border-white/[0.08]">
+                  <span className="text-[9px] uppercase font-bold text-slate-400 block tracking-wider font-mono">
+                    In-Hand
+                  </span>
+                  <span className="text-sm sm:text-base font-bold text-white font-mono tabular-nums">
+                    ₹{monthlyInHand.toLocaleString("en-IN")}
+                  </span>
+                </div>
+
+                <div className="pr-3 border-r border-white/[0.08]">
+                  <span className="text-[9px] uppercase font-bold text-emerald-400 block tracking-wider font-mono">
+                    Allocated
+                  </span>
+                  <span className="text-sm sm:text-base font-bold text-emerald-300 font-mono tabular-nums">
+                    ₹{totalAllocated.toLocaleString("en-IN")}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-[9px] uppercase font-bold text-teal-400 block tracking-wider font-mono">
+                    Runway
+                  </span>
+                  <span className="text-sm sm:text-base font-bold text-teal-300 font-mono tabular-nums">
+                    {potsData?.emergency_runway_months || 5.2} Mo
+                  </span>
+                </div>
+
+                <button
+                  onClick={handleSavePlan}
+                  className={`ml-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                    saveSuccess
+                      ? "bg-emerald-500 text-white"
+                      : "bg-white/[0.08] hover:bg-white/[0.14] text-slate-200"
+                  }`}
+                >
+                  {saveSuccess ? (
+                    <>
+                      <Check className="w-3 h-3" />
+                      <span>Saved</span>
+                    </>
+                  ) : (
+                    <>
+                      <Bookmark className="w-3 h-3 text-slate-400" />
+                      <span>Save</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Edit Profile Quick Trigger */}
+              <button
+                onClick={() => setIsProfileOpen(true)}
+                className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold transition shadow-sm cursor-pointer"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                <span>Adjust Baseline</span>
               </button>
             </div>
           </div>
-        </div>
-      </section>
+        </header>
 
-      {/* 3. Main Content Workspace */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* User Agency Banner */}
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-              <Sliders className="w-5 h-5" />
+        {/* Dashboard Workspace Body */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 space-y-8">
+          {/* Segmented Category Switcher Bar */}
+          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[#0c111e] border border-white/[0.08] overflow-x-auto shadow-inner">
+            {[
+              { id: "all", label: "All 13 Features" },
+              { id: "career", label: "Career & Mobility (3)" },
+              { id: "tax_family", label: "Tax & Family Wealth (3)" },
+              { id: "behavioral", label: "Behavioral & Goals (3)" },
+              { id: "stress", label: "Stress & Resilience (2)" },
+              { id: "benchmarks", label: "Industry Benchmarks (3)" },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition cursor-pointer ${
+                  activeCategory === cat.id
+                    ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
+                    : "text-slate-400 hover:text-white hover:bg-white/[0.04]"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* ========================================================= */}
+          {/* 1. FINANCIAL READINESS SCORE (Benchmark 3: CRED/FICO) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "stress" || activeCategory === "benchmarks") && (
+            <div id="readiness-score" className="scroll-mt-24">
+              <SankalpScoreMeter
+                runwayMonths={Number(potsData?.emergency_runway_months || 5.2)}
+                savingsRatePercent={Number(potsData?.growth_percent || 22)}
+                taxEfficiency={88}
+              />
             </div>
-            <div>
-              <h3 className="font-heading font-black text-sm sm:text-base text-zinc-900 dark:text-zinc-100">
-                Want to calculate based on your real salary slip &amp; rent?
+          )}
+
+          {/* ========================================================= */}
+          {/* 2. CORE ZERO-BASED 5-POTS BUDGETING & WHAT-IF STUDIO */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "behavioral") && (
+            <div id="pots-studio" className="space-y-6 scroll-mt-24">
+              <HeroOmnibar onSelectPrompt={handleSelectPrompt} isLoading={isLoading} />
+
+              <SmartPotsDashboard
+                potsData={potsData}
+                salaryData={salaryData}
+                activeScenario={activeScenario}
+                goalCategory={goalCategory}
+              />
+
+              <div id="what-if" className="scroll-mt-24">
+                <WhatIfSliders
+                  rent={monthlyRent}
+                  onRentChange={handleRentChange}
+                  familySupport={familySupport}
+                  onFamilySupportChange={handleFamilySupportChange}
+                  sipInvestment={monthlySip}
+                  onSipChange={handleSipChange}
+                  taxRegime={taxRegime}
+                  onTaxRegimeChange={handleTaxRegimeChange}
+                  onReset={handleReset}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* 3. RELOCATION RADAR (if available) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "career") && relocationData && (
+            <div id="relocation" className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] space-y-4 scroll-mt-24">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.06] pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                    <Building2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white">
+                      City Relocation Radar: {currentCity} ➔ {targetCity}
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      Calculates metro deposit shock, brokerage sunk cost, and recovery runway.
+                    </p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-mono text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 rounded-full">
+                  Cost Multiplier Active
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+                {relocationData.scenarios.map((sc, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-4 rounded-2xl border transition-all ${
+                      activeScenario?.name === sc.name
+                        ? "bg-[#0f172a] border-blue-500/40 shadow-lg shadow-blue-500/5"
+                        : "bg-[#080d17] border-white/[0.06] hover:border-white/[0.12]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-bold text-xs text-white">{sc.name}</span>
+                      <span className="text-[10px] font-mono text-slate-400">
+                        ₹{sc.monthly_rent.toLocaleString("en-IN")}/mo rent
+                      </span>
+                    </div>
+
+                    <div className="space-y-1.5 text-xs text-slate-400">
+                      <div className="flex justify-between">
+                        <span>Locked Deposit:</span>
+                        <span className="font-mono text-slate-200">
+                          ₹{sc.locked_security_deposit.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Sunk Moving Cost:</span>
+                        <span className="font-mono text-slate-200">
+                          ₹{sc.sunk_moving_cost.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Recovery Runway:</span>
+                        <span className="font-mono text-emerald-400 font-semibold">
+                          {sc.deposit_recovery_months} Months
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 1: JOB OFFER BATTLE ROYALE (Category-First) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "career") && (
+            <div id="battle-royale" className="scroll-mt-24">
+              <JobOfferBattleRoyale />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 2: TAX REGIME TUG-OF-WAR (Category-First) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "tax_family") && (
+            <div id="tax-tug-of-war" className="scroll-mt-24">
+              <TaxTugOfWar annualCtc={annualCtc} />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 3: FAMILY REMITTANCE & SHOCK CALIBRATOR (Category-First) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "tax_family") && (
+            <div id="family-calibrator" className="scroll-mt-24">
+              <FamilyRemittanceCalibrator monthlyIncome={monthlyInHand} />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 4: LIFESTYLE CREEP TIME MACHINE (Category-First) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "tax_family") && (
+            <div id="lifestyle-creep" className="scroll-mt-24">
+              <LifestyleCreepTimeMachine currentCtc={annualCtc} currentSip={monthlySip} />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 5: COMMUTE-RENT ELASTICITY ENGINE (Category-First) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "career") && (
+            <div id="commute-elasticity" className="scroll-mt-24">
+              <CommuteRentElasticity />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 6: IMPULSE BUY 72-HOUR COOLING SANDBOX (Category-First) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "behavioral") && (
+            <div id="impulse-cooling" className="scroll-mt-24">
+              <ImpulseCoolingSandbox monthlyIncome={monthlyInHand} />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 7: SABBATICAL & UPSKILLING RUNWAY RESERVOIR (Category-First) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "career") && (
+            <div id="sabbatical-runway" className="scroll-mt-24">
+              <SabbaticalRunwayTank initialSavings={liquidSavings} />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 8: REVERSE MILESTONE SACRIFICE ACCELERATOR (Category-First) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "behavioral") && (
+            <div id="reverse-milestone" className="scroll-mt-24">
+              <ReverseMilestoneStudio defaultTarget={2500000} />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 9: EMERGENCY DOMINO CHAOS STRESS-TESTER (Category-First) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "stress") && (
+            <div id="chaos-simulator" className="scroll-mt-24">
+              <EmergencyChaosSimulator
+                monthlyIncome={monthlyInHand}
+                liquidSavings={liquidSavings}
+                monthlyFixedLiving={monthlyRent + 12000}
+              />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 10: ANONYMOUS INDIAN TECH COHORT RADAR (Category-First) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "benchmarks") && (
+            <div id="cohort-radar" className="scroll-mt-24">
+              <AnonymousCohortRadar initialCtc={annualCtc} initialCity={targetCity} />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 11: RBI ACCOUNT AGGREGATOR INSTANT REAL-BANK SYNC (Benchmark 1) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "benchmarks") && (
+            <div id="account-aggregator" className="scroll-mt-24">
+              <AccountAggregatorSync />
+            </div>
+          )}
+
+          {/* ========================================================= */}
+          {/* FEATURE 12: 1-TAP BROKER MULTI-BASKET EXECUTION (Benchmark 2) */}
+          {/* ========================================================= */}
+          {(activeCategory === "all" || activeCategory === "benchmarks") && (
+            <div id="broker-execution" className="scroll-mt-24">
+              <OneTapBrokerExecution defaultAmount={monthlySip} />
+            </div>
+          )}
+
+          {/* Sleek AI Financial Advisor Callout */}
+          <div className="bg-gradient-to-r from-emerald-950/40 via-[#0c111e] to-slate-900 border border-emerald-500/25 rounded-3xl p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+            <div className="space-y-1 text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400">
+                  Real-Time AI Co-Pilot
+                </span>
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-white font-heading">
+                Need guidance navigating these 13 financial engines?
               </h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                You are in complete command. Customize your salary, rent, family support, and active loans to see your custom blueprint.
+              <p className="text-xs text-slate-400 max-w-xl">
+                Chat with Sankalp&apos;s AI agent—deeply grounded in your active salary math, city rent burdens, and family remittance needs.
               </p>
             </div>
+
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-xs transition shadow-lg shadow-emerald-500/20 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Launch AI Drawer</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
           </div>
-
-          <button
-            onClick={() => setIsProfileOpen(true)}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-bold text-xs flex items-center justify-center gap-2 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition shrink-0 cursor-pointer"
-          >
-            <Edit3 className="w-3.5 h-3.5" />
-            <span>Customize My Numbers</span>
-          </button>
-        </div>
-
-        {/* Omnibar & Milestone Prompt Switcher */}
-        <HeroOmnibar onSelectPrompt={handleSelectPrompt} isLoading={isLoading} />
-
-        {/* 4. The 5 Smart Money Pots Dashboard */}
-        <SmartPotsDashboard
-          potsData={potsData}
-          salaryData={salaryData}
-          activeScenario={activeScenario}
-          goalCategory={goalCategory}
-        />
-
-        {/* 5. Interactive What-If Sliders */}
-        <WhatIfSliders
-          rent={monthlyRent}
-          onRentChange={handleRentChange}
-          familySupport={familySupport}
-          onFamilySupportChange={handleFamilySupportChange}
-          sipInvestment={monthlySip}
-          onSipChange={handleSipChange}
-          taxRegime={taxRegime}
-          onTaxRegimeChange={handleTaxRegimeChange}
-          onReset={handleReset}
-        />
-
-        {/* 6. Quick Action Callout to AI Advisor */}
-        <div className="bg-gradient-to-r from-teal-950 via-zinc-900 to-emerald-950 border border-teal-800/40 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
-          <div className="space-y-1 text-center sm:text-left">
-            <div className="flex items-center justify-center sm:justify-start gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400 font-heading">
-                24/7 AI Milestone Advisor
-              </span>
-            </div>
-            <h3 className="text-lg sm:text-xl font-black text-white font-heading">
-              Have doubts about rent affordability or Old vs New Tax Regime?
-            </h3>
-            <p className="text-xs sm:text-sm text-zinc-300 max-w-xl">
-              Ask our Indian financial co-pilot anything in simple English—get instant answers on landlord deposits, Section 80E loan deductions, and wedding gold allocations.
-            </p>
-          </div>
-
-          <Link
-            href="/chat"
-            className="shrink-0 flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-zinc-950 font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95 font-heading"
-          >
-            <Sparkles className="w-4 h-4 text-zinc-950 fill-zinc-950" />
-            <span>Open AI Co-Pilot Webpage</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </div>
       </main>
 

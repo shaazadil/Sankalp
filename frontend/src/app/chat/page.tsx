@@ -29,7 +29,7 @@ import {
   PlusCircle,
 } from "lucide-react";
 import { sendChatMessage, getChatHistory, savePlan, ChatResponse } from "@/lib/api";
-import { Navbar } from "@/components/Navbar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { AuthModal } from "@/components/AuthModal";
 import { VisualDemonstration } from "@/components/VisualDemonstration";
 import { SavedPlansModal } from "@/components/SavedPlansModal";
@@ -272,17 +272,20 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 flex flex-col font-sans">
-      {/* 1. Global Navbar */}
-      <Navbar
+    <div className="flex min-h-screen bg-[#080c14] text-slate-100 font-sans">
+      {/* 1. App Sidebar */}
+      <AppSidebar
         user={user}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenPlans={() => setIsPlansOpen(true)}
+        onOpenDemo={() => setIsDemoOpen(true)}
         onLogout={() => {
           setUser(null);
           localStorage.removeItem("sankalp_user");
         }}
       />
+
+      <div className="flex-1 flex flex-col min-w-0">
 
       {/* 2. Large-Scale Workspace Subheader */}
       <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-8 py-3 sticky top-16 z-30 flex items-center justify-between">
@@ -610,6 +613,7 @@ export default function ChatPage() {
             </div>
           </div>
         </main>
+      </div>
       </div>
 
       {/* Modals */}

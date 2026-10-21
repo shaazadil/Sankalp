@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Navbar } from "@/components/Navbar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { AuthModal } from "@/components/AuthModal";
 import { VisualDemonstration } from "@/components/VisualDemonstration";
 import {
@@ -115,89 +115,94 @@ export default function LandingPage() {
   const emergencyMonths = (((demoSavings || 150000) / (survivalPot + familyPot + demoEmis)) || 4.5).toFixed(1);
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 transition-colors selection:bg-emerald-500 selection:text-white">
-      {/* 1. Uncrowded Global Navbar with single Sign In button */}
-      <Navbar
+    <div className="flex min-h-screen bg-[#080c14] text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
+      {/* 1. App Sidebar */}
+      <AppSidebar
         user={user}
         onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenProfile={() => setIsProfileOpen(true)}
+        onOpenDemo={() => setIsDemoOpen(true)}
         onLogout={handleLogout}
+        currentCtc={demoCtc}
+        currentCity={demoCity}
+        targetCity={demoTargetCity}
       />
 
-      {/* 2. Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28 border-b border-zinc-200/80 dark:border-zinc-800/80">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-emerald-500/15 via-teal-500/10 to-transparent blur-3xl pointer-events-none -z-10" />
+      <main className="flex-1 min-w-0 overflow-y-auto">
+        {/* 2. Hero Section */}
+        <section className="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-24 border-b border-white/[0.08]">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent blur-3xl pointer-events-none -z-10" />
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          {/* Eyebrow Pill */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-100/80 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-bold tracking-wide uppercase shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Zero-Based Cashflow Architecture, Built for Indian Life Milestones</span>
-          </div>
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+            {/* Eyebrow Pill */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold tracking-wide uppercase shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Zero-Based Cashflow Architecture • Built for Indian Life Milestones</span>
+            </div>
 
-          {/* Master Headline in Outfit Font */}
-          <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 leading-[1.1]">
-            Gain total control of your money. <br />
-            <span className="bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400 bg-clip-text text-transparent">
-              Give every rupee a purpose.
-            </span>
-          </h1>
+            {/* Master Headline in Outfit Font */}
+            <h1 className="font-heading text-4xl sm:text-6xl font-black tracking-tight text-white leading-[1.1]">
+              Gain total control of your money. <br />
+              <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 bg-clip-text text-transparent">
+                Give every rupee a purpose.
+              </span>
+            </h1>
 
-          {/* Subheading in Plain English */}
-          <p className="max-w-3xl mx-auto text-base sm:text-xl text-zinc-600 dark:text-zinc-300 font-normal leading-relaxed">
-            Traditional budgets look backward and make you feel guilty. Sankalp brings proactive{" "}
-            <strong>zero-based cashflow planning</strong> to Indian professionals—handling real in-hand salaries,
-            metro landlord deposit shocks, family remittances, and ambitious milestones with total clarity.
-          </p>
+            {/* Subheading in Plain English */}
+            <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-400 font-normal leading-relaxed">
+              Traditional budgets look backward and make you feel guilty. Sankalp brings proactive{" "}
+              <strong className="text-slate-200">zero-based cashflow planning</strong> to Indian professionals—handling real in-hand salaries, metro landlord deposit shocks, family remittances, and ambitious milestones.
+            </p>
 
-          {/* Clean Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            {user ? (
-              <Link
-                href="/dashboard"
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
+            {/* Clean Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              {user ? (
+                <Link
+                  href="/dashboard"
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition cursor-pointer"
+                >
+                  <span>Go to My Personal Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              ) : (
+                <button
+                  onClick={() => setIsAuthOpen(true)}
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition cursor-pointer"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>Sign In with Email Code</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
+
+              <a
+                href="#live-simulator"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#0c111e] border border-white/[0.1] hover:bg-slate-800 text-slate-200 font-semibold text-sm transition flex items-center justify-center gap-2"
               >
-                <span>Go to My Personal Dashboard</span>
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            ) : (
-              <button
-                onClick={() => setIsAuthOpen(true)}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-base shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 cursor-pointer"
-              >
-                <Mail className="w-5 h-5" />
-                <span>Sign In with Email Code</span>
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            )}
+                <Sliders className="w-4 h-4 text-emerald-400" />
+                <span>Try Live Interactive Budget</span>
+              </a>
+            </div>
 
-            <a
-              href="#live-simulator"
-              className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200 font-bold text-base transition-all flex items-center justify-center gap-2"
-            >
-              <Sliders className="w-4 h-4 text-emerald-600" />
-              <span>Try Live Interactive Budget</span>
-            </a>
-          </div>
-
-          {/* Trust Highlights */}
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-            <span className="flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-500" />
-              Zero Bank Passwords Needed
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              100% Free &amp; Private
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-emerald-500" />
-              Instant Email Code Access
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Zap className="w-4 h-4 text-emerald-500" />
-              Deterministic Indian Tax Math
-            </span>
-          </div>
+            {/* Trust Highlights */}
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs font-semibold text-slate-400">
+              <span className="flex items-center gap-1.5 bg-[#0c111e] px-3 py-1.5 rounded-lg border border-white/[0.06]">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                Zero Bank Passwords Needed
+              </span>
+              <span className="flex items-center gap-1.5 bg-[#0c111e] px-3 py-1.5 rounded-lg border border-white/[0.06]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                100% Free &amp; Private
+              </span>
+              <span className="flex items-center gap-1.5 bg-[#0c111e] px-3 py-1.5 rounded-lg border border-white/[0.06]">
+                <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                Instant Email Code Access
+              </span>
+              <span className="flex items-center gap-1.5 bg-[#0c111e] px-3 py-1.5 rounded-lg border border-white/[0.06]">
+                <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                Deterministic Indian Tax Math
+              </span>
+            </div>
 
           {/* Hero Visual Image Asset (Replacing raw icons with high-end graphic) */}
           <div className="pt-8 max-w-4xl mx-auto">
@@ -223,69 +228,69 @@ export default function LandingPage() {
       </section>
 
       {/* 3. The 4 Simple Pillars of Sankalp */}
-      <section className="py-20 bg-white dark:bg-zinc-900/50 border-b border-zinc-200/80 dark:border-zinc-800/80">
+      <section className="py-20 border-b border-white/[0.08]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+            <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-400">
               The Proven Philosophy
             </span>
-            <h2 className="font-heading text-3xl sm:text-4xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
+            <h2 className="font-heading text-3xl sm:text-4xl font-black text-white tracking-tight">
               The 4 Pillars of Sankalp
             </h2>
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
+            <p className="text-sm sm:text-base text-slate-400">
               Money isn&apos;t math; it&apos;s behavior. These 4 habits take the stress out of your finances forever.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {/* Pillar 1 */}
-            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4 hover:border-emerald-500/50 transition-all hover:shadow-lg">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-black text-lg flex items-center justify-center font-heading">
+            <div className="p-6 rounded-2xl bg-[#0c111e] border border-white/[0.08] space-y-3 hover:border-emerald-500/30 transition-all">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black text-base flex items-center justify-center font-heading">
                 1
               </div>
-              <h3 className="font-heading font-extrabold text-lg text-zinc-900 dark:text-zinc-100">
+              <h3 className="font-heading font-bold text-base text-white">
                 Give Every Rupee a Job
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed">
                 As soon as your salary hits your account, assign every single rupee to a specific pot—rent, food, parents, EMIs, or guilt-free fun. No money is left to disappear.
               </p>
             </div>
 
             {/* Pillar 2 */}
-            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4 hover:border-emerald-500/50 transition-all hover:shadow-lg">
-              <div className="w-12 h-12 rounded-2xl bg-teal-100 dark:bg-teal-950/60 text-teal-700 dark:text-teal-400 font-black text-lg flex items-center justify-center font-heading">
+            <div className="p-6 rounded-2xl bg-[#0c111e] border border-white/[0.08] space-y-3 hover:border-teal-500/30 transition-all">
+              <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-300 font-black text-base flex items-center justify-center font-heading">
                 2
               </div>
-              <h3 className="font-heading font-extrabold text-lg text-zinc-900 dark:text-zinc-100">
+              <h3 className="font-heading font-bold text-base text-white">
                 Embrace True Expenses
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed">
                 Break massive upcoming shocks—like a 6–10 month Bengaluru landlord deposit, annual term insurance, or Diwali trips—into predictable monthly bites.
               </p>
             </div>
 
             {/* Pillar 3 */}
-            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4 hover:border-emerald-500/50 transition-all hover:shadow-lg">
-              <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-black text-lg flex items-center justify-center font-heading">
+            <div className="p-6 rounded-2xl bg-[#0c111e] border border-white/[0.08] space-y-3 hover:border-amber-500/30 transition-all">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 font-black text-base flex items-center justify-center font-heading">
                 3
               </div>
-              <h3 className="font-heading font-extrabold text-lg text-zinc-900 dark:text-zinc-100">
+              <h3 className="font-heading font-bold text-base text-white">
                 Roll With The Punches
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed">
                 Life happens. If you overspent on dining out or had an emergency doctor visit, adjust money between pots in one tap. No guilt. No broken budgets.
               </p>
             </div>
 
             {/* Pillar 4 */}
-            <div className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4 hover:border-emerald-500/50 transition-all hover:shadow-lg">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 font-black text-lg flex items-center justify-center font-heading">
+            <div className="p-6 rounded-2xl bg-[#0c111e] border border-white/[0.08] space-y-3 hover:border-indigo-500/30 transition-all">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-black text-base flex items-center justify-center font-heading">
                 4
               </div>
-              <h3 className="font-heading font-extrabold text-lg text-zinc-900 dark:text-zinc-100">
+              <h3 className="font-heading font-bold text-base text-white">
                 Age Your Money
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed">
                 Increase your emergency runway until you are living on the money you earned last month, breaking the paycheck-to-paycheck cycle forever.
               </p>
             </div>
@@ -294,17 +299,17 @@ export default function LandingPage() {
       </section>
 
       {/* 4. Live Interactive Budget Simulator Sandbox */}
-      <section id="live-simulator" className="py-20 border-b border-zinc-200/80 dark:border-zinc-800/80">
+      <section id="live-simulator" className="py-20 border-b border-white/[0.08]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-400">
                 Interactive Cashflow Sandbox
               </span>
-              <h2 className="font-heading text-3xl sm:text-4xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight mt-1">
+              <h2 className="font-heading text-3xl sm:text-4xl font-black text-white tracking-tight mt-1">
                 Experience Zero-Based Budgeting in Real Time
               </h2>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              <p className="text-sm text-slate-400 mt-1">
                 Slide the controls below to see how every rupee of your Indian salary is allocated with surgical precision.
               </p>
             </div>
@@ -312,19 +317,19 @@ export default function LandingPage() {
             <div className="flex flex-wrap items-center gap-3">
               <button
                 onClick={() => setIsProfileOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-zinc-950 font-black text-xs shadow-md transition hover:scale-105 active:scale-95 cursor-pointer font-heading"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs shadow-md transition cursor-pointer"
               >
                 <Sliders className="w-3.5 h-3.5" />
                 <span>Input My Exact Numbers</span>
               </button>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-zinc-500">Tax Regime:</span>
-                <div className="bg-zinc-200 dark:bg-zinc-800 p-1 rounded-xl flex items-center text-xs font-bold">
+                <span className="text-xs font-semibold text-slate-400">Tax Regime:</span>
+                <div className="bg-[#0c111e] border border-white/[0.08] p-1 rounded-xl flex items-center text-xs font-bold">
                   <button
                     onClick={() => setDemoRegime("new")}
                     className={`px-3 py-1 rounded-lg transition ${
-                      demoRegime === "new" ? "bg-emerald-600 text-white shadow-sm" : "text-zinc-600 dark:text-zinc-400"
+                      demoRegime === "new" ? "bg-emerald-500 text-white shadow-sm" : "text-slate-400 hover:text-white"
                     }`}
                   >
                     New Regime
@@ -332,7 +337,7 @@ export default function LandingPage() {
                   <button
                     onClick={() => setDemoRegime("old")}
                     className={`px-3 py-1 rounded-lg transition ${
-                      demoRegime === "old" ? "bg-emerald-600 text-white shadow-sm" : "text-zinc-600 dark:text-zinc-400"
+                      demoRegime === "old" ? "bg-emerald-500 text-white shadow-sm" : "text-slate-400 hover:text-white"
                     }`}
                   >
                     Old Regime (HRA)
@@ -343,23 +348,23 @@ export default function LandingPage() {
           </div>
 
           {/* Interactive Card */}
-          <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-xl overflow-hidden p-6 sm:p-8 space-y-8">
+          <div className="bg-[#0c111e] rounded-3xl border border-white/[0.08] shadow-2xl overflow-hidden p-6 sm:p-8 space-y-8">
             {/* Top Stat Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-800">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-[#080d17] border border-white/[0.06]">
               <div>
-                <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block font-mono">
                   Annual CTC
                 </span>
-                <span className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-zinc-100 font-mono font-heading">
+                <span className="text-xl sm:text-2xl font-black text-white font-mono tabular-nums">
                   ₹{(demoCtc / 100000).toFixed(1)} LPA
                 </span>
               </div>
 
               <div>
-                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
+                <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block font-mono">
                   Monthly In-Hand
                 </span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono font-heading">
+                <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono tabular-nums">
                   ₹{monthlyInHand.toLocaleString("en-IN")}
                 </span>
               </div>
@@ -795,6 +800,7 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+      </main>
 
       {/* Modals */}
       <AuthModal

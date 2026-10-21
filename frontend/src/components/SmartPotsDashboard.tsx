@@ -7,12 +7,7 @@ import {
   CreditCard,
   TrendingUp,
   Coffee,
-  AlertTriangle,
-  Lightbulb,
-  Building,
   CheckCircle2,
-  Calendar,
-  Lock,
 } from "lucide-react";
 import { Budget5PotsResponse, LivingScenario, SalaryCalculationResponse } from "@/lib/api";
 
@@ -34,266 +29,315 @@ export const SmartPotsDashboard: React.FC<SmartPotsDashboardProps> = ({
   const pots = [
     {
       id: "survival",
-      title: "Survival Pot",
-      icon: <Shield className="w-5 h-5 text-blue-500" />,
+      title: "Survival & Living",
+      tag: "Core Fixed",
+      icon: <Shield className="w-4 h-4 text-slate-300" />,
       amount: potsData.survival_pot,
       percent: potsData.survival_percent,
-      color: "bg-blue-500",
-      lightBg: "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900/60",
-      description: "Rent, electricity, groceries, wifi, and commute",
+      color: "from-slate-400 to-slate-200",
+      accentBg: "bg-slate-400",
+      pillBg: "bg-slate-800/80 text-slate-200 border-slate-700/60",
+      description: "Rent, electricity, groceries, broadband, and daily commute.",
+      dailyBurn: Math.round(potsData.survival_pot / 30),
     },
     {
       id: "family",
-      title: "Family Care Pot",
-      icon: <Heart className="w-5 h-5 text-rose-500" />,
+      title: "Family Care & Parents",
+      tag: "Filial Duty",
+      icon: <Heart className="w-4 h-4 text-amber-300" />,
       amount: potsData.family_pot,
       percent: potsData.family_percent,
-      color: "bg-rose-500",
-      lightBg: "bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60",
-      description: "Monthly remittance sent home to parents & siblings",
+      color: "from-amber-400 to-amber-200",
+      accentBg: "bg-amber-400",
+      pillBg: "bg-amber-950/50 text-amber-300 border-amber-800/40",
+      description: "Monthly remittance sent home to parents, medical care & siblings.",
+      dailyBurn: Math.round(potsData.family_pot / 30),
     },
     {
       id: "obligations",
-      title: "Obligations Pot",
-      icon: <CreditCard className="w-5 h-5 text-amber-500" />,
+      title: "Obligations & Debt",
+      tag: "Contractual",
+      icon: <CreditCard className="w-4 h-4 text-rose-300" />,
       amount: potsData.obligations_pot,
       percent: potsData.obligations_percent,
-      color: "bg-amber-500",
-      lightBg: "bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/60",
-      description: "Active education & vehicle EMIs, loans, credit cards",
+      color: "from-rose-500 to-rose-300",
+      accentBg: "bg-rose-500",
+      pillBg: "bg-rose-950/50 text-rose-300 border-rose-800/40",
+      description: "Active student loans, vehicle EMIs, and credit card balances.",
+      dailyBurn: Math.round(potsData.obligations_pot / 30),
     },
     {
       id: "growth",
-      title: "Growth & Goals",
-      icon: <TrendingUp className="w-5 h-5 text-emerald-500" />,
+      title: "Growth & Wealth SIP",
+      tag: "Compounding",
+      icon: <TrendingUp className="w-4 h-4 text-emerald-400" />,
       amount: potsData.growth_pot,
       percent: potsData.growth_percent,
-      color: "bg-emerald-500",
-      lightBg: "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-900/60",
-      description: "Mutual fund SIPs, PPF, gold hedge, emergency fund",
+      color: "from-emerald-400 to-teal-300",
+      accentBg: "bg-emerald-400",
+      pillBg: "bg-emerald-950/60 text-emerald-300 border-emerald-800/40",
+      description: "Mutual fund SIPs, PPF, gold hedge, and liquid emergency fund.",
+      dailyBurn: Math.round(potsData.growth_pot / 30),
+      isPrimary: true,
     },
     {
       id: "guilt_free",
       title: "Guilt-Free UPI",
-      icon: <Coffee className="w-5 h-5 text-purple-500" />,
+      tag: "Discretionary",
+      icon: <Coffee className="w-4 h-4 text-purple-300" />,
       amount: potsData.guilt_free_upi_pot,
       percent: potsData.guilt_free_percent,
-      color: "bg-purple-500",
-      lightBg: "bg-purple-50 dark:bg-purple-950/40 border-purple-200 dark:border-purple-900/60",
-      description: "Discretionary spend (Swiggy, dining, weekend outings, shopping)",
+      color: "from-purple-400 to-violet-300",
+      accentBg: "bg-purple-400",
+      pillBg: "bg-purple-950/50 text-purple-300 border-purple-800/40",
+      description: "Dining out, weekend leisure, movie tickets, coffee & impulse fun.",
+      dailyBurn: Math.round(potsData.guilt_free_upi_pot / 30),
       isSpecial: true,
     },
   ];
 
+  const totalFixed = potsData.survival_pot + potsData.family_pot + potsData.obligations_pot;
+  const fixedPercent = Math.round((totalFixed / (potsData.monthly_income || 1)) * 100);
+
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
-      {/* 1. Header Health Strip */}
+    <div id="pots-studio" className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
+      {/* 1. Header Health Strip (Consolidated Net In-Hand & Allocation Velocity) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Real In-Hand */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
-          <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-            Real Monthly In-Hand
-          </span>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-50">
+        <div className="p-5 rounded-2xl bg-[#0d1322] border border-white/[0.08] shadow-sm flex flex-col justify-between">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-semibold text-slate-400 uppercase tracking-wider text-[11px]">
+              Net Monthly In-Hand
+            </span>
+            <span className="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">
+              After Tax &amp; EPF
+            </span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="text-3xl font-extrabold text-white font-mono tabular-nums tracking-tight">
               ₹{potsData.monthly_income.toLocaleString("en-IN")}
             </span>
-            <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
-              verified net
-            </span>
+            <span className="text-xs text-slate-500 font-medium">/month</span>
           </div>
-          <span className="text-[11px] text-zinc-400 mt-2">
-            After EPF, Gratuity, Professional Tax & TDS
-          </span>
+          <p className="text-[11px] text-slate-400 mt-2">
+            Deterministic zero-based pool allocated to 5 specialized pots.
+          </p>
         </div>
 
-        {/* Emergency Runway */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
-          <div className="flex justify-between items-center">
-            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-              Emergency Runway
+        {/* Fixed Commitments */}
+        <div className="p-5 rounded-2xl bg-[#0d1322] border border-white/[0.08] shadow-sm flex flex-col justify-between">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-semibold text-slate-400 uppercase tracking-wider text-[11px]">
+              Fixed Commitments
             </span>
-            <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                potsData.emergency_runway_months >= 3
-                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
-                  : "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300"
-              }`}
-            >
-              {potsData.emergency_runway_months >= 3 ? "Safe Net" : "Caution"}
+            <span className="text-[10px] text-slate-300 bg-slate-800 px-2 py-0.5 rounded-full font-mono">
+              {fixedPercent}% of Income
             </span>
           </div>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-50">
-              {potsData.emergency_runway_months.toFixed(1)}
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="text-3xl font-extrabold text-slate-200 font-mono tabular-nums tracking-tight">
+              ₹{totalFixed.toLocaleString("en-IN")}
             </span>
-            <span className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
-              months
-            </span>
+            <span className="text-xs text-slate-500 font-medium">/month</span>
           </div>
-          <span className="text-[11px] text-zinc-400 mt-2">
-            Survival runway if your income paused tomorrow
-          </span>
+          <p className="text-[11px] text-slate-400 mt-2">
+            Survival living costs, parents remittance, and active EMIs.
+          </p>
         </div>
 
-        {/* Financial Health Score */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
-          <div className="flex justify-between items-center">
-            <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-              Health Score
+        {/* Wealth Accumulation Potential */}
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/40 to-[#0d1322] border border-emerald-500/25 shadow-sm flex flex-col justify-between">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-semibold text-emerald-400 uppercase tracking-wider text-[11px]">
+              Wealth Compounding
             </span>
-            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
-              {potsData.health_score >= 80 ? "Excellent" : potsData.health_score >= 60 ? "Balanced" : "Stretched"}
+            <span className="text-[10px] text-emerald-300 bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">
+              {potsData.growth_percent}% Saved
             </span>
           </div>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-50">
-              {potsData.health_score}
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="text-3xl font-extrabold text-emerald-400 font-mono tabular-nums tracking-tight">
+              ₹{potsData.growth_pot.toLocaleString("en-IN")}
             </span>
-            <span className="text-sm font-semibold text-zinc-400">/ 100</span>
+            <span className="text-xs text-emerald-500/70 font-medium">/month</span>
           </div>
-          <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden mt-2">
-            <div
-              className={`h-full transition-all duration-500 ${
-                potsData.health_score >= 80
-                  ? "bg-emerald-500"
-                  : potsData.health_score >= 60
-                  ? "bg-blue-500"
-                  : "bg-amber-500"
-              }`}
-              style={{ width: `${potsData.health_score}%` }}
-            />
-          </div>
+          <p className="text-[11px] text-emerald-300/70 mt-2">
+            Projected 10-Yr Corpus: ₹{((potsData.growth_pot * 12 * 10 * 1.8) / 100000).toFixed(1)} Lakhs @ 12% CAGR.
+          </p>
         </div>
       </div>
 
-      {/* 2. Co-Pilot Advice & Tax Optimizer Callout */}
-      {salaryData?.tax_savings_recommendation && (
-        <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/20 border border-amber-200/80 dark:border-amber-800/50 flex items-start gap-3">
-          <Lightbulb className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-          <p className="text-xs font-medium text-amber-900 dark:text-amber-200 leading-relaxed">
-            {salaryData.tax_savings_recommendation}
-          </p>
-        </div>
-      )}
-
-      {/* 3. The 5 Jupiter-Style Money Pots */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-            <span>Your 5 Monthly Money Pots</span>
-          </h2>
-          <span className="text-xs font-medium text-zinc-400">
-            Total Allocated: ₹{potsData.monthly_income.toLocaleString("en-IN")}
+      {/* 2. Visual Macro Allocation Ribbon (100% Segmented Strip) */}
+      <div className="p-4 rounded-2xl bg-[#0b101c] border border-white/[0.08] space-y-2.5">
+        <div className="flex items-center justify-between text-xs text-slate-400">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            100% Zero-Based Capital Distribution
+          </span>
+          <span className="text-[11px] font-mono text-emerald-400">
+            ₹0 Unassigned Rupee
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {pots.map((pot) => (
-            <div
-              key={pot.id}
-              className={`p-4 rounded-2xl border transition-all hover:shadow-md ${pot.lightBg} flex flex-col justify-between`}
-            >
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="p-2 rounded-xl bg-white dark:bg-zinc-800 shadow-sm border border-zinc-200/60 dark:border-zinc-700/60">
+        {/* Multi-segment progress bar */}
+        <div className="h-3 w-full rounded-full bg-slate-900 overflow-hidden flex p-[1px] border border-white/[0.06]">
+          <div
+            style={{ width: `${potsData.survival_percent}%` }}
+            className="h-full bg-slate-400 transition-all duration-500"
+            title={`Survival: ${potsData.survival_percent}%`}
+          />
+          <div
+            style={{ width: `${potsData.family_percent}%` }}
+            className="h-full bg-amber-400 transition-all duration-500"
+            title={`Family: ${potsData.family_percent}%`}
+          />
+          <div
+            style={{ width: `${potsData.obligations_percent}%` }}
+            className="h-full bg-rose-500 transition-all duration-500"
+            title={`Obligations: ${potsData.obligations_percent}%`}
+          />
+          <div
+            style={{ width: `${potsData.growth_percent}%` }}
+            className="h-full bg-emerald-400 transition-all duration-500"
+            title={`Growth: ${potsData.growth_percent}%`}
+          />
+          <div
+            style={{ width: `${potsData.guilt_free_percent}%` }}
+            className="h-full bg-purple-400 transition-all duration-500"
+            title={`Guilt-Free: ${potsData.guilt_free_percent}%`}
+          />
+        </div>
+
+        {/* Legend */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-[11px]">
+          <span className="flex items-center gap-1.5 text-slate-300">
+            <span className="w-2 h-2 rounded-full bg-slate-400" />
+            Survival ({potsData.survival_percent}%)
+          </span>
+          <span className="flex items-center gap-1.5 text-slate-300">
+            <span className="w-2 h-2 rounded-full bg-amber-400" />
+            Family ({potsData.family_percent}%)
+          </span>
+          <span className="flex items-center gap-1.5 text-slate-300">
+            <span className="w-2 h-2 rounded-full bg-rose-500" />
+            Obligations ({potsData.obligations_percent}%)
+          </span>
+          <span className="flex items-center gap-1.5 text-slate-300">
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            Wealth Growth ({potsData.growth_percent}%)
+          </span>
+          <span className="flex items-center gap-1.5 text-slate-300">
+            <span className="w-2 h-2 rounded-full bg-purple-400" />
+            Guilt-Free ({potsData.guilt_free_percent}%)
+          </span>
+        </div>
+      </div>
+
+      {/* 3. The 5 Pots Architectural Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {pots.map((pot) => (
+          <div
+            key={pot.id}
+            className={`p-5 rounded-2xl bg-[#0c111e] border transition-all duration-300 hover:border-white/[0.18] flex flex-col justify-between relative group ${
+              pot.isPrimary
+                ? "border-emerald-500/30 bg-gradient-to-b from-emerald-950/20 to-[#0c111e]"
+                : "border-white/[0.08]"
+            }`}
+          >
+            {/* Top row */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-slate-800/80 border border-white/[0.08]">
                     {pot.icon}
                   </div>
-                  <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300">
-                    {pot.percent}%
-                  </span>
+                  <div>
+                    <h4 className="text-sm font-bold text-white tracking-tight">
+                      {pot.title}
+                    </h4>
+                    <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">
+                      {pot.tag}
+                    </span>
+                  </div>
                 </div>
-                <h3 className="text-xs font-extrabold text-zinc-800 dark:text-zinc-200">
-                  {pot.title}
-                </h3>
-                <div className="mt-1">
-                  <span className="text-xl font-extrabold text-zinc-900 dark:text-zinc-50">
-                    ₹{Math.round(pot.amount).toLocaleString("en-IN")}
+
+                <span
+                  className={`text-xs font-mono font-bold px-2 py-0.5 rounded-md border ${pot.pillBg}`}
+                >
+                  {pot.percent}%
+                </span>
+              </div>
+
+              {/* Amount */}
+              <div className="pt-2">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-black text-slate-100 font-mono tabular-nums tracking-tight">
+                    ₹{pot.amount.toLocaleString("en-IN")}
                   </span>
-                  <span className="text-[10px] text-zinc-400 block">/ month</span>
+                  <span className="text-xs text-slate-400">/mo</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-[11px] text-slate-400 mt-1 font-mono">
+                  <span>Daily velocity:</span>
+                  <span className="text-slate-200 font-semibold">
+                    ₹{pot.dailyBurn.toLocaleString("en-IN")}/day
+                  </span>
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-zinc-200/40 dark:border-zinc-700/40">
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-tight">
-                  {pot.description}
-                </p>
-                {pot.isSpecial && (
-                  <span className="inline-block mt-2 px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 text-[10px] font-bold">
-                    ~₹{Math.round(pot.amount / 30).toLocaleString("en-IN")} / day safe
-                  </span>
-                )}
+              {/* Progress bar */}
+              <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div
+                  style={{ width: `${Math.min(pot.percent, 100)}%` }}
+                  className={`h-full ${pot.accentBg}`}
+                />
+              </div>
+
+              <p className="text-xs text-slate-400 leading-relaxed pt-1">
+                {pot.description}
+              </p>
+            </div>
+
+            {/* Bottom Insight Pill */}
+            {pot.id === "guilt_free" && (
+              <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-purple-300/80">
+                <span>Safe to spend on UPI without stress</span>
+                <span className="font-mono font-semibold">₹{pot.dailyBurn}/day</span>
+              </div>
+            )}
+            {pot.id === "growth" && (
+              <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-emerald-400">
+                <span>Automated SIP Ready</span>
+                <span className="font-mono font-semibold">Equity + Emergency</span>
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* 6th Educational Card: Zero-Based Rule */}
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-[#0b101c] border border-white/[0.08] flex flex-col justify-between">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-white">The Zero-Sum Rule</h4>
+                <p className="text-[10px] text-slate-400">Deterministic Indian Framework</p>
               </div>
             </div>
-          ))}
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Every single rupee has an assigned purpose before the month begins. By separating your <strong className="text-purple-300">Guilt-Free UPI</strong> account from your <strong className="text-emerald-300">Growth SIPs</strong>, you eliminate buyer&apos;s remorse completely.
+            </p>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs text-slate-400">
+            <span>Formula</span>
+            <span className="font-mono text-[11px] text-slate-300">
+              Income - Sum(5 Pots) = ₹0
+            </span>
+          </div>
         </div>
       </div>
-
-      {/* 4. Bengaluru Deposit Shock & Living Scenarios (For Relocation) */}
-      {activeScenario && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Building className="w-5 h-5 text-blue-500" />
-              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-                Active Tier: {activeScenario.name}
-              </h3>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-zinc-500">Locked Deposit:</span>
-              <span className="text-xs font-extrabold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2.5 py-1 rounded-lg border border-amber-200 dark:border-amber-800">
-                ₹{activeScenario.locked_security_deposit.toLocaleString("en-IN")}
-              </span>
-            </div>
-          </div>
-
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-            {activeScenario.description}
-          </p>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
-            <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/80">
-              <span className="text-[10px] text-zinc-400 block">Monthly Rent</span>
-              <span className="font-bold text-zinc-900 dark:text-zinc-100">
-                ₹{activeScenario.monthly_rent.toLocaleString("en-IN")}
-              </span>
-            </div>
-            <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/80">
-              <span className="text-[10px] text-zinc-400 block">Food & Groceries</span>
-              <span className="font-bold text-zinc-900 dark:text-zinc-100">
-                ₹{activeScenario.monthly_food_groceries.toLocaleString("en-IN")}
-              </span>
-            </div>
-            <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/80">
-              <span className="text-[10px] text-zinc-400 block">Sunk Moving Cost</span>
-              <span className="font-bold text-zinc-900 dark:text-zinc-100">
-                ₹{activeScenario.sunk_moving_cost.toLocaleString("en-IN")}
-              </span>
-            </div>
-            <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/80">
-              <span className="text-[10px] text-zinc-400 block">Deposit Recovery</span>
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                {activeScenario.deposit_recovery_months} Months
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 5. Budget Conflicts Warning */}
-      {potsData.budget_conflicts && potsData.budget_conflicts.length > 0 && (
-        <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60 space-y-2">
-          <div className="flex items-center gap-2 text-rose-800 dark:text-rose-300 font-bold text-xs uppercase tracking-wider">
-            <AlertTriangle className="w-4 h-4 text-rose-600" />
-            <span>Budget Friction Detected</span>
-          </div>
-          <ul className="space-y-1 text-xs text-rose-700 dark:text-rose-300/90 pl-6 list-disc">
-            {potsData.budget_conflicts.map((conflict, idx) => (
-              <li key={idx}>{conflict}</li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };
