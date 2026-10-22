@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Coffee, DollarSign, Clock, Sparkles, TrendingUp, AlertTriangle, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { calculateImpulseCooling } from "@/lib/api";
 
 interface ImpulseCoolingProps {
@@ -37,45 +37,40 @@ export const ImpulseCoolingSandbox: React.FC<ImpulseCoolingProps> = ({ monthlyIn
   }, [itemName, cost, coolingDays, monthlyIncome]);
 
   return (
-    <div id="impulse-cooling" className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
+    <div id="impulse-cooling" className="w-full max-w-6xl mx-auto space-y-6">
       {/* Header */}
-      <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
-            <Coffee className="w-6 h-6" />
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              [BEHAVIORAL PSYCHOLOGY // ENGINE 12]
+            </span>
+            <span className="text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-300 px-2.5 py-0.5 rounded font-mono font-bold uppercase">
+              OPPORTUNITY COST LENS
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-purple-400">
-                Behavioral Psychology
-              </span>
-              <span className="text-[10px] bg-purple-500/10 text-purple-300 border border-purple-500/20 px-2 py-0.5 rounded-full font-mono">
-                Opportunity Cost Lens
-              </span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-heading mt-0.5">
-              Impulse Buy 72-Hour Cooling Sandbox
-            </h2>
-            <p className="text-xs text-slate-400">
-              Convert impulsive desires into human working days and 10-year compounding freedom. Delay the impulse to earn cash.
-            </p>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-heading mt-1">
+            Impulse Buy 72-Hour Cooling Sandbox
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-600 font-medium">
+            Convert impulse desires into human working days and 10-year compounding freedom. Delay the impulse to grow your net worth.
+          </p>
         </div>
 
         {result && (
-          <div className="flex items-center gap-3 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.08]">
-            <div className="h-10 w-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 font-bold font-mono text-sm">
-              {result.work_days_required}d
+          <div className="flex items-center gap-4 bg-neutral-50 p-4 rounded-xl border border-neutral-300">
+            <div className="h-11 w-11 rounded-lg bg-black text-white flex items-center justify-center font-mono font-black text-base">
+              {result.work_days_required}D
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-                Labor Equivalent
+              <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+                LABOR EQUIVALENT
               </span>
-              <p className="text-xs font-bold text-slate-200">
-                {result.work_days_required} Full Work Days
+              <p className="text-xs font-black text-black font-mono">
+                {result.work_days_required} FULL WORK DAYS
               </p>
-              <p className="text-[11px] text-purple-300 font-mono">
-                {result.carbon_and_regret_index} Regret Probability
+              <p className="text-xs text-neutral-600 font-mono">
+                {result.carbon_and_regret_index} REGRET RISK
               </p>
             </div>
           </div>
@@ -85,23 +80,25 @@ export const ImpulseCoolingSandbox: React.FC<ImpulseCoolingProps> = ({ monthlyIn
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
-        <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] space-y-4">
-          <h3 className="text-sm font-bold text-white">Item Desire &amp; Delay Parameters</h3>
+        <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-4">
+          <h3 className="text-sm font-mono font-black text-black uppercase">
+            DESIRE &amp; DELAY PARAMETERS
+          </h3>
 
-          <div className="space-y-1.5 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <label className="text-[11px] text-slate-400 block">Item or Experience</label>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <label className="text-xs font-mono font-bold text-neutral-700 block">ITEM OR EXPERIENCE</label>
             <input
               type="text"
               value={itemName}
               onChange={(e) => setItemName(e.target.value)}
-              className="w-full bg-[#0c111e] border border-white/[0.1] text-white text-xs rounded-xl p-2.5 font-bold"
+              className="w-full bg-white border border-neutral-300 text-black text-xs font-mono font-bold rounded-lg p-2.5 outline-none focus:border-black"
             />
           </div>
 
-          <div className="space-y-1.5 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Price in Rupees:</span>
-              <span className="font-mono font-bold text-purple-300">₹{cost.toLocaleString("en-IN")}</span>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">PRICE IN RUPEES:</span>
+              <span className="text-black">₹{cost.toLocaleString("en-IN")}</span>
             </div>
             <input
               type="range"
@@ -110,19 +107,19 @@ export const ImpulseCoolingSandbox: React.FC<ImpulseCoolingProps> = ({ monthlyIn
               step={1000}
               value={cost}
               onChange={(e) => setCost(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+            <div className="flex justify-between text-[10px] text-neutral-500 font-mono">
               <span>₹5k (AirPods)</span>
-              <span>₹60k (Goa Trip)</span>
-              <span>₹2.5L (MacBook/Bike)</span>
+              <span>₹60k (Trip)</span>
+              <span>₹2.5L (MacBook)</span>
             </div>
           </div>
 
-          <div className="space-y-1.5 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Cooling Delay:</span>
-              <span className="font-mono font-bold text-white">{coolingDays} Days</span>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">COOLING DELAY:</span>
+              <span className="text-black">{coolingDays} DAYS</span>
             </div>
             <input
               type="range"
@@ -131,50 +128,50 @@ export const ImpulseCoolingSandbox: React.FC<ImpulseCoolingProps> = ({ monthlyIn
               step={7}
               value={coolingDays}
               onChange={(e) => setCoolingDays(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
           </div>
         </div>
 
         {/* Intelligence Result */}
-        <div className="p-6 rounded-3xl bg-[#090d18] border border-white/[0.08] shadow-inner space-y-4 flex flex-col justify-between">
+        <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-4 flex flex-col justify-between">
           {result ? (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-xl bg-[#0c111e] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-                    Delay Arbitrage Gain
+                <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-200">
+                  <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+                    DELAY ARBITRAGE GAIN
                   </span>
-                  <span className="text-xl font-black text-emerald-400 font-mono tabular-nums">
+                  <span className="text-xl font-black text-black font-mono tabular-nums">
                     +₹{result.opportunity_cost_arbitrage_30d.toLocaleString("en-IN")}
                   </span>
-                  <span className="text-[10px] text-slate-500 block">in 8.5% liquid pot</span>
+                  <span className="text-[10px] text-neutral-500 font-mono block">IN 8.5% LIQUID POT</span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-[#0c111e] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-bold text-purple-300 block font-mono">
-                    10-Year Opportunity Cost
+                <div className="p-4 rounded-xl bg-neutral-100 border border-neutral-300">
+                  <span className="text-[10px] uppercase font-mono font-bold text-black block">
+                    10-YEAR OPPORTUNITY COST
                   </span>
-                  <span className="text-xl font-black text-purple-300 font-mono tabular-nums">
+                  <span className="text-xl font-black text-black font-mono tabular-nums">
                     ₹{result.opportunity_cost_10yr_equity.toLocaleString("en-IN")}
                   </span>
-                  <span className="text-[10px] text-slate-500 block">if invested @ 12%</span>
+                  <span className="text-[10px] text-neutral-600 font-mono block">IF INVESTED @ 12%</span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-purple-950/20 border border-purple-500/30 text-xs text-purple-200 leading-relaxed">
+              <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-300 text-xs font-mono text-neutral-700 leading-relaxed">
                 <p>{result.cooling_verdict}</p>
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center py-12 text-slate-500 text-xs">
-              <Loader2 className="w-5 h-5 animate-spin mr-2" /> Computing opportunity cost...
+            <div className="flex items-center justify-center py-12 text-neutral-500 text-xs font-mono">
+              COMPUTING OPPORTUNITY COST...
             </div>
           )}
 
-          <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>Guilt-Free Spending Filter</span>
-            <span>Zero Buyer Remorse</span>
+          <div className="pt-3 border-t border-neutral-200 flex items-center justify-between text-xs font-mono text-neutral-500">
+            <span>SPENDING FILTER</span>
+            <span className="font-bold text-black">[ZERO BUYER REMORSE]</span>
           </div>
         </div>
       </div>

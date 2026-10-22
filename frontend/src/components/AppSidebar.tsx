@@ -1,29 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Compass,
-  Sliders,
-  Layers,
-  Building2,
-  Sparkles,
-  Bookmark,
-  User,
-  LogOut,
-  ChevronRight,
-  Zap,
-  Menu,
-  X,
-  PlayCircle,
-  Swords,
-  Scale,
-  Flame,
-  Award,
-  Users,
-} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { checkBackendHealth } from "@/lib/api";
 
 interface AppSidebarProps {
   user: { email: string; full_name?: string } | null;
@@ -52,10 +33,23 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
 }) => {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [backendStatus, setBackendStatus] = useState<"connected" | "unavailable" | "checking">("checking");
 
   const isHome = pathname === "/";
   const isDashboard = pathname === "/dashboard";
   const isChat = pathname === "/chat";
+
+  useEffect(() => {
+    checkBackendHealth().then((res) => {
+      setBackendStatus(res.status);
+    });
+    const interval = setInterval(() => {
+      checkBackendHealth().then((res) => {
+        setBackendStatus(res.status);
+      });
+    }, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
   const formatLakhs = (val: number) => {
     return (val / 100000).toFixed(1) + " LPA";
@@ -64,33 +58,28 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
   const navContent = (
     <div className="flex flex-col h-full justify-between select-none">
       {/* Top Header & Brand */}
-      <div className="space-y-6">
-        {/* Brand identity */}
-        <div className="flex items-center justify-between px-2 pt-2">
+      <div className="space-y-4">
+        {/* Brand identity - Minimal, Bold & Impactful without decorative AI icons */}
+        <div className="flex items-center justify-between px-1 pt-1">
           <Link
             href="/"
             onClick={() => setMobileOpen(false)}
             className="flex items-center gap-3 group"
           >
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-emerald-700 p-[1px] shadow-lg shadow-emerald-500/10">
-              <div className="h-full w-full rounded-[11px] bg-[#070b13] flex items-center justify-center transition-all group-hover:bg-[#070b13]/80">
-                <span className="font-heading font-black text-lg text-emerald-400 tracking-wider">
-                  सं
-                </span>
-              </div>
+            <div className="h-9 w-9 rounded-xl bg-black text-white flex items-center justify-center font-heading font-black text-base tracking-tighter">
+              सं
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-heading font-black text-lg tracking-tight text-white group-hover:text-emerald-400 transition-colors">
+                <span className="font-heading font-black text-lg tracking-tight text-black group-hover:text-neutral-700 transition-colors">
                   SANKALP
                 </span>
-                <span className="inline-flex items-center gap-1 text-[9px] font-bold tracking-widest uppercase px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping" />
-                  v2.0
+                <span className="text-[10px] font-mono font-bold tracking-wider uppercase px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-800 border border-neutral-300">
+                  SYSTEM
                 </span>
               </div>
-              <p className="text-[10px] text-slate-400 font-medium tracking-tight">
-                Financial Life Co-Pilot
+              <p className="text-[10px] text-neutral-500 font-semibold tracking-tight uppercase">
+                Financial Architecture
               </p>
             </div>
           </Link>
@@ -98,17 +87,17 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
           {/* Close for mobile */}
           <button
             onClick={() => setMobileOpen(false)}
-            className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition"
+            className="lg:hidden p-1.5 text-neutral-500 hover:text-black rounded-lg hover:bg-neutral-100 transition font-mono font-bold text-xs"
           >
-            <X className="w-5 h-5" />
+            ✕
           </button>
         </div>
 
-        {/* Quick Profile Snapshot Card */}
-        <div className="p-3 rounded-2xl bg-slate-900/80 border border-white/[0.08] shadow-inner space-y-2">
+        {/* Quick Baseline Card */}
+        <div className="p-3.5 rounded-2xl bg-neutral-50 border border-neutral-200 space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">
-              Active Profile
+            <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 font-mono">
+              Baseline Parameters
             </span>
             {onOpenProfile && (
               <button
@@ -116,348 +105,237 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
                   setMobileOpen(false);
                   onOpenProfile();
                 }}
-                className="text-[10px] text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 transition cursor-pointer"
+                className="text-[10px] text-black hover:underline font-bold transition cursor-pointer"
               >
-                <span>Edit</span>
-                <ChevronRight className="w-2.5 h-2.5" />
+                EDIT →
               </button>
             )}
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-mono text-sm font-bold text-slate-100 tabular-nums">
+              <p className="font-mono text-base font-extrabold text-black tabular-nums">
                 ₹{formatLakhs(currentCtc)}
               </p>
-              <p className="text-[11px] text-slate-400 truncate max-w-[130px]">
-                {currentCity} ➔ {targetCity}
+              <p className="text-xs text-neutral-600 font-medium truncate max-w-[130px]">
+                {currentCity} → {targetCity}
               </p>
             </div>
-            <div className="h-7 w-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <Zap className="w-3.5 h-3.5" />
-            </div>
+            <span className="text-[10px] font-mono font-bold text-neutral-700 bg-white border border-neutral-300 px-2 py-1 rounded-lg">
+              ACTIVE
+            </span>
           </div>
         </div>
 
         {/* Navigation Sections */}
-        <div className="space-y-5">
+        <div className="space-y-4 max-h-[calc(100vh-290px)] overflow-y-auto pr-1">
           {/* Main Views */}
           <div className="space-y-1">
-            <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-              Workspace
+            <span className="px-2 text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 font-mono">
+              Overview
             </span>
             <Link
               href="/dashboard"
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                 isDashboard
-                  ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 shadow-sm"
-                  : "text-slate-300 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-black text-white shadow-sm"
+                  : "text-neutral-700 hover:text-black hover:bg-neutral-100"
               }`}
             >
-              <LayoutDashboard className="w-4 h-4 text-emerald-400" />
-              <span>Personal Dashboard</span>
+              <span className="font-heading font-extrabold text-sm tracking-tight">Executive Dashboard</span>
+              <span className="text-[10px] font-mono opacity-80">HUB</span>
             </Link>
 
             <Link
               href="/"
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                 isHome
-                  ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 shadow-sm"
-                  : "text-slate-300 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-black text-white shadow-sm"
+                  : "text-neutral-700 hover:text-black hover:bg-neutral-100"
               }`}
             >
-              <Compass className="w-4 h-4 text-slate-400" />
-              <span>Product Tour &amp; Math</span>
+              <span className="font-heading font-bold text-sm tracking-tight">Product Architecture</span>
+              <span className="text-[10px] font-mono opacity-80">DOCS</span>
             </Link>
           </div>
 
-          {/* Interactive Tools */}
+          {/* 5 Core Decision Engines */}
           <div className="space-y-1">
-            <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-              Interactive Engines (13)
+            <span className="px-2 text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 font-mono">
+              Core Decision Engines (5)
             </span>
-            <a
-              href="#pots-studio"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Layers className="w-3.5 h-3.5 text-emerald-400" />
-                <span>5-Pots Budget Studio</span>
-              </div>
-              <span className="text-[9px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded font-mono">
-                Core
-              </span>
-            </a>
 
-            <a
-              href="#battle-royale"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Swords className="w-3.5 h-3.5 text-amber-400" />
-                <span>Offer Battle Royale</span>
-              </div>
-              <span className="text-[9px] bg-amber-500/15 text-amber-300 px-1.5 py-0.5 rounded font-mono">
-                1
-              </span>
-            </a>
-
-            <a
-              href="#tax-tug-of-war"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Scale className="w-3.5 h-3.5 text-teal-400" />
-                <span>Tax Tug-of-War</span>
-              </div>
-              <span className="text-[9px] bg-teal-500/15 text-teal-300 px-1.5 py-0.5 rounded font-mono">
-                2
-              </span>
-            </a>
-
-            <a
-              href="#family-calibrator"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Compass className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Family Remittance</span>
-              </div>
-              <span className="text-[9px] bg-indigo-500/15 text-indigo-300 px-1.5 py-0.5 rounded font-mono">
-                3
-              </span>
-            </a>
-
-            <a
-              href="#lifestyle-creep"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Zap className="w-3.5 h-3.5 text-amber-400" />
-                <span>Lifestyle Creep FIRE</span>
-              </div>
-              <span className="text-[9px] bg-amber-500/15 text-amber-300 px-1.5 py-0.5 rounded font-mono">
-                4
-              </span>
-            </a>
-
-            <a
-              href="#commute-elasticity"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Building2 className="w-3.5 h-3.5 text-blue-400" />
-                <span>Commute Elasticity</span>
-              </div>
-              <span className="text-[9px] bg-blue-500/15 text-blue-300 px-1.5 py-0.5 rounded font-mono">
-                5
-              </span>
-            </a>
-
-            <a
-              href="#impulse-cooling"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Sliders className="w-3.5 h-3.5 text-purple-400" />
-                <span>Impulse Cooling 72h</span>
-              </div>
-              <span className="text-[9px] bg-purple-500/15 text-purple-300 px-1.5 py-0.5 rounded font-mono">
-                6
-              </span>
-            </a>
-
-            <a
-              href="#sabbatical-runway"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Compass className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Sabbatical Runway</span>
-              </div>
-              <span className="text-[9px] bg-cyan-500/15 text-cyan-300 px-1.5 py-0.5 rounded font-mono">
-                7
-              </span>
-            </a>
-
-            <a
-              href="#reverse-milestone"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Award className="w-3.5 h-3.5 text-amber-400" />
-                <span>Reverse Milestone</span>
-              </div>
-              <span className="text-[9px] bg-amber-500/15 text-amber-300 px-1.5 py-0.5 rounded font-mono">
-                8
-              </span>
-            </a>
-
-            <a
-              href="#chaos-simulator"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Flame className="w-3.5 h-3.5 text-rose-400" />
-                <span>Chaos Stress-Tester</span>
-              </div>
-              <span className="text-[9px] bg-rose-500/15 text-rose-300 px-1.5 py-0.5 rounded font-mono">
-                9
-              </span>
-            </a>
-
-            <a
-              href="#cohort-radar"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Users className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Cohort Peer Radar</span>
-              </div>
-              <span className="text-[9px] bg-indigo-500/15 text-indigo-300 px-1.5 py-0.5 rounded font-mono">
-                10
-              </span>
-            </a>
-
-            <a
-              href="#account-aggregator"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Building2 className="w-3.5 h-3.5 text-teal-400" />
-                <span>AA Real-Bank Sync</span>
-              </div>
-              <span className="text-[9px] bg-teal-500/15 text-teal-300 px-1.5 py-0.5 rounded font-mono">
-                B1
-              </span>
-            </a>
-
-            <a
-              href="#broker-execution"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Zap className="w-3.5 h-3.5 text-amber-400" />
-                <span>1-Tap Broker Orders</span>
-              </div>
-              <span className="text-[9px] bg-amber-500/15 text-amber-300 px-1.5 py-0.5 rounded font-mono">
-                B2
-              </span>
-            </a>
-
-            <a
-              href="#readiness-score"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition"
-            >
-              <div className="flex items-center gap-2.5">
-                <Award className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Readiness Score &amp; Perks</span>
-              </div>
-              <span className="text-[9px] bg-emerald-500/15 text-emerald-300 px-1.5 py-0.5 rounded font-mono">
-                B3
-              </span>
-            </a>
+            {[
+              { num: "01", label: "Salary & Tax Tug-of-War", badge: "80C/80D", href: "/engines/tax-tug-of-war" },
+              { num: "02", label: "City Relocation Radar", badge: "Deposit", href: "/engines/relocation" },
+              { num: "03", label: "Budget 5-Pots Studio", badge: "5-Pots", href: "/engines/budget-pots" },
+              { num: "04", label: "Education Loans", badge: "80E", href: "/engines/education-loans" },
+              { num: "05", label: "Goals & Milestones", badge: "SIP/Gold", href: "/engines/goals-milestones" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium transition ${
+                  pathname === item.href
+                    ? "bg-black text-white font-bold shadow-sm"
+                    : "text-neutral-700 hover:text-black hover:bg-neutral-100"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] font-bold opacity-60">{item.num}</span>
+                  <span className="font-semibold text-xs tracking-tight">{item.label}</span>
+                </div>
+                <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${
+                  pathname === item.href ? "bg-white/20 text-white" : "bg-neutral-200 text-neutral-700"
+                }`}>
+                  {item.badge}
+                </span>
+              </Link>
+            ))}
           </div>
 
-          {/* Intelligence & Actions */}
+          {/* Specialized Intelligence Engines */}
           <div className="space-y-1">
-            <span className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-              Intelligence &amp; Plans
+            <span className="px-2 text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 font-mono">
+              Advanced Modules (12)
             </span>
 
-            {/* AI Co-Pilot trigger */}
+            {[
+              { num: "06", label: "Offer Battle Royale", badge: "CTC", href: "/engines/offer-battle" },
+              { num: "07", label: "Family Remittance", badge: "Shield", href: "/engines/family-remittance" },
+              { num: "08", label: "Lifestyle Creep FIRE", badge: "Appraisal", href: "/engines/lifestyle-creep" },
+              { num: "09", label: "Commute Elasticity", badge: "Traffic", href: "/engines/commute-elasticity" },
+              { num: "10", label: "Impulse Buy 72h", badge: "Cooling", href: "/engines/impulse-cooling" },
+              { num: "11", label: "Sabbatical Runway", badge: "Break", href: "/engines/sabbatical-runway" },
+              { num: "12", label: "Reverse Milestone", badge: "Sacrifice", href: "/engines/reverse-milestone" },
+              { num: "13", label: "Chaos Stress-Tester", badge: "Blast", href: "/engines/chaos-simulator" },
+              { num: "14", label: "Tech Cohort Radar", badge: "Cohort", href: "/engines/cohort-radar" },
+              { num: "15", label: "AA Bank Sync", badge: "Live AA", href: "/execution/account-aggregator" },
+              { num: "16", label: "1-Tap Broker Orders", badge: "Orders", href: "/execution/broker-orders" },
+              { num: "17", label: "Readiness Score", badge: "FICO", href: "/engines/readiness-score" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-medium transition ${
+                  pathname === item.href
+                    ? "bg-black text-white font-bold shadow-sm"
+                    : "text-neutral-700 hover:text-black hover:bg-neutral-100"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] font-bold opacity-60">{item.num}</span>
+                  <span className="font-semibold text-xs tracking-tight">{item.label}</span>
+                </div>
+                <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${
+                  pathname === item.href ? "bg-white/20 text-white" : "bg-neutral-200 text-neutral-700"
+                }`}>
+                  {item.badge}
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          {/* Intelligence & Plans */}
+          <div className="space-y-1">
+            <span className="px-2 text-[10px] font-extrabold uppercase tracking-widest text-neutral-400 font-mono">
+              Tools &amp; Vault
+            </span>
+
             <Link
               href="/chat"
               onClick={() => setMobileOpen(false)}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition cursor-pointer ${
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
                 isChat
-                  ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 shadow-sm"
-                  : "text-slate-300 hover:text-white hover:bg-white/[0.04]"
+                  ? "bg-black text-white"
+                  : "text-neutral-800 hover:text-black hover:bg-neutral-100"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <Sparkles className="w-4 h-4 text-emerald-400" />
-                <span>AI Financial Co-Pilot</span>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] font-bold opacity-60">AI</span>
+                <span className="font-semibold text-xs tracking-tight">AI Advisor Chat</span>
               </div>
-              <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-semibold uppercase">
-                Chat
+              <span className="text-[9px] bg-neutral-200 text-neutral-800 px-1.5 py-0.5 rounded font-bold font-mono">
+                CO-PILOT
               </span>
             </Link>
 
-            {/* Saved Plans */}
             {onOpenPlans && (
               <button
                 onClick={() => {
                   setMobileOpen(false);
                   onOpenPlans();
                 }}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-neutral-700 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
               >
-                <div className="flex items-center gap-3">
-                  <Bookmark className="w-4 h-4 text-amber-400" />
-                  <span>Saved Life Plans</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] font-bold opacity-60">PL</span>
+                  <span className="font-semibold text-xs tracking-tight">Saved Plans Vault</span>
                 </div>
+                <span className="text-[10px] font-mono text-neutral-500">OPEN →</span>
               </button>
             )}
 
-            {/* Visual Demo Tour */}
             {onOpenDemo && (
               <button
                 onClick={() => {
                   setMobileOpen(false);
                   onOpenDemo();
                 }}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.04] transition cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-neutral-700 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
               >
-                <div className="flex items-center gap-3">
-                  <PlayCircle className="w-4 h-4 text-indigo-400" />
-                  <span>Visual Demonstration</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] font-bold opacity-60">DM</span>
+                  <span className="font-semibold text-xs tracking-tight">Interactive Tour</span>
                 </div>
+                <span className="text-[10px] font-mono text-neutral-500">PLAY →</span>
+              </button>
+            )}
+
+            {onOpenProfile && (
+              <button
+                onClick={() => {
+                  setMobileOpen(false);
+                  onOpenProfile();
+                }}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-neutral-700 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[10px] font-bold opacity-60">ST</span>
+                  <span className="font-semibold text-xs tracking-tight">Settings &amp; Baseline</span>
+                </div>
+                <span className="text-[10px] font-mono text-neutral-500">CONFIG →</span>
               </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* Bottom User Session & System Health */}
-      <div className="pt-6 border-t border-white/[0.08] space-y-3">
-        {/* User Card */}
+      {/* Bottom User Session */}
+      <div className="pt-3 border-t border-neutral-200 space-y-2">
         {user ? (
-          <div className="p-2.5 rounded-xl bg-slate-900/60 border border-white/[0.06] flex items-center justify-between">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="h-8 w-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs uppercase">
+          <div className="p-2.5 rounded-xl bg-neutral-50 border border-neutral-200 flex items-center justify-between">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="h-7 w-7 rounded-lg bg-black text-white flex items-center justify-center font-bold text-xs uppercase font-mono">
                 {user.full_name ? user.full_name[0] : user.email[0]}
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-slate-200 truncate">
+                <p className="text-xs font-bold text-black truncate">
                   {user.full_name || user.email.split("@")[0]}
                 </p>
-                <p className="text-[10px] text-slate-500 truncate max-w-[120px]">
+                <p className="text-[10px] text-neutral-500 truncate max-w-[120px] font-mono">
                   {user.email}
                 </p>
               </div>
             </div>
             <button
               onClick={onLogout}
-              title="Sign Out"
-              className="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-white/5 transition cursor-pointer"
+              className="text-xs font-mono font-bold text-neutral-500 hover:text-black px-1.5 py-0.5 rounded transition cursor-pointer"
             >
-              <LogOut className="w-4 h-4" />
+              EXIT
             </button>
           </div>
         ) : (
@@ -466,20 +344,30 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
               setMobileOpen(false);
               onOpenAuth();
             }}
-            className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
+            className="w-full py-2.5 px-3 rounded-xl bg-black text-white hover:bg-neutral-800 font-extrabold text-xs flex items-center justify-center gap-1 transition-all cursor-pointer font-sans"
           >
-            <User className="w-3.5 h-3.5" />
-            <span>Sign In with OTP</span>
+            <span>SIGN IN WITH EMAIL</span>
+            <span className="font-mono">→</span>
           </button>
         )}
 
-        {/* Engine status indicator */}
-        <div className="px-2 flex items-center justify-between text-[10px] text-slate-500">
+        {/* Real Backend Status */}
+        <div className="px-2 flex items-center justify-between text-[10px] text-neutral-500 font-mono">
           <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>FastAPI Math Core</span>
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                backendStatus === "connected"
+                  ? "bg-black"
+                  : backendStatus === "checking"
+                  ? "bg-amber-500 animate-pulse"
+                  : "bg-red-500"
+              }`}
+            />
+            <span className="font-bold text-neutral-700">
+              {backendStatus === "connected" ? "FASTAPI CONNECTED" : "OFFLINE"}
+            </span>
           </div>
-          <span className="font-mono text-slate-600">Deterministic</span>
+          <span className="text-[9px] text-neutral-400 font-bold">PY 3.12</span>
         </div>
       </div>
     </div>
@@ -487,13 +375,13 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
 
   return (
     <>
-      {/* Mobile Top Navigation Bar with Toggle */}
-      <div className="lg:hidden sticky top-0 z-40 w-full backdrop-blur-xl bg-[#080c14]/90 border-b border-white/[0.08] px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-heading font-black text-sm">
+      {/* Mobile Top Bar */}
+      <div className="lg:hidden sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-neutral-200 px-4 py-3 flex items-center justify-between no-print">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="h-7 w-7 rounded-lg bg-black text-white flex items-center justify-center font-heading font-black text-xs">
             सं
           </div>
-          <span className="font-heading font-extrabold text-base tracking-tight text-white">
+          <span className="font-heading font-black text-base tracking-tight text-black">
             SANKALP
           </span>
         </Link>
@@ -502,14 +390,14 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
           {user ? (
             <button
               onClick={onOpenProfile}
-              className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20"
+              className="text-[11px] font-bold text-black bg-neutral-100 px-2.5 py-1 rounded-lg border border-neutral-300 font-mono"
             >
               {user.full_name ? user.full_name.split(" ")[0] : "Profile"}
             </button>
           ) : (
             <button
               onClick={onOpenAuth}
-              className="text-[11px] font-semibold text-white bg-emerald-600 px-3 py-1 rounded-lg"
+              className="text-[11px] font-bold text-white bg-black px-3 py-1 rounded-lg"
             >
               Sign In
             </button>
@@ -517,28 +405,39 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
 
           <button
             onClick={() => setMobileOpen(true)}
-            className="p-1.5 rounded-lg text-slate-300 hover:text-white bg-white/5 border border-white/10"
+            className="p-1.5 rounded-lg text-black bg-neutral-100 border border-neutral-300 font-mono font-bold text-xs cursor-pointer"
           >
-            <Menu className="w-5 h-5" />
+            MENU
           </button>
         </div>
       </div>
 
-      {/* Mobile Backdrop & Drawer */}
-      {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
-          <div
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
-            onClick={() => setMobileOpen(false)}
-          />
-          <div className="relative w-72 max-w-[85vw] bg-[#090d16] border-r border-white/[0.08] p-5 h-full z-10 flex flex-col shadow-2xl">
-            {navContent}
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <div className="lg:hidden fixed inset-0 z-50 flex no-print">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => setMobileOpen(false)}
+            />
+            <motion.div
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="relative w-72 max-w-[85vw] bg-white border-r border-neutral-200 p-5 h-full z-10 flex flex-col shadow-2xl"
+            >
+              {navContent}
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
-      {/* Desktop Sticky Fixed Sidebar */}
-      <aside className="hidden lg:flex w-72 h-screen sticky top-0 bg-[#090d16] border-r border-white/[0.08] p-5 flex-col flex-shrink-0 z-30">
+      {/* Desktop Sticky Sidebar */}
+      <aside className="hidden lg:flex w-64 h-screen sticky top-0 bg-white border-r border-neutral-200 p-4 flex-col flex-shrink-0 z-30 no-print">
         {navContent}
       </aside>
     </>

@@ -1,22 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  X,
-  Sliders,
-  DollarSign,
-  Building2,
-  HeartHandshake,
-  CreditCard,
-  PiggyBank,
-  Sparkles,
-  ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
-  Layers,
-  MapPin,
-  TrendingUp,
-} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface FinancialProfileFormValues {
   annual_ctc: number;
@@ -51,12 +36,12 @@ const INDIAN_CITIES = [
 ];
 
 const LIFE_GOALS = [
-  { id: "relocation", label: "Metro Relocation & Deposit Shield", icon: Building2 },
-  { id: "wedding", label: "₹15L Wedding in 18 Months", icon: HeartHandshake },
-  { id: "education_loan", label: "₹25L Education Loan EMI & 80E", icon: CreditCard },
-  { id: "vehicle", label: "First Car (Loan vs Cash)", icon: TrendingUp },
-  { id: "emergency_runway", label: "Build 6-Month Emergency Runway", icon: PiggyBank },
-  { id: "wealth_growth", label: "Maximize Long-Term SIP & Wealth", icon: Sparkles },
+  { id: "relocation", tag: "RELOCATION", label: "Metro Relocation & Deposit Shield" },
+  { id: "wedding", tag: "WEDDING", label: "₹15L Wedding in 18 Months" },
+  { id: "education_loan", tag: "EDU LOAN", label: "₹25L Education Loan EMI & 80E" },
+  { id: "vehicle", tag: "FIRST CAR", label: "First Car (Loan vs Cash)" },
+  { id: "emergency_runway", tag: "RUNWAY", label: "Build 6-Month Emergency Runway" },
+  { id: "wealth_growth", tag: "GROWTH", label: "Maximize Long-Term SIP & Wealth" },
 ];
 
 export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
@@ -78,7 +63,6 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Live quick estimated monthly take-home
   const monthlyGross = Math.round(ctc / 12);
   const estimatedTax =
     taxRegime === "new"
@@ -86,8 +70,6 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
       : Math.round(monthlyGross * 0.12);
   const epfDeduction = Math.round(Math.min(monthlyGross * 0.5, 15000) * 0.12);
   const liveInHand = Math.max(20000, monthlyGross - estimatedTax - epfDeduction - 200);
-
-  // Maximum recommended safe rent (30% of take-home)
   const maxSafeRent = Math.round(liveInHand * 0.3);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -108,98 +90,93 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-zinc-950/75 backdrop-blur-md animate-fade-in overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl p-5 sm:p-7 space-y-6 my-8 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-white rounded-2xl border border-neutral-300 shadow-2xl p-6 sm:p-8 space-y-6 my-8 max-h-[90vh] overflow-y-auto text-black">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4 pb-4 border-b border-zinc-200 dark:border-zinc-800">
-          <div className="space-y-1">
+        <div className="flex items-start justify-between gap-4 pb-4 border-b border-neutral-200">
+          <div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider font-heading">
-                Take Full Control
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+                [INPUT PARAMETERS]
               </span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight font-heading">
-              Customize Your Real Financial Numbers
+            <h2 className="text-xl sm:text-2xl font-black text-black tracking-tight font-heading mt-1">
+              Customize Your Real Financial Profile
             </h2>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400">
-              Tell us your actual income, cities, and commitments. We calculate what is mathematically optimal for your life.
+            <p className="text-xs text-neutral-600 font-medium">
+              Enter your verified salary, cities, and family commitments to run mathematical models.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+            className="text-xs font-mono font-bold text-neutral-500 hover:text-black px-2 py-1 rounded bg-neutral-100 cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            [CLOSE]
           </button>
         </div>
 
         {/* Live Calculation Pill */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-xl bg-[#F8F9FA] border border-neutral-300 font-mono">
           <div>
-            <span className="text-[10px] uppercase font-bold text-zinc-500 dark:text-zinc-400 block tracking-wider">
-              Annual Salary (CTC)
+            <span className="text-[10px] uppercase font-bold text-neutral-500 block">
+              ANNUAL SALARY (CTC)
             </span>
-            <span className="text-lg font-black text-zinc-900 dark:text-zinc-100 font-mono font-heading">
+            <span className="text-lg font-black text-black">
               ₹{(ctc / 100000).toFixed(1)} LPA
             </span>
           </div>
 
           <div>
-            <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-300 block tracking-wider">
-              Est. Monthly In-Hand
+            <span className="text-[10px] uppercase font-bold text-neutral-500 block">
+              EST. MONTHLY IN-HAND
             </span>
-            <span className="text-lg font-black text-emerald-700 dark:text-emerald-300 font-mono font-heading">
+            <span className="text-lg font-black text-black">
               ₹{liveInHand.toLocaleString("en-IN")}
             </span>
           </div>
 
           <div className="col-span-2 sm:col-span-1">
-            <span className="text-[10px] uppercase font-bold text-teal-700 dark:text-teal-300 block tracking-wider">
-              Max Safe Rent Cap
+            <span className="text-[10px] uppercase font-bold text-neutral-500 block">
+              MAX SAFE RENT CAP (30%)
             </span>
-            <span className="text-lg font-black text-teal-700 dark:text-teal-300 font-mono font-heading">
-              ₹{maxSafeRent.toLocaleString("en-IN")}/mo
+            <span className="text-lg font-black text-black">
+              ₹{maxSafeRent.toLocaleString("en-IN")}/MO
             </span>
           </div>
         </div>
 
         {/* Form Inputs */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5 font-mono">
           {/* Section 1: Income & Tax */}
           <div className="space-y-3">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-heading">
-              1. Salary &amp; Tax Regime
+            <h3 className="text-xs font-black uppercase tracking-wider text-black">
+              01 // SALARY &amp; TAX REGIME
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                  Your Annual CTC (₹)
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                  ANNUAL CTC (₹)
                 </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-xs font-bold text-zinc-400">₹</span>
-                  <input
-                    type="number"
-                    step={25000}
-                    min={300000}
-                    max={10000000}
-                    value={ctc}
-                    onChange={(e) => setCtc(Number(e.target.value))}
-                    className="w-full pl-8 pr-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm font-bold font-mono text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-                  />
-                </div>
-                {/* CTC Quick Chips */}
+                <input
+                  type="number"
+                  step={25000}
+                  min={300000}
+                  max={10000000}
+                  value={ctc}
+                  onChange={(e) => setCtc(Number(e.target.value))}
+                  className="w-full px-3.5 py-2.5 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-xs sm:text-sm font-bold text-black focus:outline-none focus:border-black"
+                />
                 <div className="flex flex-wrap gap-1 mt-1.5">
                   {[600000, 900000, 1200000, 1500000, 2400000].map((val) => (
                     <button
                       key={val}
                       type="button"
                       onClick={() => setCtc(val)}
-                      className={`text-[10px] px-2 py-0.5 rounded-lg border transition cursor-pointer ${
+                      className={`text-[10px] px-2 py-0.5 rounded border transition cursor-pointer ${
                         ctc === val
-                          ? "bg-emerald-600 text-white border-emerald-600 font-bold"
-                          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700"
+                          ? "bg-black text-white border-black font-black"
+                          : "bg-white text-neutral-700 border-neutral-300 hover:border-black"
                       }`}
                     >
                       ₹{(val / 100000).toFixed(0)}L
@@ -209,55 +186,52 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                  Tax Regime Preference
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                  TAX REGIME PREFERENCE
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setTaxRegime("new")}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition text-center cursor-pointer ${
+                    className={`py-2 px-3 rounded-lg text-xs font-bold border transition text-center cursor-pointer ${
                       taxRegime === "new"
-                        ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
-                        : "bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
+                        ? "bg-black text-white border-black"
+                        : "bg-[#F8F9FA] border-neutral-300 text-neutral-700 hover:border-black"
                     }`}
                   >
-                    New Regime (Default)
+                    NEW REGIME
                   </button>
                   <button
                     type="button"
                     onClick={() => setTaxRegime("old")}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition text-center cursor-pointer ${
+                    className={`py-2 px-3 rounded-lg text-xs font-bold border transition text-center cursor-pointer ${
                       taxRegime === "old"
-                        ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
-                        : "bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
+                        ? "bg-black text-white border-black"
+                        : "bg-[#F8F9FA] border-neutral-300 text-neutral-700 hover:border-black"
                     }`}
                   >
-                    Old Regime (HRA &amp; 80E)
+                    OLD REGIME (80C)
                   </button>
                 </div>
-                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1">
-                  We verify both regimes to maximize your cash in hand.
-                </p>
               </div>
             </div>
           </div>
 
           {/* Section 2: Cities & Rent */}
           <div className="space-y-3">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-heading">
-              2. Cities &amp; Rent Commitments
+            <h3 className="text-xs font-black uppercase tracking-wider text-black">
+              02 // CITIES &amp; RENT
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                  Current City
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                  CURRENT CITY
                 </label>
                 <select
                   value={currentCity}
                   onChange={(e) => setCurrentCity(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  className="w-full px-3 py-2.5 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-xs font-bold text-black focus:outline-none focus:border-black cursor-pointer"
                 >
                   {INDIAN_CITIES.map((c) => (
                     <option key={c} value={c}>
@@ -268,13 +242,13 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                  Target Relocation City
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                  TARGET CITY
                 </label>
                 <select
                   value={targetCity}
                   onChange={(e) => setTargetCity(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+                  className="w-full px-3 py-2.5 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-xs font-bold text-black focus:outline-none focus:border-black cursor-pointer"
                 >
                   {INDIAN_CITIES.map((c) => (
                     <option key={c} value={c}>
@@ -285,114 +259,97 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                  Monthly Rent (₹)
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                  MONTHLY RENT (₹)
                 </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-xs font-bold text-zinc-400">₹</span>
-                  <input
-                    type="number"
-                    step={1000}
-                    min={0}
-                    max={100000}
-                    value={rent}
-                    onChange={(e) => setRent(Number(e.target.value))}
-                    className="w-full pl-8 pr-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm font-bold font-mono text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-                  />
-                </div>
+                <input
+                  type="number"
+                  step={1000}
+                  min={0}
+                  max={100000}
+                  value={rent}
+                  onChange={(e) => setRent(Number(e.target.value))}
+                  className="w-full px-3 py-2.5 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-xs font-bold text-black focus:outline-none focus:border-black"
+                />
               </div>
             </div>
           </div>
 
-          {/* Section 3: Family Remittance, EMIs & Savings */}
+          {/* Section 3: Remittances & EMIs */}
           <div className="space-y-3">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-heading">
-              3. Family Remittances &amp; Fixed EMIs
+            <h3 className="text-xs font-black uppercase tracking-wider text-black">
+              03 // FAMILY REMITTANCE &amp; EMIS
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                  Parents Support / Remittance
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                  PARENTS REMITTANCE
                 </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-xs font-bold text-zinc-400">₹</span>
-                  <input
-                    type="number"
-                    step={1000}
-                    min={0}
-                    max={80000}
-                    value={family}
-                    onChange={(e) => setFamily(Number(e.target.value))}
-                    className="w-full pl-8 pr-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm font-bold font-mono text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-                  />
-                </div>
+                <input
+                  type="number"
+                  step={1000}
+                  min={0}
+                  max={80000}
+                  value={family}
+                  onChange={(e) => setFamily(Number(e.target.value))}
+                  className="w-full px-3 py-2.5 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-xs font-bold text-black focus:outline-none focus:border-black"
+                />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                  Active Loan EMIs
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                  ACTIVE EMIS
                 </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-xs font-bold text-zinc-400">₹</span>
-                  <input
-                    type="number"
-                    step={1000}
-                    min={0}
-                    max={100000}
-                    value={emis}
-                    onChange={(e) => setEmis(Number(e.target.value))}
-                    className="w-full pl-8 pr-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm font-bold font-mono text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-                  />
-                </div>
+                <input
+                  type="number"
+                  step={1000}
+                  min={0}
+                  max={100000}
+                  value={emis}
+                  onChange={(e) => setEmis(Number(e.target.value))}
+                  className="w-full px-3 py-2.5 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-xs font-bold text-black focus:outline-none focus:border-black"
+                />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                  Current Liquid Savings (₹)
+                <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                  LIQUID SAVINGS (₹)
                 </label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-xs font-bold text-zinc-400">₹</span>
-                  <input
-                    type="number"
-                    step={10000}
-                    min={0}
-                    max={5000000}
-                    value={savings}
-                    onChange={(e) => setSavings(Number(e.target.value))}
-                    className="w-full pl-8 pr-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 text-xs sm:text-sm font-bold font-mono text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-                  />
-                </div>
+                <input
+                  type="number"
+                  step={10000}
+                  min={0}
+                  max={5000000}
+                  value={savings}
+                  onChange={(e) => setSavings(Number(e.target.value))}
+                  className="w-full px-3 py-2.5 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-xs font-bold text-black focus:outline-none focus:border-black"
+                />
               </div>
             </div>
           </div>
 
-          {/* Section 4: Primary Milestone Goal */}
+          {/* Section 4: Primary Goal */}
           <div className="space-y-3">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 font-heading">
-              4. Choose Your Active Milestone Goal
+            <h3 className="text-xs font-black uppercase tracking-wider text-black">
+              04 // ACTIVE MILESTONE GOAL
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {LIFE_GOALS.map((goal) => {
-                const IconComponent = goal.icon;
                 const isSelected = activeGoal === goal.id;
                 return (
                   <button
                     key={goal.id}
                     type="button"
                     onClick={() => setActiveGoal(goal.id)}
-                    className={`p-3 rounded-2xl border text-left flex items-center gap-3 transition cursor-pointer ${
+                    className={`p-3 rounded-lg border text-left transition cursor-pointer ${
                       isSelected
-                        ? "bg-emerald-50 dark:bg-emerald-950/50 border-emerald-500 text-emerald-900 dark:text-emerald-200 font-bold"
-                        : "bg-zinc-50 dark:bg-zinc-800/60 border-zinc-200 dark:border-zinc-700/80 text-zinc-700 dark:text-zinc-300"
+                        ? "bg-black text-white border-black font-bold"
+                        : "bg-[#F8F9FA] border-neutral-300 text-neutral-800 hover:border-black"
                     }`}
                   >
-                    <IconComponent
-                      className={`w-4 h-4 shrink-0 ${
-                        isSelected ? "text-emerald-600" : "text-zinc-400"
-                      }`}
-                    />
+                    <span className="text-[10px] block opacity-75">[{goal.tag}]</span>
                     <span className="text-xs truncate">{goal.label}</span>
                   </button>
                 );
@@ -400,15 +357,13 @@ export const FinancialProfileModal: React.FC<FinancialProfileModalProps> = ({
             </div>
           </div>
 
-          {/* Submit Action */}
+          {/* Submit */}
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-2 transition hover:scale-102 active:scale-98 cursor-pointer font-heading"
+              className="w-full py-4 rounded-lg bg-black hover:bg-neutral-800 text-white font-black text-xs uppercase tracking-wider transition cursor-pointer"
             >
-              <Sparkles className="w-4 h-4" />
-              <span>Calculate What&apos;s Best For My Numbers</span>
-              <ArrowRight className="w-4 h-4" />
+              SAVE PROFILE &amp; APPLY NUMBERS →
             </button>
           </div>
         </form>

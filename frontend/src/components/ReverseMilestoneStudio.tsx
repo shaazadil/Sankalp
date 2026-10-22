@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Target, FastForward, Sparkles, Utensils, Plane, TrendingUp, Calendar, CheckCircle, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { calculateReverseMilestone } from "@/lib/api";
 
 interface ReverseMilestoneProps {
@@ -49,46 +49,41 @@ export const ReverseMilestoneStudio: React.FC<ReverseMilestoneProps> = ({
   }, [goalName, targetAmount, currentSavings, monthlySip, diningCut, travelCut, expectedCagr]);
 
   return (
-    <div id="reverse-milestone" className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
+    <div id="reverse-milestone" className="w-full max-w-6xl mx-auto space-y-6">
       {/* Header */}
-      <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
-            <Target className="w-6 h-6" />
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              [REVERSE ENGINEERING // ENGINE 13]
+            </span>
+            <span className="text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-300 px-2.5 py-0.5 rounded font-mono font-bold uppercase">
+              SACRIFICE TIME-WARP
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
-                Reverse Engineering
-              </span>
-              <span className="text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded-full font-mono">
-                Sacrifice Time-Warp Levers
-              </span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-heading mt-0.5">
-              Reverse Milestone Accelerator
-            </h2>
-            <p className="text-xs text-slate-400">
-              Dial lifestyle micro-sacrifices (Zomato cuts, vacation pauses) to snap dream milestone completion dates forward by months.
-            </p>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-heading mt-1">
+            Reverse Milestone Accelerator
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-600 font-medium">
+            Dial lifestyle micro-sacrifices (dining reductions, vacation pauses) to snap dream milestone completion dates forward by months.
+          </p>
         </div>
 
         {result && (
-          <div className="flex items-center gap-3 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.08]">
-            <div className="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col items-center justify-center text-emerald-300 font-mono">
+          <div className="flex items-center gap-4 bg-neutral-50 p-4 rounded-xl border border-neutral-300">
+            <div className="h-11 w-11 rounded-lg bg-black text-white flex flex-col items-center justify-center font-mono">
               <span className="text-base font-black leading-none">-{result.months_saved}</span>
-              <span className="text-[9px] uppercase text-emerald-400">Mo</span>
+              <span className="text-[9px] uppercase text-neutral-300 font-bold">MO</span>
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-                Accelerated Timeline
+              <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+                ACCELERATED TIMELINE
               </span>
-              <p className="text-xs font-bold text-emerald-300">
-                Reach Goal in {result.accelerated_months_required} Months
+              <p className="text-xs font-black text-black font-mono">
+                REACH GOAL IN {result.accelerated_months_required} MONTHS
               </p>
-              <p className="text-[11px] text-slate-400 font-mono">
-                Target: {result.accelerated_completion_date}
+              <p className="text-xs text-neutral-600 font-mono">
+                TARGET: {result.accelerated_completion_date}
               </p>
             </div>
           </div>
@@ -98,27 +93,29 @@ export const ReverseMilestoneStudio: React.FC<ReverseMilestoneProps> = ({
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Controls */}
-        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] space-y-4">
-          <h3 className="text-sm font-bold text-white flex items-center justify-between">
-            <span>Milestone Target &amp; Sacrifice Dial</span>
-            <span className="text-xs font-mono text-amber-400">Real Compounding Math</span>
-          </h3>
+        <div className="lg:col-span-7 p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-mono font-black text-black uppercase">
+              TARGET &amp; SACRIFICE DIAL
+            </h3>
+            <span className="text-xs font-mono text-neutral-500">[COMPOUNDING ENGINE]</span>
+          </div>
 
           {/* Goal selection */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.06]">
-              <label className="text-[11px] text-slate-400">Milestone Name</label>
+            <div className="space-y-1 bg-[#F8F9FA] p-3.5 rounded-xl border border-neutral-200">
+              <label className="text-xs font-mono font-bold text-neutral-700 block">MILESTONE NAME</label>
               <input
                 type="text"
                 value={goalName}
                 onChange={(e) => setGoalName(e.target.value)}
-                className="w-full bg-[#0c111e] border border-white/[0.1] text-white text-xs rounded-xl p-2 font-bold"
+                className="w-full bg-white border border-neutral-300 text-black text-xs font-mono font-bold rounded-lg p-2 outline-none focus:border-black"
               />
             </div>
-            <div className="space-y-1 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.06]">
-              <div className="flex justify-between text-[11px]">
-                <span className="text-slate-400">Target Corpus:</span>
-                <span className="font-mono font-bold text-amber-300">₹{targetAmount.toLocaleString("en-IN")}</span>
+            <div className="space-y-1 bg-[#F8F9FA] p-3.5 rounded-xl border border-neutral-200">
+              <div className="flex justify-between text-xs font-mono font-bold">
+                <span className="text-neutral-700">TARGET:</span>
+                <span className="text-black">₹{targetAmount.toLocaleString("en-IN")}</span>
               </div>
               <input
                 type="range"
@@ -127,17 +124,17 @@ export const ReverseMilestoneStudio: React.FC<ReverseMilestoneProps> = ({
                 step={50000}
                 value={targetAmount}
                 onChange={(e) => setTargetAmount(Number(e.target.value))}
-                className="w-full cursor-pointer accent-amber-400 mt-2"
+                className="w-full cursor-pointer accent-black mt-2"
               />
             </div>
           </div>
 
           {/* Baseline allocations */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1.5 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.06]">
-              <div className="flex justify-between text-[11px]">
-                <span className="text-slate-400">Current Assigned Savings:</span>
-                <span className="font-mono font-bold text-white">₹{currentSavings.toLocaleString("en-IN")}</span>
+            <div className="space-y-1.5 bg-[#F8F9FA] p-3.5 rounded-xl border border-neutral-200">
+              <div className="flex justify-between text-xs font-mono font-bold">
+                <span className="text-neutral-700">ASSIGNED SAVINGS:</span>
+                <span className="text-black">₹{currentSavings.toLocaleString("en-IN")}</span>
               </div>
               <input
                 type="range"
@@ -146,14 +143,14 @@ export const ReverseMilestoneStudio: React.FC<ReverseMilestoneProps> = ({
                 step={25000}
                 value={currentSavings}
                 onChange={(e) => setCurrentSavings(Number(e.target.value))}
-                className="w-full cursor-pointer accent-emerald-400"
+                className="w-full cursor-pointer accent-black"
               />
             </div>
 
-            <div className="space-y-1.5 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.06]">
-              <div className="flex justify-between text-[11px]">
-                <span className="text-slate-400">Baseline Monthly SIP:</span>
-                <span className="font-mono font-bold text-white">₹{monthlySip.toLocaleString("en-IN")}</span>
+            <div className="space-y-1.5 bg-[#F8F9FA] p-3.5 rounded-xl border border-neutral-200">
+              <div className="flex justify-between text-xs font-mono font-bold">
+                <span className="text-neutral-700">BASELINE SIP:</span>
+                <span className="text-black">₹{monthlySip.toLocaleString("en-IN")}</span>
               </div>
               <input
                 type="range"
@@ -162,29 +159,26 @@ export const ReverseMilestoneStudio: React.FC<ReverseMilestoneProps> = ({
                 step={2500}
                 value={monthlySip}
                 onChange={(e) => setMonthlySip(Number(e.target.value))}
-                className="w-full cursor-pointer accent-emerald-400"
+                className="w-full cursor-pointer accent-black"
               />
             </div>
           </div>
 
           {/* Sacrifice Levers */}
-          <div className="p-4 rounded-2xl bg-[#080d17] border border-amber-500/20 space-y-3">
+          <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-300 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
-                <FastForward className="w-4 h-4 text-amber-400" />
-                Real-Time Sacrifice Levers
+              <span className="text-xs font-mono font-black text-black uppercase">
+                SACRIFICE LEVERS (CONVERT TO SIP)
               </span>
-              <span className="text-[10px] text-slate-400 font-mono">
-                Direct monthly cash injection into SIP
+              <span className="text-[10px] text-neutral-500 font-mono">
+                DIRECT CASH INJECTION
               </span>
             </div>
 
             <div className="space-y-1.5">
-              <div className="flex justify-between text-[11px]">
-                <span className="text-slate-300 flex items-center gap-1.5">
-                  <Utensils className="w-3.5 h-3.5 text-orange-400" /> Dining Out / Swiggy Cut:
-                </span>
-                <span className="font-mono font-bold text-orange-400">{diningCut}% cut</span>
+              <div className="flex justify-between text-xs font-mono font-bold">
+                <span className="text-neutral-700">DINING OUT / DELIVERY REDUCTION:</span>
+                <span className="text-black">{diningCut}% CUT</span>
               </div>
               <input
                 type="range"
@@ -193,16 +187,14 @@ export const ReverseMilestoneStudio: React.FC<ReverseMilestoneProps> = ({
                 step={5}
                 value={diningCut}
                 onChange={(e) => setDiningCut(Number(e.target.value))}
-                className="w-full cursor-pointer accent-orange-400"
+                className="w-full cursor-pointer accent-black"
               />
             </div>
 
             <div className="space-y-1.5">
-              <div className="flex justify-between text-[11px]">
-                <span className="text-slate-300 flex items-center gap-1.5">
-                  <Plane className="w-3.5 h-3.5 text-blue-400" /> Weekend Travel Pause:
-                </span>
-                <span className="font-mono font-bold text-blue-400">{travelCut}% cut</span>
+              <div className="flex justify-between text-xs font-mono font-bold">
+                <span className="text-neutral-700">WEEKEND TRAVEL PAUSE:</span>
+                <span className="text-black">{travelCut}% CUT</span>
               </div>
               <input
                 type="range"
@@ -211,75 +203,74 @@ export const ReverseMilestoneStudio: React.FC<ReverseMilestoneProps> = ({
                 step={5}
                 value={travelCut}
                 onChange={(e) => setTravelCut(Number(e.target.value))}
-                className="w-full cursor-pointer accent-blue-400"
+                className="w-full cursor-pointer accent-black"
               />
             </div>
           </div>
         </div>
 
         {/* Results Screen */}
-        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#090d18] border border-white/[0.08] flex flex-col justify-between space-y-4">
+        <div className="lg:col-span-5 p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col justify-between space-y-4">
           {result ? (
             <div className="space-y-4">
               {/* Comparison Card */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-2xl bg-[#0c111e] border border-white/[0.06]">
-                  <span className="text-[10px] font-mono uppercase text-slate-400 block">Baseline Date</span>
-                  <span className="text-sm font-bold text-slate-300 block mt-0.5">
+                <div className="p-3.5 rounded-xl bg-[#F8F9FA] border border-neutral-200">
+                  <span className="text-[10px] font-mono uppercase text-neutral-500 block">BASELINE DATE</span>
+                  <span className="text-xs font-bold text-neutral-700 block mt-0.5 font-mono">
                     {result.baseline_completion_date}
                   </span>
-                  <span className="text-[10px] font-mono text-slate-500">
-                    {result.baseline_months_required} months
+                  <span className="text-[10px] font-mono text-neutral-500">
+                    {result.baseline_months_required} MO
                   </span>
                 </div>
 
-                <div className="p-3.5 rounded-2xl bg-emerald-950/20 border border-emerald-500/30">
-                  <span className="text-[10px] font-mono uppercase text-emerald-400 block">Accelerated Date</span>
-                  <span className="text-sm font-bold text-emerald-300 block mt-0.5">
+                <div className="p-3.5 rounded-xl bg-neutral-100 border border-neutral-300">
+                  <span className="text-[10px] font-mono uppercase text-black font-bold block">ACCELERATED DATE</span>
+                  <span className="text-xs font-black text-black block mt-0.5 font-mono">
                     {result.accelerated_completion_date}
                   </span>
-                  <span className="text-[10px] font-mono text-emerald-400">
-                    {result.accelerated_months_required} months
+                  <span className="text-[10px] font-mono text-black font-bold">
+                    {result.accelerated_months_required} MO
                   </span>
                 </div>
               </div>
 
               {/* Capital Freed Badge */}
-              <div className="p-4 rounded-2xl bg-[#0c111e] border border-white/[0.08] flex items-center justify-between">
+              <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-200 flex items-center justify-between font-mono">
                 <div>
-                  <span className="text-[10px] font-mono uppercase text-slate-400 block">Extra Capital Freed</span>
-                  <span className="text-lg font-black text-emerald-400 font-mono">
-                    +₹{result.additional_monthly_capital_freed.toLocaleString("en-IN")}/mo
+                  <span className="text-[10px] uppercase text-neutral-500 block">EXTRA CAPITAL FREED</span>
+                  <span className="text-lg font-black text-black">
+                    +₹{result.additional_monthly_capital_freed.toLocaleString("en-IN")}/MO
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] font-mono uppercase text-slate-400 block">Total Time Saved</span>
-                  <span className="text-lg font-black text-amber-400 font-mono">
-                    {result.months_saved} Months
+                  <span className="text-[10px] uppercase text-neutral-500 block">TOTAL TIME SAVED</span>
+                  <span className="text-lg font-black text-black">
+                    {result.months_saved} MONTHS
                   </span>
                 </div>
               </div>
 
               {/* Feasibility Verdict */}
-              <div className="p-4 rounded-2xl bg-slate-900/60 border border-white/[0.06] text-xs text-slate-300 leading-relaxed space-y-1">
-                <div className="font-bold text-white flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
+              <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-300 text-xs font-mono text-neutral-700 leading-relaxed space-y-1">
+                <div className="font-black text-black uppercase">
                   {result.milestone_feasibility}
                 </div>
-                <p className="text-[11px] text-slate-400">
-                  By cutting {diningCut}% of dining out and {travelCut}% of leisure travel, you convert temporary dopamine into ₹{result.additional_monthly_capital_freed.toLocaleString("en-IN")} extra monthly compounders, achieving your {goalName} early.
+                <p className="text-xs text-neutral-600 font-sans">
+                  By cutting {diningCut}% of dining out and {travelCut}% of leisure travel, you convert temporary impulses into ₹{result.additional_monthly_capital_freed.toLocaleString("en-IN")} extra monthly compounders, achieving your {goalName} early.
                 </p>
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center py-16 text-slate-500 text-xs">
-              <Loader2 className="w-5 h-5 animate-spin mr-2" /> Simulating reverse milestone trajectories...
+            <div className="flex items-center justify-center py-16 text-neutral-500 text-xs font-mono">
+              SIMULATING REVERSE MILESTONES...
             </div>
           )}
 
-          <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>Opportunity Cost Compounder</span>
-            <span>Zero Delusional Goals</span>
+          <div className="pt-3 border-t border-neutral-200 flex items-center justify-between text-xs font-mono text-neutral-500">
+            <span>OPPORTUNITY COST ACCELERATOR</span>
+            <span className="font-bold text-black">[DETERMINISTIC MATH]</span>
           </div>
         </div>
       </div>

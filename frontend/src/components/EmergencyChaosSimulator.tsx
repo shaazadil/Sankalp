@@ -1,19 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Flame,
-  ShieldCheck,
-  AlertTriangle,
-  HeartPulse,
-  Briefcase,
-  Building2,
-  Car,
-  RotateCcw,
-  Sparkles,
-  ArrowRight,
-  TrendingDown,
-} from "lucide-react";
+import { motion } from "framer-motion";
 
 interface EmergencyChaosSimulatorProps {
   monthlyIncome?: number;
@@ -23,10 +11,10 @@ interface EmergencyChaosSimulatorProps {
 
 interface LifeShock {
   id: string;
+  tag: string;
   title: string;
   category: string;
   cost: number;
-  icon: React.ReactNode;
   durationMonths: number;
   description: string;
 }
@@ -41,38 +29,38 @@ export const EmergencyChaosSimulator: React.FC<EmergencyChaosSimulatorProps> = (
   const SHOCK_EVENTS: LifeShock[] = [
     {
       id: "layoff",
+      tag: "INCOME SHOCK",
       title: "Sudden Layoff (3 Months)",
-      category: "Income Shock",
+      category: "90-Day Freeze",
       cost: monthlyIncome * 3,
       durationMonths: 3,
-      icon: <Briefcase className="w-4 h-4 text-rose-400" />,
-      description: "Zero salary for 90 days during a hiring freeze or restructuring.",
+      description: "Zero salary for 90 days during a corporate hiring freeze or restructuring.",
     },
     {
       id: "medical",
+      tag: "HEALTHCARE",
       title: "Parent Medical Shock (₹2.5L)",
-      category: "Healthcare",
+      category: "Emergency Care",
       cost: 250000,
       durationMonths: 1,
-      icon: <HeartPulse className="w-4 h-4 text-amber-400" />,
-      description: "Unplanned hospital stay for aging parents not fully covered by basic insurance.",
+      description: "Unplanned hospital admission for aging parents not fully covered by basic insurance.",
     },
     {
       id: "deposit_dispute",
+      tag: "HOUSING",
       title: "Landlord Forfeits Deposit",
-      category: "Housing Shock",
+      category: "Security Lock",
       cost: 120000,
       durationMonths: 1,
-      icon: <Building2 className="w-4 h-4 text-blue-400" />,
-      description: "Landlord refuses to return security deposit when vacating, forcing you to fund next deposit out of pocket.",
+      description: "Landlord delays or refuses to return security deposit when vacating, forcing you to fund the next deposit.",
     },
     {
       id: "car_breakdown",
+      tag: "LOGISTICS",
       title: "Vehicle Transmission Repair",
-      category: "Logistics",
+      category: "Asset Repair",
       cost: 45000,
       durationMonths: 1,
-      icon: <Car className="w-4 h-4 text-purple-400" />,
       description: "Immediate gearbox and engine overhaul required to commute to work.",
     },
   ];
@@ -87,7 +75,6 @@ export const EmergencyChaosSimulator: React.FC<EmergencyChaosSimulatorProps> = (
     setActiveShocks([]);
   };
 
-  // Compute Impact
   const totalShockCost = activeShocks.reduce((acc, id) => {
     const shock = SHOCK_EVENTS.find((s) => s.id === id);
     return acc + (shock ? shock.cost : 0);
@@ -97,62 +84,46 @@ export const EmergencyChaosSimulator: React.FC<EmergencyChaosSimulatorProps> = (
   const shortfall = Math.max(0, totalShockCost - liquidSavings);
   const survives = shortfall === 0;
 
-  // Resilience Score
   const resilienceScore = Math.max(
     10,
     Math.min(100, Math.round(((liquidSavings - totalShockCost * 0.7) / (liquidSavings || 1)) * 100))
   );
 
   return (
-    <div id="chaos-simulator" className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
+    <div id="chaos-simulator" className="w-full max-w-6xl mx-auto space-y-6">
       {/* Title Header */}
-      <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400">
-            <Flame className="w-6 h-6" />
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              [STRESS TESTING // ENGINE 14]
+            </span>
+            <span className="text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-300 px-2.5 py-0.5 rounded font-mono font-bold uppercase">
+              DOMINO SIMULATOR
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-rose-400">
-                Stress-Testing Sandbox
-              </span>
-              <span className="text-[10px] bg-rose-500/10 text-rose-300 border border-rose-500/20 px-2 py-0.5 rounded-full font-mono">
-                Chaos Mode
-              </span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-heading mt-0.5">
-              Emergency Domino Chaos Simulator
-            </h2>
-            <p className="text-xs text-slate-400">
-              Trigger life shocks to test whether your 5 pots absorb the blast or if compounding SIPs get liquidated.
-            </p>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-heading mt-1">
+            Emergency Domino Chaos Simulator
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-600 font-medium">
+            Trigger simultaneous real-world financial shocks to test whether your 5 pots absorb the blast or if compounding SIPs get liquidated.
+          </p>
         </div>
 
         {/* Resilience Badge */}
-        <div className="flex items-center gap-3 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.08]">
-          <div
-            className={`h-10 w-10 rounded-xl flex items-center justify-center font-bold text-sm ${
-              survives
-                ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
-                : "bg-rose-500/10 border border-rose-500/20 text-rose-400"
-            }`}
-          >
-            {survives ? <ShieldCheck className="w-5 h-5" /> : <AlertTriangle className="w-5 h-5" />}
+        <div className="flex items-center gap-4 bg-neutral-50 p-4 rounded-xl border border-neutral-300">
+          <div className="h-11 w-11 rounded-lg bg-black text-white flex items-center justify-center font-mono font-black text-sm">
+            {resilienceScore}%
           </div>
           <div>
-            <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-              Resilience Score
+            <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+              PORTFOLIO RESILIENCE
             </span>
-            <p
-              className={`text-sm font-bold font-mono ${
-                survives ? "text-emerald-400" : "text-rose-400"
-              }`}
-            >
-              {resilienceScore}/100 • {survives ? "Bulletproof" : "Deficit Warning"}
+            <p className="text-xs font-black text-black font-mono">
+              {survives ? "BULLETPROOF" : "DEFICIT WARNING"}
             </p>
-            <p className="text-[11px] text-slate-400 font-mono">
-              Baseline Liquid Reserve: ₹{(liquidSavings / 100000).toFixed(1)}L
+            <p className="text-xs text-neutral-600 font-mono">
+              LIQUID RESERVE: ₹{(liquidSavings / 100000).toFixed(1)}L
             </p>
           </div>
         </div>
@@ -166,46 +137,45 @@ export const EmergencyChaosSimulator: React.FC<EmergencyChaosSimulatorProps> = (
             <button
               key={shock.id}
               onClick={() => toggleShock(shock.id)}
-              className={`p-4 rounded-2xl border text-left transition-all cursor-pointer relative overflow-hidden ${
+              className={`p-5 rounded-xl border text-left transition-all cursor-pointer relative ${
                 isTriggered
-                  ? "bg-rose-950/20 border-rose-500/50 shadow-lg shadow-rose-500/10"
-                  : "bg-[#0c111e] border-white/[0.08] hover:border-white/[0.18]"
+                  ? "bg-neutral-900 text-white border-black shadow-xs ring-1 ring-black"
+                  : "bg-white text-black border-neutral-300 hover:border-black"
               }`}
             >
-              {isTriggered && (
-                <div className="absolute top-2 right-2 text-[9px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 px-2 py-0.5 rounded-full uppercase">
-                  Triggered
-                </div>
-              )}
-              <div className="flex items-center gap-2 mb-2">
-                <div className="p-2 rounded-xl bg-slate-800 border border-white/[0.06]">
-                  {shock.icon}
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-white">{shock.title}</h4>
-                  <span className="text-[10px] text-slate-500 uppercase font-mono">{shock.category}</span>
-                </div>
+              <div className="flex items-center justify-between mb-2">
+                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
+                  isTriggered ? "bg-white text-black" : "bg-neutral-100 text-neutral-800"
+                }`}>
+                  [{shock.tag}]
+                </span>
+                <span className="text-[10px] font-mono font-bold">
+                  {isTriggered ? "● ACTIVE" : "○ INACTIVE"}
+                </span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed mb-3">
+              <h4 className={`text-sm font-black font-heading ${isTriggered ? "text-white" : "text-black"}`}>
+                {shock.title}
+              </h4>
+              <p className={`text-xs mt-1 leading-relaxed ${isTriggered ? "text-neutral-300" : "text-neutral-600"}`}>
                 {shock.description}
               </p>
-              <div className="flex items-baseline justify-between pt-2 border-t border-white/[0.06] text-xs">
-                <span className="text-slate-500">Damage:</span>
-                <span className="font-mono font-bold text-rose-400 tabular-nums">
-                  -₹{shock.cost.toLocaleString("en-IN")}
-                </span>
+              <div className={`mt-3 pt-2 border-t flex justify-between text-xs font-mono font-bold ${
+                isTriggered ? "border-neutral-700 text-neutral-200" : "border-neutral-200 text-black"
+              }`}>
+                <span>SHOCK IMPACT:</span>
+                <span>-₹{shock.cost.toLocaleString("en-IN")}</span>
               </div>
             </button>
           );
         })}
       </div>
 
-      {/* Visual Domino Blast Impact Panel */}
-      <div className="p-6 rounded-3xl bg-[#090d18] border border-white/[0.08] shadow-inner space-y-5">
-        <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-          <div className="flex items-center gap-2 text-xs text-slate-300">
-            <span className="font-bold">Total Simulated Life Shock:</span>
-            <span className="font-mono text-rose-400 font-bold text-sm">
+      {/* Visual Domino Impact Panel */}
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-5">
+        <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
+          <div className="flex items-center gap-2 text-xs font-mono">
+            <span className="font-bold text-neutral-700">TOTAL SIMULATED SHOCK:</span>
+            <span className="text-black font-black text-sm">
               ₹{totalShockCost.toLocaleString("en-IN")}
             </span>
           </div>
@@ -213,27 +183,26 @@ export const EmergencyChaosSimulator: React.FC<EmergencyChaosSimulatorProps> = (
           {activeShocks.length > 0 && (
             <button
               onClick={resetChaos}
-              className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white px-3 py-1 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] transition cursor-pointer"
+              className="text-xs font-mono font-bold text-black px-3 py-1 rounded-lg bg-neutral-100 hover:bg-neutral-200 border border-neutral-300 transition cursor-pointer"
             >
-              <RotateCcw className="w-3 h-3" />
-              <span>Clear Shocks</span>
+              [CLEAR SHOCKS]
             </button>
           )}
         </div>
 
         {/* Balance Impact Bars */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-2xl bg-[#0c111e] border border-white/[0.06]">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-              Emergency Reserve Buffer
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono">
+          <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-200">
+            <span className="text-[10px] uppercase font-bold text-neutral-500 block">
+              RESERVE BUFFER
             </span>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-black text-white font-mono tabular-nums">
+              <span className="text-2xl font-black text-black tabular-nums">
                 ₹{remainingLiquidSavings.toLocaleString("en-IN")}
               </span>
-              <span className="text-xs text-slate-500">remaining</span>
+              <span className="text-xs text-neutral-500">REMAINING</span>
             </div>
-            <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden mt-3">
+            <div className="h-2 w-full bg-neutral-200 rounded-md overflow-hidden mt-3 border border-neutral-300">
               <div
                 style={{
                   width: `${Math.max(
@@ -241,38 +210,34 @@ export const EmergencyChaosSimulator: React.FC<EmergencyChaosSimulatorProps> = (
                     Math.min(100, (remainingLiquidSavings / (liquidSavings || 1)) * 100)
                   )}%`,
                 }}
-                className={`h-full ${survives ? "bg-emerald-400" : "bg-rose-500"}`}
+                className={`h-full transition-all duration-500 ${survives ? "bg-black" : "bg-neutral-500"}`}
               />
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#0c111e] border border-white/[0.06]">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-              SIP Liquidation Risk
+          <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-200">
+            <span className="text-[10px] uppercase font-bold text-neutral-500 block">
+              SIP LIQUIDATION RISK
             </span>
             <div className="flex items-baseline gap-2 mt-1">
-              <span
-                className={`text-xl font-black font-mono tabular-nums ${
-                  shortfall > 0 ? "text-rose-400" : "text-emerald-400"
-                }`}
-              >
-                {shortfall > 0 ? `₹${shortfall.toLocaleString("en-IN")}` : "₹0 (Safe)"}
+              <span className="text-2xl font-black text-black tabular-nums">
+                {shortfall > 0 ? `₹${shortfall.toLocaleString("en-IN")}` : "₹0 (PROTECTED)"}
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 mt-2">
+            <p className="text-xs text-neutral-600 mt-2 font-sans font-medium">
               {shortfall > 0
-                ? "Your liquid buffer broke! You will be forced to break your mutual fund SIPs."
-                : "Your liquid emergency pot absorbed 100% of the shock. Compounding survives!"}
+                ? "Emergency reserve breached. You would be forced to break your long-term compounding SIPs."
+                : "Your liquid emergency pot absorbed 100% of the shock. Compounding survives uninterrupted."}
             </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#0c111e] border border-white/[0.06]">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-              Actionable Playbook
+          <div className="p-4 rounded-xl bg-neutral-100 border border-neutral-300">
+            <span className="text-[10px] uppercase font-bold text-black block">
+              ACTIONABLE PLAYBOOK
             </span>
-            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+            <p className="text-xs text-neutral-700 mt-1 leading-relaxed font-sans font-medium">
               {survives
-                ? "Your portfolio is resilient. Maintain ₹35,000 monthly fixed living runway to stay in the green."
+                ? "Your portfolio is resilient. Maintain ₹35,000 monthly fixed living runway to stay completely sheltered."
                 : `Increase emergency fund by ₹${(shortfall / 100000).toFixed(1)} Lakhs or take parent super top-up health cover.`}
             </p>
           </div>

@@ -3,18 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Sparkles,
-  User,
-  LogOut,
-  CheckCircle2,
-  LayoutDashboard,
-  Home,
-  Menu,
-  X,
-  Mail,
-  Sliders,
-} from "lucide-react";
+import { motion } from "framer-motion";
 
 interface NavbarProps {
   user: { email: string; full_name?: string } | null;
@@ -37,169 +26,163 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isChat = pathname === "/chat";
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/90 dark:bg-zinc-950/90 border-b border-zinc-200/80 dark:border-zinc-800/80 transition-colors">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/95 border-b border-neutral-200 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-emerald-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/25 group-hover:scale-105 transition-transform">
-              <span className="font-heading font-black text-lg tracking-wider">सं</span>
-            </div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="h-9 w-9 rounded-lg bg-black flex items-center justify-center text-white font-heading font-black text-base shadow-sm"
+            >
+              <span>सं</span>
+            </motion.div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-heading font-black text-xl tracking-tight text-zinc-900 dark:text-zinc-50">
-                  Sankalp
+                <span className="font-heading font-black text-xl tracking-tight text-black">
+                  SANKALP
                 </span>
-                <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-                  Zero-Based
+                <span className="text-[10px] font-mono font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-800 border border-neutral-300">
+                  SYSTEM
                 </span>
               </div>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium hidden sm:block">
-                Life Milestone Financial Co-Pilot
+              <p className="text-[11px] text-neutral-500 font-mono tracking-wide hidden sm:block">
+                INDIAN CASHFLOW ARCHITECTURE
               </p>
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 bg-zinc-100 dark:bg-zinc-900 p-1 rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 text-xs font-semibold">
+          {/* Desktop Navigation Links - Pure Typography, No Icons */}
+          <nav className="hidden md:flex items-center gap-1 bg-neutral-100 p-1 rounded-lg border border-neutral-200 text-xs font-bold">
             <Link
               href="/"
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
+              className={`px-3.5 py-1.5 rounded-md transition-all ${
                 isHome
-                  ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm font-bold"
-                  : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                  ? "bg-white text-black shadow-xs font-black border border-neutral-200"
+                  : "text-neutral-600 hover:text-black"
               }`}
             >
-              <Home className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span>Overview</span>
+              OVERVIEW
             </Link>
 
-            {/* Only show direct Dashboard tab if user is signed in */}
             {user ? (
               <Link
                 href="/dashboard"
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
+                className={`px-3.5 py-1.5 rounded-md transition-all ${
                   isDashboard
-                    ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm font-bold"
-                    : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                    ? "bg-white text-black shadow-xs font-black border border-neutral-200"
+                    : "text-neutral-600 hover:text-black"
                 }`}
               >
-                <LayoutDashboard className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>My Dashboard</span>
+                DASHBOARD
               </Link>
             ) : (
               <a
                 href="/#live-simulator"
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-all"
+                className="px-3.5 py-1.5 rounded-md text-neutral-600 hover:text-black transition-all"
               >
-                <Sliders className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>Live Sandbox</span>
+                LIVE SANDBOX
               </a>
             )}
 
             <Link
               href="/chat"
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all ${
+              className={`px-3.5 py-1.5 rounded-md transition-all ${
                 isChat
-                  ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm font-bold"
-                  : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                  ? "bg-white text-black shadow-xs font-black border border-neutral-200"
+                  : "text-neutral-600 hover:text-black"
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span>AI Advisor</span>
+              ADVISOR
             </Link>
           </nav>
         </div>
 
-        {/* Clean, Uncrowded Action Control */}
+        {/* Action Controls */}
         <div className="flex items-center gap-3">
           {user ? (
             <div className="flex items-center gap-2">
               {onOpenPlans && (
                 <button
                   onClick={onOpenPlans}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition cursor-pointer"
+                  className="text-xs font-mono font-bold px-3 py-1.5 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-black border border-neutral-300 transition cursor-pointer"
                 >
-                  Saved Plans
+                  [SAVED PLANS]
                 </button>
               )}
 
               <Link
                 href="/dashboard"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold text-emerald-800 dark:text-emerald-300"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-100 border border-neutral-300 text-xs font-mono font-bold text-black"
               >
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span className="max-w-[120px] truncate">
+                <span className="w-2 h-2 rounded-full bg-emerald-600 inline-block" />
+                <span className="max-w-[140px] truncate uppercase">
                   {user.full_name || user.email.split("@")[0]}
                 </span>
               </Link>
 
               <button
                 onClick={onLogout}
-                className="p-2 text-zinc-400 hover:text-rose-500 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
+                className="text-xs font-mono font-bold px-2.5 py-1.5 text-neutral-500 hover:text-black hover:bg-neutral-100 rounded-lg transition cursor-pointer"
                 title="Log out"
               >
-                <LogOut className="w-4 h-4" />
+                LOGOUT →
               </button>
             </div>
           ) : (
-            /* Exactly ONE Clean, Bold Sign In Button */
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={onOpenAuth}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm shadow-emerald-600/30 transition-all cursor-pointer active:scale-95"
+              className="px-4 py-2 rounded-lg text-xs font-mono font-black uppercase tracking-wider bg-black hover:bg-neutral-800 text-white shadow-xs transition-all cursor-pointer"
             >
-              <Mail className="w-3.5 h-3.5" />
-              <span>Sign In with Email</span>
-            </button>
+              SIGN IN WITH EMAIL →
+            </motion.button>
           )}
 
           {/* Mobile menu trigger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg"
+            className="md:hidden px-2.5 py-1.5 text-xs font-mono font-bold text-black border border-neutral-300 rounded-lg"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? "[CLOSE]" : "[MENU]"}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-4 py-3 space-y-2">
+        <div className="md:hidden border-t border-neutral-200 bg-white px-4 py-3 space-y-2">
           <Link
             href="/"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="block px-3 py-2 rounded-lg text-xs font-bold text-black hover:bg-neutral-100"
           >
-            <Home className="w-4 h-4 text-emerald-600" />
-            <span>Overview</span>
+            OVERVIEW
           </Link>
           {user ? (
             <Link
               href="/dashboard"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="block px-3 py-2 rounded-lg text-xs font-bold text-black hover:bg-neutral-100"
             >
-              <LayoutDashboard className="w-4 h-4 text-emerald-600" />
-              <span>My Dashboard</span>
+              MY DASHBOARD
             </Link>
           ) : (
             <a
               href="/#live-simulator"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="block px-3 py-2 rounded-lg text-xs font-bold text-black hover:bg-neutral-100"
             >
-              <Sliders className="w-4 h-4 text-emerald-600" />
-              <span>Live Sandbox</span>
+              LIVE SANDBOX
             </a>
           )}
           <Link
             href="/chat"
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="block px-3 py-2 rounded-lg text-xs font-bold text-black hover:bg-neutral-100"
           >
-            <Sparkles className="w-4 h-4 text-emerald-600" />
-            <span>AI Milestone Advisor</span>
+            AI ADVISOR
           </Link>
         </div>
       )}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Mail, KeyRound, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { sendOtp, verifyOtp } from "@/lib/api";
 
 interface AuthModalProps {
@@ -67,161 +67,138 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLoginSu
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-md bg-[#0c111e] rounded-3xl border border-white/[0.08] shadow-2xl p-6 sm:p-7 space-y-6 text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <div className="relative w-full max-w-md bg-white rounded-2xl border border-neutral-300 shadow-2xl p-6 sm:p-8 space-y-6 text-black">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-sm">
+            <div className="w-8 h-8 rounded bg-black flex items-center justify-center text-white font-heading font-black text-sm">
               सं
             </div>
             <div>
-              <h3 className="font-extrabold text-base text-white">
-                Your Private Sankalp Account
+              <h3 className="font-black text-base text-black font-heading uppercase">
+                AUTHENTICATE ACCOUNT
               </h3>
-              <p className="text-[11px] text-slate-400">
-                Passwordless Email Code (OTP) Login
+              <p className="text-[11px] text-neutral-500 font-mono">
+                PASSWORDLESS EMAIL OTP
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition"
+            className="text-xs font-mono font-bold text-neutral-500 hover:text-black px-2 py-1 rounded bg-neutral-100 cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            [CLOSE]
           </button>
         </div>
 
         {errorMsg && (
-          <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-800/40 text-xs font-medium text-rose-300">
+          <div className="p-3 rounded-lg bg-red-100 border border-red-300 text-xs font-mono text-red-800">
             {errorMsg}
           </div>
         )}
 
         {step === "email" ? (
-          <form onSubmit={handleSendCode} className="space-y-4">
+          <form onSubmit={handleSendCode} className="space-y-4 font-mono">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                Your Name (Optional)
+              <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                YOUR NAME (OPTIONAL)
               </label>
               <input
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Rahul Sharma"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[#080d17] border border-white/[0.08] text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+                className="w-full px-3.5 py-2.5 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-xs sm:text-sm text-black placeholder-neutral-400 focus:outline-none focus:border-black transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                Email Address
+              <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                EMAIL ADDRESS
               </label>
-              <div className="relative flex items-center">
-                <Mail className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#080d17] border border-white/[0.08] text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
-                />
-              </div>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@example.com"
+                className="w-full px-3.5 py-2.5 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-xs sm:text-sm text-black placeholder-neutral-400 focus:outline-none focus:border-black transition"
+              />
             </div>
 
             <button
               type="submit"
               disabled={isLoading || !email}
-              className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-800 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 transition cursor-pointer disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-lg bg-black hover:bg-neutral-800 disabled:bg-neutral-300 text-white disabled:text-neutral-500 font-bold text-xs uppercase tracking-wider transition cursor-pointer"
             >
-              {isLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <>
-                  <span>Send 6-Digit Code</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
+              {isLoading ? "SENDING CODE..." : "SEND 6-DIGIT CODE →"}
             </button>
           </form>
         ) : (
-          <form onSubmit={handleVerifyCode} className="space-y-4">
-            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-xs text-emerald-800 dark:text-emerald-300 flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 mt-0.5" />
-              <div>
-                <p className="font-semibold">{successNotice || `Verification code for ${email}`}</p>
-                {emailDelivered ? (
-                  <p className="text-[11px] text-emerald-700 dark:text-emerald-400 mt-0.5">
-                    Delivered to your Gmail inbox. Please check Spam / Promotions folder if not in Primary.
-                  </p>
-                ) : (
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">
-                    Code ready! (To deliver directly to your real Gmail inbox, configure SMTP_USER &amp; SMTP_PASSWORD in backend/.env)
-                  </p>
-                )}
-              </div>
+          <form onSubmit={handleVerifyCode} className="space-y-4 font-mono">
+            <div className="p-3.5 rounded-lg bg-neutral-100 border border-neutral-300 text-xs text-neutral-800">
+              <p className="font-bold text-black uppercase">{successNotice || `CODE SENT TO ${email}`}</p>
+              {emailDelivered ? (
+                <p className="text-[11px] text-neutral-600 mt-0.5">
+                  Check your inbox (or Spam/Promotions folder).
+                </p>
+              ) : (
+                <p className="text-[11px] text-neutral-600 mt-0.5">
+                  Code generated. (Configure SMTP_USER in backend/.env for production email delivery)
+                </p>
+              )}
             </div>
 
             {generatedCode && (
-              <div className="p-3.5 rounded-xl bg-[#080d17] border border-emerald-500/20 text-center">
-                <span className="text-[11px] font-medium text-slate-400 block mb-1">
-                  Generated Verification Code
+              <div className="p-4 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-center">
+                <span className="text-[10px] uppercase font-bold text-neutral-500 block mb-1">
+                  DEV VERIFICATION CODE
                 </span>
-                <span className="text-2xl font-black tracking-widest text-emerald-400 font-mono">
+                <span className="text-3xl font-black tracking-widest text-black font-mono">
                   {generatedCode}
                 </span>
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                Enter 6-Digit Verification Code
+              <label className="block text-xs font-bold text-neutral-700 mb-1.5 uppercase">
+                ENTER 6-DIGIT CODE
               </label>
-              <div className="relative flex items-center">
-                <KeyRound className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
-                <input
-                  type="text"
-                  maxLength={6}
-                  required
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder="123456"
-                  className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#080d17] border border-white/[0.08] text-base font-bold tracking-widest text-white placeholder-slate-500 text-center focus:outline-none focus:border-emerald-500 transition font-mono"
-                />
-              </div>
+              <input
+                type="text"
+                maxLength={6}
+                required
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="123456"
+                className="w-full px-3.5 py-2.5 rounded-lg bg-[#F8F9FA] border border-neutral-300 text-lg font-black tracking-widest text-black text-center focus:outline-none focus:border-black transition font-mono"
+              />
             </div>
 
             <button
               type="submit"
               disabled={isLoading || code.length < 6}
-              className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-800 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 transition cursor-pointer disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-lg bg-black hover:bg-neutral-800 disabled:bg-neutral-300 text-white disabled:text-neutral-500 font-bold text-xs uppercase tracking-wider transition cursor-pointer"
             >
-              {isLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <>
-                  <span>Verify &amp; Open My Dashboard</span>
-                  <CheckCircle2 className="w-4 h-4" />
-                </>
-              )}
+              {isLoading ? "VERIFYING..." : "VERIFY &amp; OPEN DASHBOARD →"}
             </button>
 
-            <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center justify-between pt-1 text-xs">
               <button
                 type="button"
                 onClick={() => setStep("email")}
-                className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 transition"
+                className="text-neutral-500 hover:text-black transition cursor-pointer"
               >
-                Change Email Address
+                [CHANGE EMAIL]
               </button>
               <button
                 type="button"
                 disabled={isLoading}
                 onClick={() => handleSendCode()}
-                className="text-xs font-medium text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 transition"
+                className="font-bold text-black hover:underline transition cursor-pointer"
               >
-                Resend Code
+                [RESEND CODE]
               </button>
             </div>
           </form>

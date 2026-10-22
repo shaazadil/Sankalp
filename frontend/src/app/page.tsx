@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { AppSidebar } from "@/components/AppSidebar";
 import { AuthModal } from "@/components/AuthModal";
 import { VisualDemonstration } from "@/components/VisualDemonstration";
@@ -11,27 +11,6 @@ import {
   FinancialProfileModal,
   FinancialProfileFormValues,
 } from "@/components/FinancialProfileModal";
-import {
-  Sparkles,
-  ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
-  TrendingUp,
-  Zap,
-  Sliders,
-  DollarSign,
-  HeartHandshake,
-  Clock,
-  Building2,
-  Layers,
-  Lock,
-  Mail,
-  Check,
-  Coffee,
-  PiggyBank,
-  Home as HomeIcon,
-  CreditCard,
-} from "lucide-react";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -115,7 +94,7 @@ export default function LandingPage() {
   const emergencyMonths = (((demoSavings || 150000) / (survivalPot + familyPot + demoEmis)) || 4.5).toFixed(1);
 
   return (
-    <div className="flex min-h-screen bg-[#080c14] text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="flex min-h-screen bg-[#F4F5F7] text-[#09090B] font-sans selection:bg-neutral-900 selection:text-white">
       {/* 1. App Sidebar */}
       <AppSidebar
         user={user}
@@ -128,695 +107,718 @@ export default function LandingPage() {
         targetCity={demoTargetCity}
       />
 
-      <main className="flex-1 min-w-0 overflow-y-auto">
-        {/* 2. Hero Section */}
-        <section className="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-24 border-b border-white/[0.08]">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-emerald-500/10 via-teal-500/5 to-transparent blur-3xl pointer-events-none -z-10" />
+      {/* Main Workspace with uninterrupted fluid window scrolling */}
+      <main className="flex-1 min-w-0">
+        {/* 2. Hero Section - Minimal High-Contrast Design */}
+        <section className="relative overflow-hidden pt-14 pb-20 md:pt-20 md:pb-28 border-b border-neutral-200 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+            {/* Minimal Monospace Tag */}
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-neutral-100 border border-neutral-300 text-neutral-800 text-xs font-mono font-bold tracking-wider uppercase"
+            >
+              <span>[ZERO-BASED CASHFLOW ARCHITECTURE // INDIA-FIRST]</span>
+            </motion.div>
 
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-            {/* Eyebrow Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold tracking-wide uppercase shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Zero-Based Cashflow Architecture • Built for Indian Life Milestones</span>
-            </div>
-
-            {/* Master Headline in Outfit Font */}
-            <h1 className="font-heading text-4xl sm:text-6xl font-black tracking-tight text-white leading-[1.1]">
-              Gain total control of your money. <br />
-              <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500 bg-clip-text text-transparent">
-                Give every rupee a purpose.
+            {/* Master Headline in Bold, Large Aesthetic */}
+            <motion.h1
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-black leading-[1.05]"
+            >
+              Master your wealth. <br />
+              <span className="text-neutral-500">
+                Give every single rupee a purpose.
               </span>
-            </h1>
+            </motion.h1>
 
-            {/* Subheading in Plain English */}
-            <p className="max-w-2xl mx-auto text-sm sm:text-base text-slate-400 font-normal leading-relaxed">
-              Traditional budgets look backward and make you feel guilty. Sankalp brings proactive{" "}
-              <strong className="text-slate-200">zero-based cashflow planning</strong> to Indian professionals—handling real in-hand salaries, metro landlord deposit shocks, family remittances, and ambitious milestones.
-            </p>
+            {/* Subheading */}
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="max-w-3xl mx-auto text-base sm:text-lg text-neutral-600 font-medium leading-relaxed"
+            >
+              Traditional budgets look backward and create guilt. Sankalp orchestrates proactive{" "}
+              <strong className="text-black font-black">zero-based cashflow planning</strong> for Indian
+              professionals—calibrating real take-home CTC, Bangalore rental deposits, family remittance, and compounding wealth.
+            </motion.p>
 
-            {/* Clean Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            {/* Action Buttons - Rounded Full Pill Design */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
+            >
               {user ? (
                 <Link
                   href="/dashboard"
-                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition cursor-pointer"
+                  className="w-full sm:w-auto px-9 py-4 rounded-full bg-black hover:bg-neutral-800 text-white font-mono font-bold text-sm tracking-wider uppercase shadow-md flex items-center justify-center gap-2 transition"
                 >
-                  <span>Go to My Personal Dashboard</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span>LAUNCH DASHBOARD →</span>
                 </Link>
               ) : (
                 <button
                   onClick={() => setIsAuthOpen(true)}
-                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition cursor-pointer"
+                  className="w-full sm:w-auto px-9 py-4 rounded-full bg-black hover:bg-neutral-800 text-white font-mono font-bold text-sm tracking-wider uppercase shadow-md flex items-center justify-center gap-2 transition cursor-pointer"
                 >
-                  <Mail className="w-4 h-4" />
-                  <span>Sign In with Email Code</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span>LAUNCH DASHBOARD →</span>
                 </button>
               )}
 
               <a
                 href="#live-simulator"
-                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#0c111e] border border-white/[0.1] hover:bg-slate-800 text-slate-200 font-semibold text-sm transition flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-9 py-4 rounded-full bg-white border-2 border-neutral-300 hover:border-black text-black font-mono font-bold text-sm tracking-wider uppercase transition flex items-center justify-center gap-2"
               >
-                <Sliders className="w-4 h-4 text-emerald-400" />
-                <span>Try Live Interactive Budget</span>
+                <span>OPEN LIVE SANDBOX ↓</span>
               </a>
-            </div>
+            </motion.div>
 
-            {/* Trust Highlights */}
-            <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs font-semibold text-slate-400">
-              <span className="flex items-center gap-1.5 bg-[#0c111e] px-3 py-1.5 rounded-lg border border-white/[0.06]">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                Zero Bank Passwords Needed
+            {/* Trust Highlights - Pure Clean Rounded-Full Tags */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="pt-4 flex flex-wrap items-center justify-center gap-3 text-xs font-mono font-bold text-neutral-700"
+            >
+              <span className="px-4 py-2 rounded-full bg-neutral-100 border border-neutral-300">
+                ● ZERO BANK PASSWORDS
               </span>
-              <span className="flex items-center gap-1.5 bg-[#0c111e] px-3 py-1.5 rounded-lg border border-white/[0.06]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                100% Free &amp; Private
+              <span className="px-4 py-2 rounded-full bg-neutral-100 border border-neutral-300">
+                ● 100% PRIVATE &amp; LOCAL-FIRST
               </span>
-              <span className="flex items-center gap-1.5 bg-[#0c111e] px-3 py-1.5 rounded-lg border border-white/[0.06]">
-                <Clock className="w-3.5 h-3.5 text-emerald-400" />
-                Instant Email Code Access
+              <span className="px-4 py-2 rounded-full bg-neutral-100 border border-neutral-300">
+                ● INSTANT EMAIL CODE ACCESS
               </span>
-              <span className="flex items-center gap-1.5 bg-[#0c111e] px-3 py-1.5 rounded-lg border border-white/[0.06]">
-                <Zap className="w-3.5 h-3.5 text-emerald-400" />
-                Deterministic Indian Tax Math
+              <span className="px-4 py-2 rounded-full bg-neutral-100 border border-neutral-300">
+                ● DETERMINISTIC INDIAN TAX MATH
               </span>
-            </div>
+            </motion.div>
 
-          {/* Hero Visual Image Asset (Replacing raw icons with high-end graphic) */}
-          <div className="pt-8 max-w-4xl mx-auto">
-            <div className="relative rounded-3xl overflow-hidden border border-zinc-200/80 dark:border-zinc-800 shadow-2xl bg-zinc-900 group">
-              <img
-                src="/images/smart_pots_visual.jpg"
-                alt="Smart Zero-Based Budgeting 5 Pots Architecture"
-                className="w-full h-auto object-cover group-hover:scale-102 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent flex items-end p-6">
-                <div className="text-left">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 block mb-1">
-                    Visual Methodology
+            {/* Hero Visual Image Asset */}
+            <motion.div
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="pt-8 max-w-4xl mx-auto"
+            >
+              <div className="relative rounded-3xl overflow-hidden border border-neutral-300 shadow-sm bg-neutral-100 group">
+                <img
+                  src="/images/smart_pots_visual.jpg"
+                  alt="Smart Zero-Based Budgeting 5 Pots Architecture"
+                  className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-500"
+                />
+                <div className="p-5 bg-white border-t border-neutral-200 text-left flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-500 block">
+                      ARCHITECTURAL SCHEMA
+                    </span>
+                    <p className="text-black font-heading font-black text-base sm:text-lg">
+                      The 5 Smart Pots: Survival, Obligations, Family, Guilt-Free UPI, and Wealth Compounding.
+                    </p>
+                  </div>
+                  <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-neutral-100 text-black border border-neutral-300">
+                    5-POT PROTOCOL
                   </span>
-                  <p className="text-white font-heading font-bold text-sm sm:text-base">
-                    The 5 Smart Pots: Every single rupee is assigned to Survival, Obligations, Family, Guilt-Free UPI, or Wealth Growth.
-                  </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* 3. The 4 Simple Pillars of Sankalp */}
-      <section className="py-20 border-b border-white/[0.08]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-400">
-              The Proven Philosophy
-            </span>
-            <h2 className="font-heading text-3xl sm:text-4xl font-black text-white tracking-tight">
-              The 4 Pillars of Sankalp
-            </h2>
-            <p className="text-sm sm:text-base text-slate-400">
-              Money isn&apos;t math; it&apos;s behavior. These 4 habits take the stress out of your finances forever.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {/* Pillar 1 */}
-            <div className="p-6 rounded-2xl bg-[#0c111e] border border-white/[0.08] space-y-3 hover:border-emerald-500/30 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-black text-base flex items-center justify-center font-heading">
-                1
-              </div>
-              <h3 className="font-heading font-bold text-base text-white">
-                Give Every Rupee a Job
-              </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                As soon as your salary hits your account, assign every single rupee to a specific pot—rent, food, parents, EMIs, or guilt-free fun. No money is left to disappear.
-              </p>
-            </div>
-
-            {/* Pillar 2 */}
-            <div className="p-6 rounded-2xl bg-[#0c111e] border border-white/[0.08] space-y-3 hover:border-teal-500/30 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-300 font-black text-base flex items-center justify-center font-heading">
-                2
-              </div>
-              <h3 className="font-heading font-bold text-base text-white">
-                Embrace True Expenses
-              </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Break massive upcoming shocks—like a 6–10 month Bengaluru landlord deposit, annual term insurance, or Diwali trips—into predictable monthly bites.
-              </p>
-            </div>
-
-            {/* Pillar 3 */}
-            <div className="p-6 rounded-2xl bg-[#0c111e] border border-white/[0.08] space-y-3 hover:border-amber-500/30 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 font-black text-base flex items-center justify-center font-heading">
-                3
-              </div>
-              <h3 className="font-heading font-bold text-base text-white">
-                Roll With The Punches
-              </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Life happens. If you overspent on dining out or had an emergency doctor visit, adjust money between pots in one tap. No guilt. No broken budgets.
-              </p>
-            </div>
-
-            {/* Pillar 4 */}
-            <div className="p-6 rounded-2xl bg-[#0c111e] border border-white/[0.08] space-y-3 hover:border-indigo-500/30 transition-all">
-              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-black text-base flex items-center justify-center font-heading">
-                4
-              </div>
-              <h3 className="font-heading font-bold text-base text-white">
-                Age Your Money
-              </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Increase your emergency runway until you are living on the money you earned last month, breaking the paycheck-to-paycheck cycle forever.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Live Interactive Budget Simulator Sandbox */}
-      <section id="live-simulator" className="py-20 border-b border-white/[0.08]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-400">
-                Interactive Cashflow Sandbox
+        {/* 3. The 4 Simple Pillars of Sankalp */}
+        <section className="py-20 border-b border-neutral-200 bg-[#F4F5F7]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="text-center space-y-2 max-w-2xl mx-auto">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-neutral-500">
+                CORE OPERATING METHOD
               </span>
-              <h2 className="font-heading text-3xl sm:text-4xl font-black text-white tracking-tight mt-1">
-                Experience Zero-Based Budgeting in Real Time
+              <h2 className="font-heading text-3xl sm:text-4xl font-black text-black tracking-tight">
+                The 4 Pillars of Sankalp
               </h2>
-              <p className="text-sm text-slate-400 mt-1">
-                Slide the controls below to see how every rupee of your Indian salary is allocated with surgical precision.
+              <p className="text-base text-neutral-600">
+                Money is behavior, not math. These 4 habits eliminate financial stress with deterministic clarity.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => setIsProfileOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs shadow-md transition cursor-pointer"
-              >
-                <Sliders className="w-3.5 h-3.5" />
-                <span>Input My Exact Numbers</span>
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Pillar 1 */}
+              <div className="p-7 rounded-2xl bg-white border border-neutral-300 space-y-4 transition-all hover:border-black shadow-xs">
+                <div className="w-11 h-11 rounded-full bg-neutral-100 text-black border border-neutral-300 font-mono font-black text-sm flex items-center justify-center">
+                  01
+                </div>
+                <h3 className="font-heading font-black text-lg text-black">
+                  Give Every Rupee a Job
+                </h3>
+                <p className="text-sm text-neutral-600 leading-relaxed font-normal">
+                  The moment your salary hits your account, assign every single rupee to an intentional pot—rent, food, parents, EMIs, or guilt-free fun. No money is left unaccounted.
+                </p>
+              </div>
 
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-400">Tax Regime:</span>
-                <div className="bg-[#0c111e] border border-white/[0.08] p-1 rounded-xl flex items-center text-xs font-bold">
-                  <button
-                    onClick={() => setDemoRegime("new")}
-                    className={`px-3 py-1 rounded-lg transition ${
-                      demoRegime === "new" ? "bg-emerald-500 text-white shadow-sm" : "text-slate-400 hover:text-white"
-                    }`}
+              {/* Pillar 2 */}
+              <div className="p-7 rounded-2xl bg-white border border-neutral-300 space-y-4 transition-all hover:border-black shadow-xs">
+                <div className="w-11 h-11 rounded-full bg-neutral-100 text-black border border-neutral-300 font-mono font-black text-sm flex items-center justify-center">
+                  02
+                </div>
+                <h3 className="font-heading font-black text-lg text-black">
+                  Embrace True Expenses
+                </h3>
+                <p className="text-sm text-neutral-600 leading-relaxed font-normal">
+                  Break large upcoming shocks—like a 6–10 month Bengaluru landlord deposit, annual term insurance, or Diwali trips—into predictable, amortized monthly bites.
+                </p>
+              </div>
+
+              {/* Pillar 3 */}
+              <div className="p-7 rounded-2xl bg-white border border-neutral-300 space-y-4 transition-all hover:border-black shadow-xs">
+                <div className="w-11 h-11 rounded-full bg-neutral-100 text-black border border-neutral-300 font-mono font-black text-sm flex items-center justify-center">
+                  03
+                </div>
+                <h3 className="font-heading font-black text-lg text-black">
+                  Roll With The Punches
+                </h3>
+                <p className="text-sm text-neutral-600 leading-relaxed font-normal">
+                  Life happens. Overspent dining out or incurred a doctor fee? Shift liquidity between pots in one tap. No guilt. No broken budgets.
+                </p>
+              </div>
+
+              {/* Pillar 4 */}
+              <div className="p-7 rounded-2xl bg-white border border-neutral-300 space-y-4 transition-all hover:border-black shadow-xs">
+                <div className="w-11 h-11 rounded-full bg-neutral-100 text-black border border-neutral-300 font-mono font-black text-sm flex items-center justify-center">
+                  04
+                </div>
+                <h3 className="font-heading font-black text-lg text-black">
+                  Age Your Money
+                </h3>
+                <p className="text-sm text-neutral-600 leading-relaxed font-normal">
+                  Expand your liquid runway until you are comfortably living on income earned last month, permanently ending the paycheck-to-paycheck loop.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. Live Interactive Budget Simulator Sandbox */}
+        <section id="live-simulator" className="py-20 border-b border-neutral-200 bg-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div>
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-neutral-500">
+                  [LIVE SANDBOX // 0.00 ZERO-BASED]
+                </span>
+                <h2 className="font-heading text-3xl sm:text-4xl font-black text-black tracking-tight mt-1">
+                  Experience Zero-Based Budgeting
+                </h2>
+                <p className="text-sm sm:text-base text-neutral-600 mt-1 font-medium">
+                  Adjust the sliders below to see how every rupee of your Indian salary is allocated with surgical precision.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={() => setIsProfileOpen(true)}
+                  className="px-5 py-2.5 rounded-full bg-black hover:bg-neutral-800 text-white font-mono font-bold text-xs uppercase tracking-wider transition cursor-pointer"
+                >
+                  CUSTOM INPUTS →
+                </button>
+
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-semibold text-neutral-600">REGIME:</span>
+                  <div className="bg-neutral-100 border border-neutral-300 p-1 rounded-full flex items-center text-xs font-mono font-bold">
+                    <button
+                      onClick={() => setDemoRegime("new")}
+                      className={`px-3.5 py-1 rounded-full transition cursor-pointer ${
+                        demoRegime === "new" ? "bg-black text-white font-black" : "text-neutral-600 hover:text-black"
+                      }`}
+                    >
+                      NEW
+                    </button>
+                    <button
+                      onClick={() => setDemoRegime("old")}
+                      className={`px-3.5 py-1 rounded-full transition cursor-pointer ${
+                        demoRegime === "old" ? "bg-black text-white font-black" : "text-neutral-600 hover:text-black"
+                      }`}
+                    >
+                      OLD (HRA)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Interactive Card */}
+            <div className="bg-[#F8F9FA] rounded-3xl border border-neutral-300 overflow-hidden p-6 sm:p-8 space-y-8">
+              {/* Top Stat Bar - Bold Black Tabular Numbers */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-white border border-neutral-200">
+                <div>
+                  <span className="text-xs font-mono font-bold text-neutral-500 uppercase tracking-wider block">
+                    ANNUAL CTC
+                  </span>
+                  <span className="text-2xl sm:text-4xl font-black text-black font-mono tabular-nums">
+                    ₹{(demoCtc / 100000).toFixed(1)} LPA
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-xs font-mono font-bold text-neutral-500 uppercase tracking-wider block">
+                    MONTHLY IN-HAND
+                  </span>
+                  <span className="text-2xl sm:text-4xl font-black text-black font-mono tabular-nums">
+                    ₹{monthlyInHand.toLocaleString("en-IN")}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-xs font-mono font-bold text-neutral-500 uppercase tracking-wider block">
+                    RUNWAY BUFFER
+                  </span>
+                  <span className="text-2xl sm:text-4xl font-black text-black font-mono">
+                    {emergencyMonths} MO
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-xs font-mono font-bold text-neutral-500 uppercase tracking-wider block">
+                    ZERO BALANCE
+                  </span>
+                  <span className="text-xs font-mono font-black text-emerald-900 px-3 py-1.5 rounded-full bg-emerald-100 inline-block mt-1 border border-emerald-300">
+                    ✓ 100% ASSIGNED
+                  </span>
+                </div>
+              </div>
+
+              {/* Sliders Area */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-3 p-5 rounded-2xl bg-white border border-neutral-200">
+                  <div className="flex justify-between text-sm font-bold font-mono">
+                    <span className="text-black uppercase">Annual CTC</span>
+                    <span className="text-black font-black text-base">₹{(demoCtc / 100000).toFixed(1)} L</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={500000}
+                    max={3500000}
+                    step={50000}
+                    value={demoCtc}
+                    onChange={(e) => setDemoCtc(Number(e.target.value))}
+                    className="w-full cursor-pointer accent-black"
+                  />
+                  <div className="flex justify-between text-xs text-neutral-500 font-mono">
+                    <span>₹5L</span>
+                    <span>₹20L</span>
+                    <span>₹35L</span>
+                  </div>
+                </div>
+
+                <div className="space-y-3 p-5 rounded-2xl bg-white border border-neutral-200">
+                  <div className="flex justify-between text-sm font-bold font-mono">
+                    <span className="text-black uppercase">Monthly Rent</span>
+                    <span className="text-black font-black text-base">₹{demoRent.toLocaleString("en-IN")}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={8000}
+                    max={50000}
+                    step={1000}
+                    value={demoRent}
+                    onChange={(e) => setDemoRent(Number(e.target.value))}
+                    className="w-full cursor-pointer accent-black"
+                  />
+                  <div className="flex justify-between text-xs text-neutral-500 font-mono">
+                    <span>₹8K</span>
+                    <span>₹25K</span>
+                    <span>₹50K</span>
+                  </div>
+                </div>
+
+                <div className="space-y-3 p-5 rounded-2xl bg-white border border-neutral-200">
+                  <div className="flex justify-between text-sm font-bold font-mono">
+                    <span className="text-black uppercase">Family Remittance</span>
+                    <span className="text-black font-black text-base">₹{demoFamily.toLocaleString("en-IN")}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={30000}
+                    step={1000}
+                    value={demoFamily}
+                    onChange={(e) => setDemoFamily(Number(e.target.value))}
+                    className="w-full cursor-pointer accent-black"
+                  />
+                  <div className="flex justify-between text-xs text-neutral-500 font-mono">
+                    <span>₹0</span>
+                    <span>₹15K</span>
+                    <span>₹30K</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* The 5 Smart Pots Visualization */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-700">
+                  5-POT DISTRIBUTION THIS MONTH:
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                  <div className="p-5 rounded-2xl bg-white border border-neutral-300 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-black text-black uppercase">
+                        01 // SURVIVAL
+                      </span>
+                      <span className="text-xs font-mono font-bold text-neutral-500">
+                        {Math.round((survivalPot / monthlyInHand) * 100)}%
+                      </span>
+                    </div>
+                    <div className="text-2xl font-black text-black font-mono">
+                      ₹{survivalPot.toLocaleString("en-IN")}
+                    </div>
+                    <p className="text-xs text-neutral-600">
+                      Rent, electricity, wifi &amp; groceries
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-white border border-neutral-300 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-black text-black uppercase">
+                        02 // OBLIGATIONS
+                      </span>
+                      <span className="text-xs font-mono font-bold text-neutral-500">
+                        {obligationsPot > 0 ? Math.round((obligationsPot / monthlyInHand) * 100) : 0}%
+                      </span>
+                    </div>
+                    <div className="text-2xl font-black text-black font-mono">
+                      ₹{obligationsPot.toLocaleString("en-IN")}
+                    </div>
+                    <p className="text-xs text-neutral-600">
+                      Active EMIs &amp; loan payments
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-white border border-neutral-300 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-black text-black uppercase">
+                        03 // FAMILY
+                      </span>
+                      <span className="text-xs font-mono font-bold text-neutral-500">
+                        {Math.round((familyPot / monthlyInHand) * 100)}%
+                      </span>
+                    </div>
+                    <div className="text-2xl font-black text-black font-mono">
+                      ₹{familyPot.toLocaleString("en-IN")}
+                    </div>
+                    <p className="text-xs text-neutral-600">
+                      Parents support &amp; home transfers
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-white border border-neutral-300 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-black text-black uppercase">
+                        04 // GUILT-FREE
+                      </span>
+                      <span className="text-xs font-mono font-bold text-neutral-500">
+                        {Math.round((guiltFreeUpiPot / monthlyInHand) * 100)}%
+                      </span>
+                    </div>
+                    <div className="text-2xl font-black text-black font-mono">
+                      ₹{guiltFreeUpiPot.toLocaleString("en-IN")}
+                    </div>
+                    <p className="text-xs text-neutral-600">
+                      Dining, Swiggy, shopping &amp; leisure
+                    </p>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-white border-2 border-black space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-mono font-black text-black uppercase">
+                        05 // WEALTH &amp; SIP
+                      </span>
+                      <span className="text-xs font-mono font-black text-black">
+                        {Math.round((growthPot / monthlyInHand) * 100)}%
+                      </span>
+                    </div>
+                    <div className="text-2xl font-black text-black font-mono">
+                      ₹{growthPot.toLocaleString("en-IN")}
+                    </div>
+                    <p className="text-xs text-neutral-600">
+                      Emergency fund, Index SIPs &amp; Gold
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Bar */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-neutral-200">
+                <div className="text-xs sm:text-sm font-mono text-neutral-600 text-center sm:text-left">
+                  Sign in with your email to persist your customized 5-pot allocation and run all 17 financial engines.
+                </div>
+
+                {user ? (
+                  <Link
+                    href="/dashboard"
+                    className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-black hover:bg-neutral-800 text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition"
                   >
-                    New Regime
-                  </button>
+                    <span>OPEN DASHBOARD →</span>
+                  </Link>
+                ) : (
                   <button
-                    onClick={() => setDemoRegime("old")}
-                    className={`px-3 py-1 rounded-lg transition ${
-                      demoRegime === "old" ? "bg-emerald-500 text-white shadow-sm" : "text-slate-400 hover:text-white"
-                    }`}
+                    onClick={() => setIsAuthOpen(true)}
+                    className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-black hover:bg-neutral-800 text-white font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer"
                   >
-                    Old Regime (HRA)
+                    <span>SIGN IN TO UNLOCK →</span>
                   </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. AI Assistant Showcase */}
+        <section className="py-20 bg-white border-b border-neutral-200">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div className="max-w-3xl space-y-3">
+              <span className="px-4 py-1.5 rounded-full bg-neutral-100 text-black text-xs font-mono font-bold uppercase tracking-wider border border-neutral-300">
+                [CO-PILOT // 24/7 INTELLIGENCE]
+              </span>
+              <h2 className="font-heading text-3xl sm:text-5xl font-black tracking-tight text-black">
+                Meet Your AI Financial Co-Pilot
+              </h2>
+              <p className="text-base sm:text-lg text-neutral-600 leading-relaxed font-medium">
+                Need guidance on Bangalore rent affordability, Old vs New Tax Regime, or education loan payoff strategies? Ask in natural language. The assistant generates mathematically sound blueprints that you can apply with one click.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+              {/* Visual Graphic Asset */}
+              <div className="relative rounded-3xl overflow-hidden border border-neutral-300 shadow-sm bg-neutral-100 group">
+                <img
+                  src="/images/ai_advisor_visual.jpg"
+                  alt="AI Financial Co-Pilot Interface"
+                  className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-500"
+                />
+                <div className="p-5 bg-white border-t border-neutral-200">
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-neutral-500 block">
+                    CONTEXT-AWARE VERIFICATION
+                  </span>
+                  <p className="text-black font-heading font-black text-base">
+                    Trained on Indian Tax Sections (80C, 80D, 80E, 24b) and metro rental dynamics.
+                  </p>
+                </div>
+              </div>
+
+              {/* Feature Highlights */}
+              <div className="space-y-6">
+                <div className="space-y-1.5 p-6 rounded-2xl bg-[#F8F9FA] border border-neutral-200">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-black" />
+                    <h4 className="font-heading font-black text-lg text-black">One-Click Plan Execution</h4>
+                  </div>
+                  <p className="text-sm text-neutral-600 pl-4 font-normal">
+                    When the AI crafts a custom budget plan, tap &ldquo;Apply Plan to My Dashboard&rdquo; and your live pots, rent sliders, and tax regime sync immediately.
+                  </p>
+                </div>
+
+                <div className="space-y-1.5 p-6 rounded-2xl bg-[#F8F9FA] border border-neutral-200">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-black" />
+                    <h4 className="font-heading font-black text-lg text-black">Deterministic Math Engine</h4>
+                  </div>
+                  <p className="text-sm text-neutral-600 pl-4 font-normal">
+                    The assistant pairs LLM reasoning with our verified mathematical engine—preventing hallucinated tax slabs, bogus deductions, or arbitrary formulas.
+                  </p>
+                </div>
+
+                <div className="space-y-1.5 p-6 rounded-2xl bg-[#F8F9FA] border border-neutral-200">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-black" />
+                    <h4 className="font-heading font-black text-lg text-black">Dedicated Full-Screen Workspace</h4>
+                  </div>
+                  <p className="text-sm text-neutral-600 pl-4 font-normal">
+                    A comprehensive workspace at <code>/chat</code> with milestone prompts, conversation history, exportable summaries, and user profile sync.
+                  </p>
+                </div>
+
+                <div className="pt-2">
+                  <Link
+                    href="/chat"
+                    className="inline-flex items-center gap-2 px-7 py-4 rounded-full bg-black hover:bg-neutral-800 text-white font-mono font-bold text-xs uppercase tracking-wider transition"
+                  >
+                    <span>OPEN DEDICATED AI ADVISOR →</span>
+                  </Link>
                 </div>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Interactive Card */}
-          <div className="bg-[#0c111e] rounded-3xl border border-white/[0.08] shadow-2xl overflow-hidden p-6 sm:p-8 space-y-8">
-            {/* Top Stat Bar */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-[#080d17] border border-white/[0.06]">
-              <div>
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block font-mono">
-                  Annual CTC
-                </span>
-                <span className="text-xl sm:text-2xl font-black text-white font-mono tabular-nums">
-                  ₹{(demoCtc / 100000).toFixed(1)} LPA
-                </span>
-              </div>
-
-              <div>
-                <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block font-mono">
-                  Monthly In-Hand
-                </span>
-                <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono tabular-nums">
-                  ₹{monthlyInHand.toLocaleString("en-IN")}
-                </span>
-              </div>
-
-              <div>
-                <span className="text-[11px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-wider block">
-                  Emergency Runway
-                </span>
-                <span className="text-xl sm:text-2xl font-black text-teal-600 dark:text-teal-400 font-mono font-heading">
-                  {emergencyMonths} Months
-                </span>
-              </div>
-
-              <div>
-                <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">
-                  Zero-Balance Check
-                </span>
-                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 inline-flex items-center gap-1 mt-1 border border-emerald-300 dark:border-emerald-800">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> All Rupee Assigned!
-                </span>
-              </div>
+        {/* 6. Comparison Table - No black cards, clean grey column */}
+        <section className="py-20 border-b border-neutral-200 bg-[#F4F5F7]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            <div className="text-center space-y-2">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-neutral-500">
+                METHOD COMPARISON
+              </span>
+              <h2 className="font-heading text-3xl sm:text-4xl font-black text-black tracking-tight">
+                Spreadsheets Look Backward. Sankalp Looks Forward.
+              </h2>
             </div>
 
-            {/* Sliders Area */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-zinc-700 dark:text-zinc-300">Annual Salary (CTC)</span>
-                  <span className="text-emerald-600 font-mono">₹{(demoCtc / 100000).toFixed(1)} Lakhs</span>
-                </div>
-                <input
-                  type="range"
-                  min={500000}
-                  max={3500000}
-                  step={50000}
-                  value={demoCtc}
-                  onChange={(e) => setDemoCtc(Number(e.target.value))}
-                  className="w-full accent-emerald-600 cursor-pointer"
-                />
-                <div className="flex justify-between text-[10px] text-zinc-400 font-medium">
-                  <span>₹5 LPA</span>
-                  <span>₹20 LPA</span>
-                  <span>₹35 LPA</span>
-                </div>
-              </div>
-
-              <div className="space-y-2 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-zinc-700 dark:text-zinc-300">Monthly Rent</span>
-                  <span className="text-rose-600 font-mono">₹{demoRent.toLocaleString("en-IN")}</span>
-                </div>
-                <input
-                  type="range"
-                  min={8000}
-                  max={50000}
-                  step={1000}
-                  value={demoRent}
-                  onChange={(e) => setDemoRent(Number(e.target.value))}
-                  className="w-full accent-rose-500 cursor-pointer"
-                />
-                <div className="flex justify-between text-[10px] text-zinc-400 font-medium">
-                  <span>₹8,000</span>
-                  <span>₹25,000</span>
-                  <span>₹50,000</span>
-                </div>
-              </div>
-
-              <div className="space-y-2 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950/40 border border-zinc-200 dark:border-zinc-800">
-                <div className="flex justify-between text-xs font-bold">
-                  <span className="text-zinc-700 dark:text-zinc-300">Family Remittance</span>
-                  <span className="text-amber-600 font-mono">₹{demoFamily.toLocaleString("en-IN")}</span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={30000}
-                  step={1000}
-                  value={demoFamily}
-                  onChange={(e) => setDemoFamily(Number(e.target.value))}
-                  className="w-full accent-amber-500 cursor-pointer"
-                />
-                <div className="flex justify-between text-[10px] text-zinc-400 font-medium">
-                  <span>₹0</span>
-                  <span>₹15,000</span>
-                  <span>₹30,000</span>
-                </div>
-              </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm border-collapse rounded-2xl overflow-hidden shadow-xs border border-neutral-300">
+                <thead className="bg-neutral-100 text-black font-mono font-black uppercase tracking-wider text-xs border-b border-neutral-300">
+                  <tr>
+                    <th className="p-4 sm:p-5">FEATURE</th>
+                    <th className="p-4 sm:p-5 text-neutral-500">TRADITIONAL SPREADSHEETS</th>
+                    <th className="p-4 sm:p-5 bg-neutral-200 text-black font-black border-l border-r border-neutral-300">
+                      SANKALP ZERO-BASED METHOD
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-200 bg-white font-medium">
+                  <tr>
+                    <td className="p-4 sm:p-5 font-bold text-black font-mono">Philosophy</td>
+                    <td className="p-4 sm:p-5 text-neutral-500">Looking back at past expenses with guilt</td>
+                    <td className="p-4 sm:p-5 font-bold text-black bg-neutral-100 border-l border-r border-neutral-300">
+                      Proactive zero-based assignment of every rupee
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 sm:p-5 font-bold text-black font-mono">Indian Tax Math</td>
+                    <td className="p-4 sm:p-5 text-neutral-500">Manual error-prone spreadsheet cells</td>
+                    <td className="p-4 sm:p-5 font-bold text-black bg-neutral-100 border-l border-r border-neutral-300">
+                      Automatic Old vs New Tax comparison &amp; EPF calibration
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 sm:p-5 font-bold text-black font-mono">Metro Rent Shocks</td>
+                    <td className="p-4 sm:p-5 text-neutral-500">Ignored until a sudden deposit crisis</td>
+                    <td className="p-4 sm:p-5 font-bold text-black bg-neutral-100 border-l border-r border-neutral-300">
+                      Calculated deposit shock &amp; amortized recovery plans
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 sm:p-5 font-bold text-black font-mono">Family Remittance</td>
+                    <td className="p-4 sm:p-5 text-neutral-500">Treated as a generic miscellaneous expense</td>
+                    <td className="p-4 sm:p-5 font-bold text-black bg-neutral-100 border-l border-r border-neutral-300">
+                      First-class priority pot built directly into emergency runway
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 sm:p-5 font-bold text-black font-mono">AI Financial Co-Pilot</td>
+                    <td className="p-4 sm:p-5 text-neutral-500">None</td>
+                    <td className="p-4 sm:p-5 font-bold text-black bg-neutral-100 border-l border-r border-neutral-300">
+                      24/7 dedicated advisor with instant 1-click dashboard apply
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+          </div>
+        </section>
 
-            {/* The 5 Smart Pots Visualization */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-extrabold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-                Where Every Rupee Is Assigned This Month
-              </h4>
+        {/* 7. Final Call to Action */}
+        <section className="py-20 bg-white text-center border-b border-neutral-200">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <h2 className="font-heading text-3xl sm:text-5xl font-black tracking-tight text-black">
+              Stop wondering where your salary went. <br />
+              <span className="text-neutral-500">Command every rupee with Sankalp.</span>
+            </h2>
+            <p className="text-base sm:text-lg text-neutral-600 max-w-2xl mx-auto font-medium">
+              No bank passwords. No spreadsheets. Authenticate with your email in 10 seconds and unlock your personalized private financial life planner.
+            </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-                <div className="p-4 rounded-2xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-200/80 dark:border-rose-900/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-rose-700 dark:text-rose-300 flex items-center gap-1.5 font-heading">
-                      <HomeIcon className="w-3.5 h-3.5" /> Survival Pot
-                    </span>
-                    <span className="text-xs font-bold text-zinc-500">
-                      {Math.round((survivalPot / monthlyInHand) * 100)}%
-                    </span>
-                  </div>
-                  <div className="text-lg font-black text-rose-700 dark:text-rose-300 font-mono font-heading">
-                    ₹{survivalPot.toLocaleString("en-IN")}
-                  </div>
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                    Rent, electricity, wifi &amp; essentials
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-blue-50/60 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1.5 font-heading">
-                      <CreditCard className="w-3.5 h-3.5" /> Obligations
-                    </span>
-                    <span className="text-xs font-bold text-zinc-500">
-                      {obligationsPot > 0 ? Math.round((obligationsPot / monthlyInHand) * 100) : 0}%
-                    </span>
-                  </div>
-                  <div className="text-lg font-black text-blue-700 dark:text-blue-300 font-mono font-heading">
-                    ₹{obligationsPot.toLocaleString("en-IN")}
-                  </div>
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                    Active EMIs &amp; Credit Cards
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1.5 font-heading">
-                      <HeartHandshake className="w-3.5 h-3.5" /> Family Pot
-                    </span>
-                    <span className="text-xs font-bold text-zinc-500">
-                      {Math.round((familyPot / monthlyInHand) * 100)}%
-                    </span>
-                  </div>
-                  <div className="text-lg font-black text-amber-700 dark:text-amber-300 font-mono font-heading">
-                    ₹{familyPot.toLocaleString("en-IN")}
-                  </div>
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                    Parents support &amp; home transfers
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-purple-50/60 dark:bg-purple-950/20 border border-purple-200/80 dark:border-purple-900/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1.5 font-heading">
-                      <Coffee className="w-3.5 h-3.5" /> Guilt-Free UPI
-                    </span>
-                    <span className="text-xs font-bold text-zinc-500">
-                      {Math.round((guiltFreeUpiPot / monthlyInHand) * 100)}%
-                    </span>
-                  </div>
-                  <div className="text-lg font-black text-purple-700 dark:text-purple-300 font-mono font-heading">
-                    ₹{guiltFreeUpiPot.toLocaleString("en-IN")}
-                  </div>
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                    Dining, Swiggy, movies &amp; travel
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-900/40 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5 font-heading">
-                      <PiggyBank className="w-3.5 h-3.5" /> Wealth &amp; SIP
-                    </span>
-                    <span className="text-xs font-bold text-zinc-500">
-                      {Math.round((growthPot / monthlyInHand) * 100)}%
-                    </span>
-                  </div>
-                  <div className="text-lg font-black text-emerald-700 dark:text-emerald-300 font-mono font-heading">
-                    ₹{growthPot.toLocaleString("en-IN")}
-                  </div>
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                    Emergency runway, SIPs &amp; Gold
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Launch Dashboard Action: Opens AuthModal if not signed in */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-zinc-200 dark:border-zinc-800">
-              <div className="text-xs text-zinc-500 dark:text-zinc-400 text-center sm:text-left">
-                Sign in to save this plan, calculate metro deposit shocks, and model wedding or loan goals.
-              </div>
-
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
               {user ? (
                 <Link
                   href="/dashboard"
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-600/30 transition-all hover:scale-105 active:scale-95"
+                  className="w-full sm:w-auto px-9 py-4 rounded-full bg-black hover:bg-neutral-800 text-white font-mono font-bold text-sm tracking-wider uppercase shadow-md transition"
                 >
-                  <span>Open My Dashboard</span>
-                  <ArrowRight className="w-4 h-4" />
+                  GO TO MY DASHBOARD →
                 </Link>
               ) : (
                 <button
                   onClick={() => setIsAuthOpen(true)}
-                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  className="w-full sm:w-auto px-9 py-4 rounded-full bg-black hover:bg-neutral-800 text-white font-mono font-bold text-sm tracking-wider uppercase shadow-md transition cursor-pointer"
                 >
-                  <Mail className="w-4 h-4" />
-                  <span>Sign In to Unlock Full Dashboard</span>
-                  <ArrowRight className="w-4 h-4" />
+                  SIGN IN WITH EMAIL (FREE) →
                 </button>
               )}
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 5. Dedicated Large-Scale AI Assistant Showcase (with High-Tech Graphic Asset) */}
-      <section className="py-20 bg-gradient-to-b from-zinc-900 to-zinc-950 text-white border-b border-zinc-800">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="max-w-3xl space-y-4">
-            <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">
-              Dedicated Webpage Feature
-            </span>
-            <h2 className="font-heading text-3xl sm:text-5xl font-black tracking-tight text-white">
-              Meet Your 24/7 AI Financial Co-Pilot
-            </h2>
-            <p className="text-sm sm:text-base text-zinc-300 leading-relaxed">
-              Have doubts about rent affordability, Old vs New Tax Regime, or how much to send parents? Ask in simple English. The AI generates complete financial blueprints that you can apply to your live dashboard with one click.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            {/* Visual AI Graphic Asset */}
-            <div className="relative rounded-3xl overflow-hidden border border-zinc-800 shadow-2xl bg-zinc-900 group">
-              <img
-                src="/images/ai_advisor_visual.jpg"
-                alt="AI Financial Co-Pilot Dashboard Interface"
-                className="w-full h-auto object-cover group-hover:scale-102 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent flex items-end p-6">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-400 block mb-1">
-                    Context-Aware Intelligence
-                  </span>
-                  <p className="text-white font-heading font-bold text-sm">
-                    Trained on Indian Tax Sections (80C, 80D, 80E) and Bangalore/Mumbai Metro Rent Dynamics.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature Highlights */}
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                  <Zap className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-heading font-bold text-base text-white">Instant One-Click Plan Application</h4>
-                  <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-                    When the AI generates a budget blueprint, simply click &ldquo;Apply Plan to My Dashboard&rdquo; and your live pots, rent sliders, and tax regime sync immediately.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-heading font-bold text-base text-white">100% Deterministic Tax &amp; HRA Calculations</h4>
-                  <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-                    The AI combines natural language advice with our verified mathematical engine—no hallucinated tax brackets or bogus deduction numbers.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
-                  <Layers className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-heading font-bold text-base text-white">Full Screen Dedicated Assistant Experience</h4>
-                  <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-                    A comprehensive, large-scale workspace at <code>/chat</code> with milestone starters, saved chats, exportable plans, and financial profile integration.
-                  </p>
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <Link
-                  href="/chat"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95"
-                >
-                  <Sparkles className="w-4 h-4 fill-zinc-950" />
-                  <span>Open Dedicated AI Advisor Webpage</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Comparison Table: Sankalp vs Spreadsheets */}
-      <section className="py-20 border-b border-zinc-200/80 dark:border-zinc-800/80">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center space-y-3">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
-              Why We Are Different
-            </span>
-            <h2 className="font-heading text-3xl sm:text-4xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
-              Spreadsheets Look Backward. Sankalp Looks Forward.
-            </h2>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs sm:text-sm border-collapse rounded-2xl overflow-hidden shadow-lg border border-zinc-200 dark:border-zinc-800">
-              <thead className="bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-extrabold uppercase tracking-wider text-[11px] font-heading">
-                <tr>
-                  <th className="p-4 sm:p-5">Feature</th>
-                  <th className="p-4 sm:p-5 text-zinc-500">Traditional Spreadsheets</th>
-                  <th className="p-4 sm:p-5 bg-emerald-600 text-white">Sankalp Zero-Based Method</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 bg-white dark:bg-zinc-950">
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-zinc-100 font-heading">Approach</td>
-                  <td className="p-4 sm:p-5 text-zinc-500">Looking back at past expenses with guilt</td>
-                  <td className="p-4 sm:p-5 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20">
-                    Proactive zero-based assignment of every rupee
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-zinc-100 font-heading">Indian Tax Math</td>
-                  <td className="p-4 sm:p-5 text-zinc-500">Manual error-prone formulas</td>
-                  <td className="p-4 sm:p-5 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20">
-                    Automatic Old vs New Tax comparison &amp; EPF
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-zinc-100 font-heading">Metro Landlord Deposits</td>
-                  <td className="p-4 sm:p-5 text-zinc-500">Ignored until you face a cash crisis</td>
-                  <td className="p-4 sm:p-5 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20">
-                    Calculated deposit shock &amp; amortized recovery
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-zinc-100 font-heading">Family Remittance</td>
-                  <td className="p-4 sm:p-5 text-zinc-500">Treated as a generic expense</td>
-                  <td className="p-4 sm:p-5 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20">
-                    First-class priority pot built into your runway
-                  </td>
-                </tr>
-                <tr>
-                  <td className="p-4 sm:p-5 font-bold text-zinc-900 dark:text-zinc-100 font-heading">AI Financial Co-Pilot</td>
-                  <td className="p-4 sm:p-5 text-zinc-500">None</td>
-                  <td className="p-4 sm:p-5 font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20">
-                    24/7 dedicated advisor with one-click plan apply
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. Final Call to Action */}
-      <section className="py-20 bg-gradient-to-tr from-emerald-950 via-teal-950 to-zinc-950 text-white text-center">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <h2 className="font-heading text-3xl sm:text-5xl font-black tracking-tight text-white">
-            Stop wondering where your salary went. <br />
-            <span className="text-emerald-400">Tell it where to go today.</span>
-          </h2>
-          <p className="text-sm sm:text-base text-zinc-300 max-w-2xl mx-auto font-normal">
-            No bank passwords. No spreadsheets. Log in with your email address in 10 seconds and unlock your personalized private financial dashboard.
-          </p>
-
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-            {user ? (
               <Link
-                href="/dashboard"
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-extrabold text-base shadow-xl transition hover:scale-105 active:scale-95 font-heading"
+                href="/chat"
+                className="w-full sm:w-auto px-9 py-4 rounded-full bg-white border-2 border-neutral-300 hover:border-black text-black font-mono font-bold text-sm tracking-wider uppercase transition"
               >
-                Go to My Dashboard →
+                TALK TO AI ASSISTANT →
               </Link>
-            ) : (
+            </div>
+          </div>
+        </section>
+
+        {/* 8. Clean Minimal Footer */}
+        <footer className="py-12 bg-white text-xs sm:text-sm text-neutral-500 font-mono">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-full bg-neutral-100 border border-neutral-300 flex items-center justify-center text-black font-heading font-black text-sm">
+                सं
+              </div>
+              <div>
+                <span className="font-heading font-black text-sm text-black">
+                  SANKALP
+                </span>
+                <span className="text-neutral-400 ml-2">
+                  // Deterministic Financial Engineering
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-6 text-xs text-neutral-600">
+              <Link href="/dashboard" className="hover:text-black transition">
+                Executive Cockpit
+              </Link>
+              <Link href="/chat" className="hover:text-black transition">
+                AI Milestone Chat
+              </Link>
               <button
-                onClick={() => setIsAuthOpen(true)}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-extrabold text-base shadow-xl transition hover:scale-105 active:scale-95 cursor-pointer font-heading flex items-center justify-center gap-2"
+                onClick={() => setIsDemoOpen(true)}
+                className="hover:text-black transition cursor-pointer"
               >
-                <Mail className="w-5 h-5" />
-                <span>Sign In with Email Code (Free)</span>
+                Architecture Tour
               </button>
-            )}
-
-            <Link
-              href="/chat"
-              className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-zinc-900/80 border border-zinc-700 text-zinc-200 hover:bg-zinc-800 font-bold text-base transition flex items-center justify-center gap-2"
-            >
-              <Sparkles className="w-4 h-4 text-emerald-400" />
-              <span>Talk to AI Assistant</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 8. Clean Footer */}
-      <footer className="py-12 bg-zinc-100 dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-heading font-black text-sm">
-              सं
             </div>
-            <div>
-              <span className="font-heading font-extrabold text-zinc-900 dark:text-zinc-100 text-sm">
-                Sankalp
-              </span>
-              <p className="text-[11px] text-zinc-500">India-First Zero-Based Financial Life Planner</p>
+
+            <div className="text-[11px] text-neutral-500">
+              © {new Date().getFullYear()} Sankalp Systems. Zero Bank Credentials. Built for Indian Builders.
             </div>
           </div>
-
-          <div className="flex items-center gap-6 font-semibold">
-            <Link href="/" className="hover:text-emerald-600 transition">
-              Overview
-            </Link>
-            <Link href="/chat" className="hover:text-emerald-600 transition">
-              AI Advisor
-            </Link>
-            <button onClick={() => setIsAuthOpen(true)} className="hover:text-emerald-600 transition cursor-pointer">
-              Email Sign In
-            </button>
-          </div>
-
-          <div className="text-[11px] text-zinc-400">
-            &copy; 2026 Sankalp Financial AI. All calculations 100% deterministic.
-          </div>
-        </div>
-      </footer>
+        </footer>
       </main>
 
-      {/* Modals */}
+      {/* Auth Modal */}
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         onLoginSuccess={handleLoginSuccess}
       />
 
+      {/* Visual Architectural Tour */}
       <VisualDemonstration
         isOpen={isDemoOpen}
         onClose={() => setIsDemoOpen(false)}
+        onApplyPreset={() => {
+          setIsDemoOpen(false);
+          router.push("/dashboard");
+        }}
       />
 
+      {/* Financial Profile Modal */}
       <FinancialProfileModal
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
+        onSave={handleSaveDemoProfile}
         initialValues={{
           annual_ctc: demoCtc,
           tax_regime: demoRegime,
@@ -829,7 +831,6 @@ export default function LandingPage() {
           target_city: demoTargetCity,
           active_goal: demoGoal,
         }}
-        onSave={handleSaveDemoProfile}
       />
     </div>
   );

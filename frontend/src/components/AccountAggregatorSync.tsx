@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Landmark, ShieldCheck, RefreshCw, CheckCircle2, Lock, ArrowRight, Loader2, Wallet, Building2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { syncAccountAggregator } from "@/lib/api";
 
 interface AccountAggregatorProps {
@@ -35,82 +35,77 @@ export const AccountAggregatorSync: React.FC<AccountAggregatorProps> = ({ onSync
   };
 
   return (
-    <div id="account-aggregator" className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
+    <div id="account-aggregator" className="w-full max-w-6xl mx-auto space-y-6">
       {/* Header */}
-      <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-400">
-            <Landmark className="w-6 h-6" />
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              [EXECUTION // RBI-REGULATED AA]
+            </span>
+            <span className="text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-300 px-2.5 py-0.5 rounded font-mono font-bold uppercase">
+              ZERO CSV UPLOAD
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-teal-400">
-                Industry Benchmark: Monarch / Setu
-              </span>
-              <span className="text-[10px] bg-teal-500/10 text-teal-300 border border-teal-500/20 px-2 py-0.5 rounded-full font-mono">
-                RBI-Regulated AA
-              </span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-heading mt-0.5">
-              Instant Account Aggregator Bank Sync
-            </h2>
-            <p className="text-xs text-slate-400">
-              Zero manual CSV uploads. Securely fetch live balances, salary credits, and auto-route them into your 5 Pots.
-            </p>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-heading mt-1">
+            Instant Account Aggregator Bank Sync
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-600 font-medium">
+            Zero manual CSV spreadsheets. Cryptographically fetch real-time bank balances and auto-route them into your 5 Pots.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-white/[0.06] text-xs font-mono text-slate-400">
-          <Lock className="w-3.5 h-3.5 text-teal-400" />
-          <span>256-Bit Financial Encryption</span>
+        <div className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-neutral-100 border border-neutral-300 text-xs font-mono font-bold text-black">
+          <span>● 256-BIT ENCRYPTED</span>
         </div>
       </div>
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Consent Form (5 Cols) */}
-        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] space-y-4">
-          <h3 className="text-sm font-bold text-white flex items-center justify-between">
-            <span>RBI Consent Mandate</span>
-            <span className="text-xs font-mono text-teal-400">No Netbanking Password</span>
-          </h3>
+        {/* Consent Form */}
+        <div className="lg:col-span-5 p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-mono font-black text-black uppercase">
+              RBI CONSENT MANDATE
+            </h3>
+            <span className="text-xs font-mono text-neutral-500">[NO PASSWORDS]</span>
+          </div>
 
-          <div className="space-y-1.5 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.06]">
-            <label className="text-[11px] text-slate-400 block font-mono">Mobile Linked to Bank Accounts</label>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <label className="text-xs font-mono font-bold text-neutral-700 block">LINKED MOBILE NUMBER</label>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-slate-500">+91</span>
+              <span className="text-xs font-mono font-bold text-neutral-500">+91</span>
               <input
                 type="text"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 maxLength={10}
-                className="w-full bg-transparent text-white font-mono font-bold text-sm outline-none"
+                className="w-full bg-white border border-neutral-300 rounded p-1.5 text-black font-mono font-bold text-sm outline-none"
                 placeholder="9876543210"
               />
             </div>
           </div>
 
-          <div className="space-y-1.5 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.06]">
-            <label className="text-[11px] text-slate-400 block font-mono">Select RBI-Approved AA Gateway</label>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <label className="text-xs font-mono font-bold text-neutral-700 block">AA GATEWAY PROVIDER</label>
             <select
               value={fiuProvider}
               onChange={(e) => setFiuProvider(e.target.value)}
-              className="w-full bg-transparent text-white font-mono font-bold text-xs outline-none cursor-pointer"
+              className="w-full bg-white border border-neutral-300 rounded p-2 text-black font-mono font-bold text-xs outline-none cursor-pointer"
             >
-              <option value="finvu" className="bg-[#0c111e]">Finvu (Cookiejar Technologies)</option>
-              <option value="onemoney" className="bg-[#0c111e]">OneMoney (Finsec AA)</option>
-              <option value="setu" className="bg-[#0c111e]">Setu AA (Pine Labs)</option>
-              <option value="anumati" className="bg-[#0c111e]">Anumati AA</option>
+              <option value="finvu">Finvu (Cookiejar Technologies)</option>
+              <option value="onemoney">OneMoney (Finsec AA)</option>
+              <option value="setu">Setu AA (Pine Labs)</option>
+              <option value="anumati">Anumati AA</option>
             </select>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-teal-950/20 border border-teal-500/20 text-[11px] text-teal-200 space-y-1">
-            <div className="flex items-center gap-1.5 font-bold">
-              <ShieldCheck className="w-4 h-4 text-teal-400" />
-              Direct-from-Bank Consent
+          <div className="p-3.5 rounded-xl bg-neutral-100 border border-neutral-300 text-xs font-mono text-neutral-700 space-y-1">
+            <div className="font-bold text-black uppercase">
+              DIRECT-FROM-BANK CONSENT
             </div>
-            <p className="text-slate-400 text-[10px] leading-relaxed">
-              We never ask for your debit card PIN or NetBanking password. Consent is cryptographically signed via RBI AA guidelines.
+            <p className="text-xs text-neutral-600 font-sans">
+              No debit card PIN or NetBanking password required. Consent is verified through official RBI AA protocols.
             </p>
           </div>
 
@@ -118,78 +113,63 @@ export const AccountAggregatorSync: React.FC<AccountAggregatorProps> = ({ onSync
             type="button"
             onClick={handleSync}
             disabled={isSyncing}
-            className="w-full py-3 px-4 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs font-mono transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-500/10 disabled:opacity-50"
+            className="w-full py-3.5 px-4 rounded-lg bg-black hover:bg-neutral-800 text-white font-mono font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 disabled:bg-neutral-300 disabled:text-neutral-500 cursor-pointer"
           >
-            {isSyncing ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Querying RBI AA Network...
-              </>
-            ) : (
-              <>
-                <RefreshCw className="w-4 h-4" />
-                Fetch Live Bank Balances
-              </>
-            )}
+            {isSyncing ? "QUERYING RBI AA NETWORK..." : "FETCH LIVE BANK BALANCES →"}
           </button>
 
           {error && (
-            <div className="p-3 rounded-xl bg-rose-950/20 border border-rose-500/30 text-rose-300 text-xs">
+            <div className="p-3 rounded-lg bg-red-100 border border-red-300 text-red-800 text-xs font-mono">
               {error}
             </div>
           )}
         </div>
 
-        {/* Live Aggregated Accounts & Pots Distribution (7 Cols) */}
-        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#090d18] border border-white/[0.08] flex flex-col justify-between space-y-5">
+        {/* Live Aggregated Accounts & Pots Distribution */}
+        <div className="lg:col-span-7 p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col justify-between space-y-5">
           {syncData ? (
             <div className="space-y-4">
               {/* Summary Banner */}
-              <div className="p-4 rounded-2xl bg-[#0c111e] border border-teal-500/30 flex items-center justify-between">
+              <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-300 flex items-center justify-between font-mono">
                 <div>
-                  <span className="text-[10px] font-mono uppercase text-slate-400 block">Total Synced Liquid Net Worth</span>
-                  <span className="text-xl font-black text-teal-300 font-mono">
+                  <span className="text-[10px] uppercase text-neutral-500 block">TOTAL SYNCED LIQUID FUNDS</span>
+                  <span className="text-2xl font-black text-black">
                     ₹{syncData.total_liquid_balance.toLocaleString("en-IN")}
                   </span>
-                  <span className="text-[10px] text-slate-500 block">
-                    Detected Monthly Credit: ₹{syncData.detected_monthly_cashflow.toLocaleString("en-IN")}
+                  <span className="text-xs text-neutral-600 block mt-0.5">
+                    CREDIT DETECTED: ₹{syncData.detected_monthly_cashflow.toLocaleString("en-IN")}
                   </span>
                 </div>
                 <div className="text-right">
-                  <span className="text-[9px] font-mono uppercase text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  <span className="text-xs uppercase bg-black text-white px-2.5 py-1 rounded font-bold">
                     {syncData.sync_status}
                   </span>
-                  <span className="text-[10px] text-slate-400 font-mono block mt-1">
-                    Consent: {syncData.consent_id.slice(0, 15)}...
+                  <span className="text-[10px] text-neutral-500 block mt-1">
+                    ID: {syncData.consent_id.slice(0, 15)}...
                   </span>
                 </div>
               </div>
 
               {/* Bank Accounts List */}
               <div className="space-y-2">
-                <span className="text-[10px] uppercase font-bold text-slate-400 font-mono block">
-                  Connected Bank Accounts
+                <span className="text-xs font-mono font-bold uppercase text-black block">
+                  CONNECTED BANK ACCOUNTS
                 </span>
                 <div className="space-y-2">
                   {syncData.accounts?.map((acc: any, idx: number) => (
-                    <div key={idx} className="p-3 rounded-xl bg-[#0c111e] border border-white/[0.06] flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-slate-800 text-teal-400">
-                          <Building2 className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-white">{acc.bank_name}</p>
-                          <p className="text-[10px] text-slate-400 font-mono">
-                            {acc.account_type} • {acc.masked_account_number}
-                          </p>
-                        </div>
+                    <div key={idx} className="p-3.5 rounded-xl bg-white border border-neutral-200 flex items-center justify-between font-mono">
+                      <div>
+                        <p className="text-xs font-black text-black">{acc.bank_name}</p>
+                        <p className="text-[11px] text-neutral-500">
+                          {acc.account_type} • {acc.masked_account_number}
+                        </p>
                       </div>
                       <div className="text-right">
-                        <span className="text-xs font-mono font-bold text-white">
+                        <span className="text-sm font-black text-black">
                           ₹{acc.balance.toLocaleString("en-IN")}
                         </span>
-                        <span className="text-[9px] text-slate-500 block font-mono">
-                          Synced just now
+                        <span className="text-[10px] text-neutral-500 block">
+                          SYNCED REAL-TIME
                         </span>
                       </div>
                     </div>
@@ -198,17 +178,17 @@ export const AccountAggregatorSync: React.FC<AccountAggregatorProps> = ({ onSync
               </div>
 
               {/* Auto Assigned 5 Pots */}
-              <div className="p-4 rounded-2xl bg-[#0c111e] border border-white/[0.06] space-y-3">
-                <span className="text-[10px] uppercase font-bold text-teal-400 font-mono block">
-                  Auto-Assigned 5 Pots Routing
+              <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-200 space-y-3 font-mono">
+                <span className="text-xs uppercase font-bold text-black block">
+                  AUTO-ASSIGNED 5-POT DISTRIBUTION
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {Object.entries(syncData.auto_assigned_5pots || {}).map(([pot, val]: any, i) => (
-                    <div key={i} className="p-2.5 rounded-xl bg-[#080d17] border border-white/[0.05]">
-                      <span className="text-[10px] text-slate-400 uppercase font-mono block capitalize">
+                    <div key={i} className="p-2.5 rounded-lg bg-white border border-neutral-300">
+                      <span className="text-[10px] text-neutral-500 uppercase block">
                         {pot.replace("_", " ")}
                       </span>
-                      <span className="text-xs font-mono font-bold text-white">
+                      <span className="text-xs font-black text-black">
                         ₹{Number(val).toLocaleString("en-IN")}
                       </span>
                     </div>
@@ -217,16 +197,16 @@ export const AccountAggregatorSync: React.FC<AccountAggregatorProps> = ({ onSync
               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-20 text-slate-500 text-xs space-y-2 text-center">
-              <Landmark className="w-8 h-8 text-slate-600" />
-              <p>Ready to sync with 14+ Indian banks via RBI Account Aggregator.</p>
-              <p className="text-[11px] text-slate-600">Click &quot;Fetch Live Bank Balances&quot; to test real execution.</p>
+            <div className="flex flex-col items-center justify-center py-20 text-neutral-500 text-xs space-y-2 text-center font-mono">
+              <span className="text-lg font-bold text-black">[RBI AA GATEWAY]</span>
+              <p className="text-neutral-800">Ready to sync with 14+ Indian banks via RBI Account Aggregator.</p>
+              <p className="text-neutral-500">Click &ldquo;Fetch Live Bank Balances&rdquo; to execute.</p>
             </div>
           )}
 
-          <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>RBI AA Framework</span>
-            <span>Zero Data Selling</span>
+          <div className="pt-3 border-t border-neutral-200 flex items-center justify-between text-xs font-mono text-neutral-500">
+            <span>RBI AA FRAMEWORK</span>
+            <span className="font-bold text-black">[ZERO DATA SELLING]</span>
           </div>
         </div>
       </div>

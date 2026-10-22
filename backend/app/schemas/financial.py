@@ -85,6 +85,7 @@ class GoalCalculationRequest(BaseModel):
     expected_annual_return: Optional[float] = Field(10.0, description="Expected CAGR % (e.g. 10% for equity/hybrid)")
     family_gift_amount: Optional[float] = Field(0.0, description="Family one-time contribution")
     monthly_in_hand: Optional[float] = Field(0.0, description="Monthly income to test affordability")
+    monthly_income: Optional[float] = Field(None, description="Alias for monthly_in_hand")
     is_wedding_or_gold_goal: Optional[bool] = Field(False, description="Whether to include SGB/Gold allocation")
 
 class GoalCalculationResponse(BaseModel):

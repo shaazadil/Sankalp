@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Scale, Zap, Check, ArrowRight, ShieldAlert, Sparkles, Sliders, Info } from "lucide-react";
+import { motion } from "framer-motion";
 import { calculateTaxTug } from "@/lib/api";
 
 interface TaxTugOfWarProps {
@@ -42,10 +42,9 @@ export const TaxTugOfWar: React.FC<TaxTugOfWarProps> = ({ annualCtc = 1200000 })
 
   // Accurate Indian Tax Computation (FY 2024-25 / FY 2025-26 Finance Act)
   const calculation = useMemo(() => {
-    // 1. Basic Salary assumption (50% of CTC)
     const basicSalary = ctc * 0.5;
 
-    // 2. NEW REGIME MATH
+    // NEW REGIME
     const newStdDeduction = 75000;
     const newTaxable = Math.max(0, ctc - newStdDeduction);
     let newTax = 0;
@@ -60,13 +59,12 @@ export const TaxTugOfWar: React.FC<TaxTugOfWarProps> = ({ annualCtc = 1200000 })
       newTax = 20000 + (newTaxable - 700000) * 0.1;
     } else if (newTaxable > 300000) {
       newTax = (newTaxable - 300000) * 0.05;
-      if (newTaxable <= 700000) newTax = 0; // Section 87A rebate
+      if (newTaxable <= 700000) newTax = 0;
     }
-    newTax *= 1.04; // 4% Health & Education cess
+    newTax *= 1.04;
 
-    // 3. OLD REGIME MATH
+    // OLD REGIME
     const oldStdDeduction = 50000;
-    // HRA Exemption minimum
     const annualRent = monthlyRent * 12;
     const rentMinus10Percent = Math.max(0, annualRent - basicSalary * 0.1);
     const basicCap = isMetro ? basicSalary * 0.5 : basicSalary * 0.4;
@@ -90,33 +88,13 @@ export const TaxTugOfWar: React.FC<TaxTugOfWarProps> = ({ annualCtc = 1200000 })
       oldTax = 12500 + (oldTaxable - 500000) * 0.2;
     } else if (oldTaxable > 250000) {
       oldTax = (oldTaxable - 250000) * 0.05;
-      if (oldTaxable <= 500000) oldTax = 0; // 87A rebate for old
+      if (oldTaxable <= 500000) oldTax = 0;
     }
     oldTax *= 1.04;
 
-    if (backendResult) {
-      const diff = Math.round(backendResult.new_regime_tax - backendResult.old_regime_tax);
-      const winner = backendResult.winning_regime;
-      const absoluteSaving = Math.abs(diff);
-      const tilt = winner === "old" ? -12 : 12;
-      return {
-        newTax: Math.round(backendResult.new_regime_tax),
-        oldTax: Math.round(backendResult.old_regime_tax),
-        totalOldDeductions: Math.round(backendResult.total_old_deductions),
-        hraExemption: Math.round(backendResult.hra_exemption),
-        winner,
-        absoluteSaving,
-        monthlySaving: Math.round(absoluteSaving / 12),
-        tilt,
-      };
-    }
-
-    const diff = Math.round(newTax - oldTax);
-    const winner = diff > 0 ? "old" : "new";
-    const absoluteSaving = Math.abs(diff);
-
-    // Scale tilt angle calculation (-15 deg for Old, +15 deg for New)
-    const tilt = winner === "old" ? -12 : 12;
+    const winner = oldTax < newTax ? "old" : "new";
+    const absoluteSaving = Math.abs(oldTax - newTax);
+    const tilt = winner === "old" ? -7 : 7;
 
     return {
       newTax: Math.round(newTax),
@@ -128,141 +106,130 @@ export const TaxTugOfWar: React.FC<TaxTugOfWarProps> = ({ annualCtc = 1200000 })
       monthlySaving: Math.round(absoluteSaving / 12),
       tilt,
     };
-  }, [ctc, section80c, section80d, nps80ccd, homeLoanInterest, monthlyRent, isMetro, backendResult]);
+  }, [ctc, section80c, section80d, nps80ccd, homeLoanInterest, monthlyRent, isMetro]);
 
   return (
-    <div id="tax-tug-of-war" className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
-      {/* Title Bar */}
-      <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-400">
-            <Scale className="w-6 h-6" />
+    <div id="tax-tug-of-war" className="w-full max-w-6xl mx-auto space-y-6">
+      {/* Title Bar - Bold & Minimal */}
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              [TAX PROTOCOL // ENGINE 01]
+            </span>
+            <span className="text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-300 px-2 py-0.5 rounded font-mono font-bold uppercase">
+              FINANCE ACT 2025
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-teal-400">
-                Tax Optimization Scale
-              </span>
-              <span className="text-[10px] bg-teal-500/10 text-teal-300 border border-teal-500/20 px-2 py-0.5 rounded-full font-mono">
-                Finance Act FY 25-26
-              </span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-heading mt-0.5">
-              Tax Regime Tug-of-War
-            </h2>
-            <p className="text-xs text-slate-400">
-              Stack your real deductions onto the scale to see the exact tipping point where Old Regime beats New Regime.
-            </p>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-heading mt-1">
+            Tax Regime Tug-of-War
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-600 font-medium">
+            Stack your exemptions and deductions to pinpoint the exact crossover where Old Regime outperforms New Regime.
+          </p>
         </div>
 
         {/* Verdict Callout */}
-        <div className="flex items-center gap-3 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.08]">
-          <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-            <Zap className="w-5 h-5" />
-          </div>
+        <div className="flex items-center gap-4 bg-neutral-50 p-4 rounded-xl border border-neutral-300">
           <div>
-            <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-              Recommended Regime
+            <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+              RECOMMENDED REGIME
             </span>
-            <p className="text-sm font-bold text-emerald-400">
-              {calculation.winner === "old" ? "Old Tax Regime (HRA & 80C)" : "New Tax Regime (Default)"}
+            <p className="text-base font-black text-black font-mono">
+              {calculation.winner === "old" ? "OLD REGIME (WITH HRA)" : "NEW REGIME (DEFAULT)"}
             </p>
-            <p className="text-[11px] text-slate-400 font-mono">
-              Saves ₹{calculation.absoluteSaving.toLocaleString("en-IN")}/yr (₹{calculation.monthlySaving}/mo)
+            <p className="text-xs text-neutral-700 font-mono font-bold">
+              SAVINGS: ₹{calculation.absoluteSaving.toLocaleString("en-IN")}/YR (₹{calculation.monthlySaving}/MO)
             </p>
           </div>
         </div>
       </div>
 
-      {/* Visual Physics Balance Scale */}
-      <div className="p-6 rounded-3xl bg-[#090d18] border border-white/[0.08] shadow-inner flex flex-col items-center justify-center space-y-4 relative overflow-hidden">
-        {/* Fulcrum and Scale Bar */}
+      {/* Physics Balance Scale */}
+      <div className="p-8 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col items-center justify-center space-y-6">
         <div className="w-full max-w-lg py-4 flex flex-col items-center">
           {/* Pivoting Beam */}
           <div
             style={{ transform: `rotate(${calculation.tilt}deg)` }}
-            className="w-full h-3 rounded-full bg-gradient-to-r from-amber-400 via-slate-500 to-emerald-400 transition-transform duration-700 ease-out flex items-center justify-between px-2 shadow-lg relative"
+            className="w-full h-3 rounded-full bg-neutral-900 transition-transform duration-500 ease-out flex items-center justify-between px-2 shadow-sm relative"
           >
-            {/* Center Pivot Point */}
-            <div className="absolute left-1/2 -top-2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-2 border-slate-900 shadow" />
-
-            {/* Left Pan Attachment */}
-            <div className="w-2.5 h-8 bg-slate-600 rounded-b absolute left-4 top-2 flex flex-col items-center" />
-            {/* Right Pan Attachment */}
-            <div className="w-2.5 h-8 bg-slate-600 rounded-b absolute right-4 top-2 flex flex-col items-center" />
+            <div className="absolute left-1/2 -top-2 -translate-x-1/2 w-4 h-4 rounded-full bg-black border-2 border-white shadow" />
+            <div className="w-2.5 h-7 bg-neutral-400 rounded-b absolute left-4 top-2 flex flex-col items-center" />
+            <div className="w-2.5 h-7 bg-neutral-400 rounded-b absolute right-4 top-2 flex flex-col items-center" />
           </div>
 
           {/* Fulcrum Base */}
-          <div className="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-b-[30px] border-b-slate-700 mt-0.5" />
-          <div className="w-16 h-2 rounded-full bg-slate-800" />
+          <div className="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-b-[28px] border-b-neutral-800 mt-0.5" />
+          <div className="w-20 h-2 rounded bg-neutral-900" />
         </div>
 
         {/* Both Sides Display */}
-        <div className="grid grid-cols-2 gap-4 w-full pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
           {/* OLD REGIME PAN */}
           <div
-            className={`p-4 rounded-2xl border transition-all text-center space-y-2 ${
+            className={`p-6 rounded-xl border transition-all text-center space-y-2 ${
               calculation.winner === "old"
-                ? "bg-amber-950/20 border-amber-500/40 shadow-lg shadow-amber-500/5"
-                : "bg-[#0c111e] border-white/[0.06]"
+                ? "bg-neutral-50 border-black shadow-xs ring-1 ring-black"
+                : "bg-white border-neutral-200"
             }`}
           >
-            <div className="flex items-center justify-center gap-1.5">
-              <span className="text-xs font-bold text-amber-300 font-heading">Old Regime</span>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-xs font-mono font-black text-black uppercase">01 // OLD REGIME</span>
               {calculation.winner === "old" && (
-                <span className="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">
-                  WINNER
+                <span className="text-[10px] bg-black text-white px-2 py-0.5 rounded font-mono font-bold">
+                  BEST OPTION
                 </span>
               )}
             </div>
-            <p className="text-2xl font-black text-white font-mono tabular-nums">
+            <p className="text-3xl font-black text-black font-mono tabular-nums">
               ₹{calculation.oldTax.toLocaleString("en-IN")}
             </p>
-            <span className="text-[10px] text-slate-400 block font-mono">
-              Total Deductions: ₹{(calculation.totalOldDeductions / 100000).toFixed(2)}L
+            <span className="text-xs text-neutral-600 block font-mono">
+              TOTAL DEDUCTIONS: ₹{(calculation.totalOldDeductions / 100000).toFixed(2)}L
             </span>
           </div>
 
           {/* NEW REGIME PAN */}
           <div
-            className={`p-4 rounded-2xl border transition-all text-center space-y-2 ${
+            className={`p-6 rounded-xl border transition-all text-center space-y-2 ${
               calculation.winner === "new"
-                ? "bg-emerald-950/20 border-emerald-500/40 shadow-lg shadow-emerald-500/5"
-                : "bg-[#0c111e] border-white/[0.06]"
+                ? "bg-neutral-50 border-black shadow-xs ring-1 ring-black"
+                : "bg-white border-neutral-200"
             }`}
           >
-            <div className="flex items-center justify-center gap-1.5">
-              <span className="text-xs font-bold text-emerald-300 font-heading">New Regime</span>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-xs font-mono font-black text-black uppercase">02 // NEW REGIME</span>
               {calculation.winner === "new" && (
-                <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-mono font-bold">
-                  WINNER
+                <span className="text-[10px] bg-black text-white px-2 py-0.5 rounded font-mono font-bold">
+                  BEST OPTION
                 </span>
               )}
             </div>
-            <p className="text-2xl font-black text-white font-mono tabular-nums">
+            <p className="text-3xl font-black text-black font-mono tabular-nums">
               ₹{calculation.newTax.toLocaleString("en-IN")}
             </p>
-            <span className="text-[10px] text-slate-400 block font-mono">
-              Flat Std Deduction: ₹75,000
+            <span className="text-xs text-neutral-600 block font-mono">
+              FLAT STD DEDUCTION: ₹75,000
             </span>
           </div>
         </div>
       </div>
 
       {/* Interactive Controls & Deductions Stacking */}
-      <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] space-y-5">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-          <Sliders className="w-4 h-4 text-teal-400" />
-          <span>Adjust Your Salary &amp; Deductions to Test Breakeven</span>
-        </h3>
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-5">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-mono font-black text-black uppercase">
+            CALIBRATE SALARY &amp; DEDUCTIONS
+          </h3>
+          <span className="text-xs font-mono text-neutral-500">REAL-TIME MATH ENGINE</span>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Annual CTC */}
-          <div className="space-y-2 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Annual CTC:</span>
-              <span className="font-mono font-bold text-white">₹{(ctc / 100000).toFixed(1)} Lakhs</span>
+          <div className="space-y-2 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">ANNUAL CTC:</span>
+              <span className="text-black">₹{(ctc / 100000).toFixed(1)} LAKHS</span>
             </div>
             <input
               type="range"
@@ -271,15 +238,15 @@ export const TaxTugOfWar: React.FC<TaxTugOfWarProps> = ({ annualCtc = 1200000 })
               step={50000}
               value={ctc}
               onChange={(e) => setCtc(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
           </div>
 
           {/* Monthly Rent for HRA */}
-          <div className="space-y-2 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Monthly Rent (for HRA):</span>
-              <span className="font-mono font-bold text-amber-300">₹{monthlyRent.toLocaleString("en-IN")}</span>
+          <div className="space-y-2 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">RENT FOR HRA:</span>
+              <span className="text-black">₹{monthlyRent.toLocaleString("en-IN")}</span>
             </div>
             <input
               type="range"
@@ -288,18 +255,18 @@ export const TaxTugOfWar: React.FC<TaxTugOfWarProps> = ({ annualCtc = 1200000 })
               step={1000}
               value={monthlyRent}
               onChange={(e) => setMonthlyRent(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
-            <span className="text-[10px] text-slate-500 font-mono block">
-              Calculated HRA Exemption: ₹{(calculation.hraExemption / 100000).toFixed(2)}L
+            <span className="text-[10px] text-neutral-500 font-mono block">
+              EXEMPTION: ₹{(calculation.hraExemption / 100000).toFixed(2)}L
             </span>
           </div>
 
           {/* Section 80C */}
-          <div className="space-y-2 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Section 80C (EPF/PPF/ELSS):</span>
-              <span className="font-mono font-bold text-slate-200">₹{(section80c / 1000).toFixed(0)}k</span>
+          <div className="space-y-2 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">SECTION 80C:</span>
+              <span className="text-black">₹{(section80c / 1000).toFixed(0)}K</span>
             </div>
             <input
               type="range"
@@ -308,16 +275,16 @@ export const TaxTugOfWar: React.FC<TaxTugOfWarProps> = ({ annualCtc = 1200000 })
               step={10000}
               value={section80c}
               onChange={(e) => setSection80c(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
-            <span className="text-[10px] text-slate-500 font-mono block">Max Capped at ₹1.5 Lakhs</span>
+            <span className="text-[10px] text-neutral-500 font-mono block">CAPPED AT ₹1.5L</span>
           </div>
 
           {/* Section 80D Health Insurance */}
-          <div className="space-y-2 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Section 80D (Health Insurance):</span>
-              <span className="font-mono font-bold text-slate-200">₹{(section80d / 1000).toFixed(0)}k</span>
+          <div className="space-y-2 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">SECTION 80D (HEALTH):</span>
+              <span className="text-black">₹{(section80d / 1000).toFixed(0)}K</span>
             </div>
             <input
               type="range"
@@ -326,15 +293,15 @@ export const TaxTugOfWar: React.FC<TaxTugOfWarProps> = ({ annualCtc = 1200000 })
               step={5000}
               value={section80d}
               onChange={(e) => setSection80d(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
           </div>
 
           {/* NPS 80CCD */}
-          <div className="space-y-2 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Section 80CCD(1B) NPS:</span>
-              <span className="font-mono font-bold text-slate-200">₹{(nps80ccd / 1000).toFixed(0)}k</span>
+          <div className="space-y-2 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">NPS 80CCD(1B):</span>
+              <span className="text-black">₹{(nps80ccd / 1000).toFixed(0)}K</span>
             </div>
             <input
               type="range"
@@ -343,15 +310,15 @@ export const TaxTugOfWar: React.FC<TaxTugOfWarProps> = ({ annualCtc = 1200000 })
               step={5000}
               value={nps80ccd}
               onChange={(e) => setNps80ccd(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
           </div>
 
           {/* Home Loan Interest 24b */}
-          <div className="space-y-2 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Home Loan Interest (24b):</span>
-              <span className="font-mono font-bold text-slate-200">₹{(homeLoanInterest / 100000).toFixed(1)}L</span>
+          <div className="space-y-2 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">HOME LOAN (24B):</span>
+              <span className="text-black">₹{(homeLoanInterest / 100000).toFixed(1)}L</span>
             </div>
             <input
               type="range"
@@ -360,7 +327,7 @@ export const TaxTugOfWar: React.FC<TaxTugOfWarProps> = ({ annualCtc = 1200000 })
               step={10000}
               value={homeLoanInterest}
               onChange={(e) => setHomeLoanInterest(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
           </div>
         </div>

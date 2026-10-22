@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Navigation, Clock, ShieldCheck, MapPin, AlertCircle, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { calculateCommuteElasticity } from "@/lib/api";
 
 export const CommuteRentElasticity: React.FC = () => {
@@ -34,53 +34,40 @@ export const CommuteRentElasticity: React.FC = () => {
   }, [city, distanceKm, mode, days]);
 
   return (
-    <div id="commute-elasticity" className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
+    <div id="commute-elasticity" className="w-full max-w-6xl mx-auto space-y-6">
       {/* Header */}
-      <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
-            <Navigation className="w-6 h-6" />
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              [URBAN ELASTICITY // ENGINE 07]
+            </span>
+            <span className="text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-300 px-2.5 py-0.5 rounded font-mono font-bold uppercase">
+              SANITY VS RENT
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-400">
-                Urban Elasticity
-              </span>
-              <span className="text-[10px] bg-blue-500/10 text-blue-300 border border-blue-500/20 px-2 py-0.5 rounded-full font-mono">
-                Sanity vs. Rent
-              </span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-heading mt-0.5">
-              Commute vs. Rent Elasticity Sandbox
-            </h2>
-            <p className="text-xs text-slate-400">
-              Living 15km away looks cheaper on 99acres until you factor in cab surges, Bangalore traffic, and 300+ hours lost per year.
-            </p>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-heading mt-1">
+            Commute vs. Rent Elasticity
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-600 font-medium">
+            Living 15km away seems cheaper until you account for cab surges, city congestion, and 300+ wasted hours annually.
+          </p>
         </div>
 
         {result && (
-          <div className="flex items-center gap-3 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.08]">
-            <div
-              className={`h-10 w-10 rounded-xl flex items-center justify-center font-bold font-mono text-sm ${
-                result.sanity_index_score >= 70
-                  ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-400"
-                  : result.sanity_index_score >= 45
-                  ? "bg-amber-500/10 border border-amber-500/20 text-amber-400"
-                  : "bg-rose-500/10 border border-rose-500/20 text-rose-400"
-              }`}
-            >
+          <div className="flex items-center gap-4 bg-neutral-50 p-4 rounded-xl border border-neutral-300">
+            <div className="h-11 w-11 rounded-lg bg-black text-white flex items-center justify-center font-black font-mono text-base">
               {result.sanity_index_score}
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-                Sanity Index
+              <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+                SANITY INDEX
               </span>
-              <p className="text-xs font-bold text-slate-200">
-                {result.annual_hours_lost_in_traffic} Hours/Year in Traffic
+              <p className="text-xs font-black text-black font-mono">
+                {result.annual_hours_lost_in_traffic} HRS/YR IN TRAFFIC
               </p>
-              <p className="text-[11px] text-blue-400 font-mono">
-                ₹{result.total_monthly_housing_plus_commute.toLocaleString("en-IN")}/mo All-In
+              <p className="text-xs text-neutral-700 font-mono font-bold">
+                ₹{result.total_monthly_housing_plus_commute.toLocaleString("en-IN")}/MO ALL-IN
               </p>
             </div>
           </div>
@@ -90,44 +77,46 @@ export const CommuteRentElasticity: React.FC = () => {
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
-        <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] space-y-4">
-          <h3 className="text-sm font-bold text-white">Distance &amp; Transit Variables</h3>
+        <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-4">
+          <h3 className="text-sm font-mono font-black text-black uppercase">
+            TRANSIT &amp; DISTANCE LEVERS
+          </h3>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[11px] text-slate-400 block mb-1">City Hub</label>
+              <label className="text-xs font-mono font-bold text-neutral-700 block mb-1">CITY HUB</label>
               <select
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full bg-[#080d17] border border-white/[0.08] text-slate-200 text-xs rounded-xl p-2.5"
+                className="w-full bg-[#F8F9FA] border border-neutral-300 text-black text-xs font-mono font-bold rounded-lg p-2.5 outline-none cursor-pointer"
               >
-                <option value="Bengaluru">Bengaluru (Bellandur/ORR)</option>
-                <option value="Mumbai">Mumbai (BKC / Andheri)</option>
-                <option value="Delhi-NCR">Delhi-NCR (Cyber City)</option>
-                <option value="Hyderabad">Hyderabad (Hitec City)</option>
+                <option value="Bengaluru">Bengaluru (ORR)</option>
+                <option value="Mumbai">Mumbai (BKC)</option>
+                <option value="Delhi-NCR">Delhi-NCR (CyberCity)</option>
+                <option value="Hyderabad">Hyderabad (Hitec)</option>
                 <option value="Pune">Pune (Hinjawadi)</option>
               </select>
             </div>
 
             <div>
-              <label className="text-[11px] text-slate-400 block mb-1">Commute Mode</label>
+              <label className="text-xs font-mono font-bold text-neutral-700 block mb-1">COMMUTE MODE</label>
               <select
                 value={mode}
                 onChange={(e) => setMode(e.target.value)}
-                className="w-full bg-[#080d17] border border-white/[0.08] text-slate-200 text-xs rounded-xl p-2.5"
+                className="w-full bg-[#F8F9FA] border border-neutral-300 text-black text-xs font-mono font-bold rounded-lg p-2.5 outline-none cursor-pointer"
               >
-                <option value="cab_metro">Metro + Auto / Shared</option>
+                <option value="cab_metro">Metro + Shared Auto</option>
                 <option value="cab">Uber / Ola Direct Cab</option>
-                <option value="bike">Personal Bike / Scooter</option>
+                <option value="bike">Personal Bike / EV</option>
               </select>
             </div>
           </div>
 
           {/* Distance Slider */}
-          <div className="space-y-1.5 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Distance from Office Tech Park:</span>
-              <span className="font-mono font-bold text-blue-400">{distanceKm} KM</span>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">DISTANCE TO TECH PARK:</span>
+              <span className="text-black">{distanceKm} KM</span>
             </div>
             <input
               type="range"
@@ -136,20 +125,20 @@ export const CommuteRentElasticity: React.FC = () => {
               step={1}
               value={distanceKm}
               onChange={(e) => setDistanceKm(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-              <span>2 KM (Walking)</span>
+            <div className="flex justify-between text-[10px] text-neutral-500 font-mono">
+              <span>2 KM (Walkable)</span>
               <span>15 KM (Suburban)</span>
-              <span>30 KM (Far Out)</span>
+              <span>30 KM (Periphery)</span>
             </div>
           </div>
 
           {/* Office Days */}
-          <div className="space-y-1.5 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Office Days per Week:</span>
-              <span className="font-mono font-bold text-white">{days} Days/Week</span>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">OFFICE DAYS / WEEK:</span>
+              <span className="text-black">{days} DAYS</span>
             </div>
             <input
               type="range"
@@ -158,55 +147,55 @@ export const CommuteRentElasticity: React.FC = () => {
               step={1}
               value={days}
               onChange={(e) => setDays(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
           </div>
         </div>
 
         {/* Results Panel */}
-        <div className="p-6 rounded-3xl bg-[#090d18] border border-white/[0.08] shadow-inner space-y-4 flex flex-col justify-between">
+        <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-4 flex flex-col justify-between">
           {result ? (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-xl bg-[#0c111e] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-                    Estimated Rent
+                <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-200">
+                  <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+                    ESTIMATED RENT
                   </span>
-                  <span className="text-xl font-black text-white font-mono tabular-nums">
+                  <span className="text-2xl font-black text-black font-mono tabular-nums">
                     ₹{result.estimated_monthly_rent.toLocaleString("en-IN")}/mo
                   </span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-[#0c111e] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-bold text-rose-400 block font-mono">
-                    Commute Cash Drain
+                <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-200">
+                  <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+                    COMMUTE CASH DRAIN
                   </span>
-                  <span className="text-xl font-black text-rose-400 font-mono tabular-nums">
+                  <span className="text-2xl font-black text-black font-mono tabular-nums">
                     +₹{result.estimated_monthly_commute_cost.toLocaleString("en-IN")}/mo
                   </span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-blue-950/20 border border-blue-500/30 text-xs text-blue-200 leading-relaxed">
+              <div className="p-4 rounded-xl bg-neutral-100 border border-neutral-300 text-xs font-mono text-black leading-relaxed">
                 <p>
-                  <strong>True Total Cost of Housing:</strong> Rent (₹{result.estimated_monthly_rent.toLocaleString("en-IN")}) + Travel (₹{result.estimated_monthly_commute_cost.toLocaleString("en-IN")}) ={" "}
-                  <strong className="text-white">₹{result.total_monthly_housing_plus_commute.toLocaleString("en-IN")}/month</strong>.
+                  <strong>TRUE TOTAL LIVING COST:</strong> Rent (₹{result.estimated_monthly_rent.toLocaleString("en-IN")}) + Transit (₹{result.estimated_monthly_commute_cost.toLocaleString("en-IN")}) ={" "}
+                  <strong className="underline">₹{result.total_monthly_housing_plus_commute.toLocaleString("en-IN")}/month</strong>.
                 </p>
               </div>
 
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-neutral-600 leading-relaxed font-medium">
                 {result.recommendation}
               </p>
             </div>
           ) : (
-            <div className="flex items-center justify-center py-12 text-slate-500 text-xs">
-              <Loader2 className="w-5 h-5 animate-spin mr-2" /> Calculating commute elasticity...
+            <div className="flex items-center justify-center py-12 text-neutral-500 text-xs font-mono">
+              CALCULATING COMMUTE ELASTICITY...
             </div>
           )}
 
-          <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>Realistic Indian Metro Congestion Index</span>
-            <span>Deterministic Model</span>
+          <div className="pt-3 border-t border-neutral-200 flex items-center justify-between text-xs font-mono text-neutral-500">
+            <span>METRO TRAFFIC CONGESTION INDEX</span>
+            <span className="font-bold text-black">[DETERMINISTIC MODEL]</span>
           </div>
         </div>
       </div>

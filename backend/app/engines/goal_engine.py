@@ -23,7 +23,7 @@ def calculate_goal(req: GoalCalculationRequest) -> GoalCalculationResponse:
     months = req.target_months
     current_savings = req.current_savings or 0.0
     family_gift = req.family_gift_amount or 0.0
-    monthly_income = req.monthly_income or 0.0
+    monthly_income = req.monthly_in_hand or req.monthly_income or 0.0
     
     # Net target remaining
     net_target = max(0.0, target - current_savings - family_gift)

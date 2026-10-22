@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ShieldCheck, Award, Gift, Zap, ArrowUpRight, CheckCircle2, Lock } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface SankalpScoreMeterProps {
   runwayMonths?: number;
@@ -22,57 +22,48 @@ export const SankalpScoreMeter: React.FC<SankalpScoreMeterProps> = ({
 
   const totalScore = Math.min(1000, runwayPoints + savingsPoints + taxPoints + zeroBasedBonus);
 
-  // Tier determination
-  let tier = "Balanced";
-  let tierColor = "text-teal-400";
-  let tierBg = "bg-teal-500/10 border-teal-500/20";
+  let tier = "BALANCED";
   if (totalScore >= 850) {
-    tier = "Bulletproof";
-    tierColor = "text-emerald-400";
-    tierBg = "bg-emerald-500/10 border-emerald-500/20";
+    tier = "RESILIENT SOVEREIGN";
   } else if (totalScore < 600) {
-    tier = "Vulnerable";
-    tierColor = "text-amber-400";
-    tierBg = "bg-amber-500/10 border-amber-500/20";
+    tier = "VULNERABLE RUNWAY";
   }
 
-  // Percentage for SVG circle dash
   const strokeDashoffset = 440 - (440 * (totalScore / 1000));
 
   const perks = [
     {
       title: "1-on-1 Chartered Accountant Tax Consultation",
-      tag: "Unlocked @ 750+",
+      tag: "LEVEL 750+",
       unlocked: totalScore >= 750,
-      desc: "Free 30-min strategy session to optimize Old vs New Regime exemptions.",
+      desc: "30-min strategy session to optimize Old vs New Regime exemptions.",
     },
     {
-      title: "Zero-Brokerage Smallcase Investment Routing",
-      tag: "Unlocked @ 800+",
+      title: "Direct Index / SGB Investment Routing",
+      tag: "LEVEL 800+",
       unlocked: totalScore >= 800,
-      desc: "Direct 1-click execution of your Growth Pot SIP into low-cost index baskets.",
+      desc: "Direct execution of your Growth Pot SIP into low-cost index funds.",
     },
     {
-      title: "WeWork / Co-Working Day Pass Voucher",
-      tag: "Unlocked @ 850+",
+      title: "6-Month Liquid Runway Milestone Verification",
+      tag: "LEVEL 850+",
       unlocked: totalScore >= 850,
-      desc: "Exclusive remote worker perk for maintaining a 6-month liquid runway.",
+      desc: "Audit-ready financial health certification for rental leases.",
     },
   ];
 
   return (
-    <div id="readiness-score" className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
-      <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+    <div id="readiness-score" className="w-full max-w-6xl mx-auto space-y-6">
+      <div className="p-6 sm:p-8 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6">
         {/* Left Circular Gauge */}
         <div className="flex items-center gap-6">
-          <div className="relative w-36 h-36 flex items-center justify-center">
-            {/* SVG Meter */}
+          <div className="relative w-36 h-36 flex items-center justify-center shrink-0">
             <svg className="w-full h-full -rotate-90" viewBox="0 0 160 160">
               <circle
                 cx="80"
                 cy="80"
                 r="70"
-                className="stroke-slate-800"
+                className="stroke-neutral-200"
                 strokeWidth="12"
                 fill="transparent"
               />
@@ -80,7 +71,7 @@ export const SankalpScoreMeter: React.FC<SankalpScoreMeterProps> = ({
                 cx="80"
                 cy="80"
                 r="70"
-                className="stroke-emerald-400 transition-all duration-1000 ease-out"
+                className="stroke-black transition-all duration-1000 ease-out"
                 strokeWidth="12"
                 strokeDasharray="440"
                 strokeDashoffset={strokeDashoffset}
@@ -91,63 +82,60 @@ export const SankalpScoreMeter: React.FC<SankalpScoreMeterProps> = ({
 
             {/* Score in Center */}
             <div className="absolute flex flex-col items-center">
-              <span className="text-3xl font-black text-white font-mono tabular-nums tracking-tight">
+              <span className="text-4xl font-black text-black font-mono tabular-nums tracking-tight">
                 {totalScore}
               </span>
-              <span className="text-[10px] uppercase font-bold text-slate-400 font-mono">
+              <span className="text-[10px] uppercase font-mono font-bold text-neutral-500">
                 / 1000
               </span>
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span
-                className={`text-xs font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${tierBg} ${tierColor}`}
-              >
-                {tier} Portfolio
+              <span className="text-xs font-mono font-black uppercase tracking-wider px-2.5 py-0.5 rounded bg-black text-white">
+                {tier}
               </span>
-              <span className="text-[10px] text-slate-500 font-mono">Top 12% in BLR</span>
+              <span className="text-xs text-neutral-500 font-mono">TOP 12% IN METRO</span>
             </div>
-            <h3 className="text-xl font-black text-white font-heading">
+            <h3 className="text-2xl font-black text-black font-heading tracking-tight">
               Sankalp Readiness Index
             </h3>
-            <p className="text-xs text-slate-400 max-w-md">
-              Evaluates your liquidity runway, tax minimization, parent support buffer, and zero-based discipline.
+            <p className="text-xs text-neutral-600 max-w-md font-medium">
+              Deterministic evaluation of liquid runway, tax minimization, family support buffer, and zero-based discipline.
             </p>
           </div>
         </div>
 
         {/* 4 Pillars Mini-Badges */}
         <div className="grid grid-cols-2 gap-3 w-full md:w-auto">
-          <div className="p-3 rounded-xl bg-[#080d17] border border-white/[0.06] text-center">
-            <span className="text-[10px] text-slate-400 block font-mono">Liquid Runway</span>
-            <span className="text-sm font-bold text-white font-mono">{runwayPoints}/250 pts</span>
+          <div className="p-3.5 rounded-xl bg-[#F8F9FA] border border-neutral-200 text-center">
+            <span className="text-[10px] text-neutral-500 uppercase font-mono block">RUNWAY PTS</span>
+            <span className="text-base font-black text-black font-mono">{runwayPoints}/250</span>
           </div>
-          <div className="p-3 rounded-xl bg-[#080d17] border border-white/[0.06] text-center">
-            <span className="text-[10px] text-slate-400 block font-mono">Savings Pace</span>
-            <span className="text-sm font-bold text-emerald-400 font-mono">{savingsPoints}/250 pts</span>
+          <div className="p-3.5 rounded-xl bg-[#F8F9FA] border border-neutral-200 text-center">
+            <span className="text-[10px] text-neutral-500 uppercase font-mono block">SAVINGS PTS</span>
+            <span className="text-base font-black text-black font-mono">{savingsPoints}/250</span>
           </div>
-          <div className="p-3 rounded-xl bg-[#080d17] border border-white/[0.06] text-center">
-            <span className="text-[10px] text-slate-400 block font-mono">Tax Optimization</span>
-            <span className="text-sm font-bold text-teal-400 font-mono">{taxPoints}/250 pts</span>
+          <div className="p-3.5 rounded-xl bg-[#F8F9FA] border border-neutral-200 text-center">
+            <span className="text-[10px] text-neutral-500 uppercase font-mono block">TAX OPTIM</span>
+            <span className="text-base font-black text-black font-mono">{taxPoints}/250</span>
           </div>
-          <div className="p-3 rounded-xl bg-[#080d17] border border-white/[0.06] text-center">
-            <span className="text-[10px] text-slate-400 block font-mono">Zero-Based Habit</span>
-            <span className="text-sm font-bold text-purple-400 font-mono">200/200 pts</span>
+          <div className="p-3.5 rounded-xl bg-[#F8F9FA] border border-neutral-200 text-center">
+            <span className="text-[10px] text-neutral-500 uppercase font-mono block">ZERO-SUM</span>
+            <span className="text-base font-black text-black font-mono">200/200</span>
           </div>
         </div>
       </div>
 
       {/* Milestone Unlocks & Perks */}
-      <div className="p-6 rounded-3xl bg-[#080d17] border border-white/[0.08] space-y-4">
-        <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-          <div className="flex items-center gap-2 text-xs">
-            <Gift className="w-4 h-4 text-emerald-400" />
-            <span className="font-bold text-white">Milestone Partner Perks</span>
-          </div>
-          <span className="text-[10px] font-mono text-emerald-400">
-            {perks.filter((p) => p.unlocked).length} of 3 Perks Active
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 space-y-4 shadow-xs">
+        <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
+          <span className="font-mono font-black text-xs text-black uppercase">
+            READINESS MILESTONE UNLOCKS
+          </span>
+          <span className="text-xs font-mono text-neutral-600 font-bold">
+            [{perks.filter((p) => p.unlocked).length} OF 3 ACTIVE]
           </span>
         </div>
 
@@ -155,30 +143,22 @@ export const SankalpScoreMeter: React.FC<SankalpScoreMeterProps> = ({
           {perks.map((perk, idx) => (
             <div
               key={idx}
-              className={`p-4 rounded-2xl border transition-all ${
+              className={`p-5 rounded-xl border transition-all ${
                 perk.unlocked
-                  ? "bg-[#0c111e] border-emerald-500/30 shadow-md"
-                  : "bg-[#080d17] border-white/[0.06] opacity-60"
+                  ? "bg-[#F8F9FA] border-neutral-900"
+                  : "bg-white border-neutral-200 opacity-60"
               }`}
             >
               <div className="flex items-center justify-between mb-2">
-                <span
-                  className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full ${
-                    perk.unlocked
-                      ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
-                      : "bg-slate-800 text-slate-400 border border-slate-700"
-                  }`}
-                >
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-neutral-200 text-black">
                   {perk.tag}
                 </span>
-                {perk.unlocked ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                ) : (
-                  <Lock className="w-3.5 h-3.5 text-slate-500" />
-                )}
+                <span className="text-xs font-mono font-bold text-black">
+                  {perk.unlocked ? "[UNLOCKED]" : "[LOCKED]"}
+                </span>
               </div>
-              <h4 className="text-xs font-bold text-white mb-1">{perk.title}</h4>
-              <p className="text-[11px] text-slate-400 leading-relaxed">{perk.desc}</p>
+              <h4 className="text-sm font-black text-black font-heading mb-1">{perk.title}</h4>
+              <p className="text-xs text-neutral-600 leading-relaxed font-medium">{perk.desc}</p>
             </div>
           ))}
         </div>

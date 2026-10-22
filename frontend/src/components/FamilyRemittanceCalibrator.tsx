@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Heart, ShieldCheck, AlertCircle, ArrowRight, Loader2, Sparkles, UserCheck } from "lucide-react";
+import { motion } from "framer-motion";
 import { calculateFamilyCalibrator } from "@/lib/api";
 
 interface FamilyRemittanceCalibratorProps {
@@ -46,45 +46,40 @@ export const FamilyRemittanceCalibrator: React.FC<FamilyRemittanceCalibratorProp
   }, [income, remittance, parentAge, existingCover, eFund]);
 
   return (
-    <div id="family-calibrator" className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
+    <div id="family-calibrator" className="w-full max-w-6xl mx-auto space-y-6">
       {/* Title Header */}
-      <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400">
-            <Heart className="w-6 h-6" />
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              [FILIAL ARCHITECTURE // ENGINE 09]
+            </span>
+            <span className="text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-300 px-2.5 py-0.5 rounded font-mono font-bold uppercase">
+              INDIAN HOUSEHOLD SHIELD
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
-                Filial Care Architecture
-              </span>
-              <span className="text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/20 px-2 py-0.5 rounded-full font-mono">
-                Indian Household Engine
-              </span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-heading mt-0.5">
-              The Family Remittance Guilt-Free Calibrator
-            </h2>
-            <p className="text-xs text-slate-400">
-              Balance filial support to parents with your retirement compounding—protecting your emergency buffer against medical shocks.
-            </p>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-heading mt-1">
+            Family Remittance &amp; Health Shield Calibrator
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-600 font-medium">
+            Balance filial support to parents with personal wealth compounding—protecting your emergency reserve from sudden medical shocks.
+          </p>
         </div>
 
         {result && (
-          <div className="flex items-center gap-3 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.08]">
-            <div className="h-10 w-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 font-bold font-mono text-sm">
+          <div className="flex items-center gap-4 bg-neutral-50 p-4 rounded-xl border border-neutral-300">
+            <div className="h-11 w-11 rounded-lg bg-black text-white flex items-center justify-center font-mono font-black text-base">
               {result.remittance_safety_ratio}%
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-                Remittance Burden
+              <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+                REMITTANCE BURDEN
               </span>
-              <p className="text-xs font-bold text-slate-200">
-                {result.remittance_safety_ratio <= 20 ? "Balanced & Sustainable" : "High Burden Level"}
+              <p className="text-xs font-black text-black font-mono">
+                {result.remittance_safety_ratio <= 20 ? "SUSTAINABLE & BALANCED" : "ELEVATED BURDEN"}
               </p>
-              <p className="text-[11px] text-amber-400 font-mono">
-                ₹{result.annual_remittance.toLocaleString("en-IN")}/yr sent home
+              <p className="text-xs text-neutral-600 font-mono">
+                ₹{result.annual_remittance.toLocaleString("en-IN")}/YR SENT HOME
               </p>
             </div>
           </div>
@@ -94,17 +89,16 @@ export const FamilyRemittanceCalibrator: React.FC<FamilyRemittanceCalibratorProp
       {/* Main Interactive Controls & Results */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sliders Input Panel */}
-        <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] space-y-4">
-          <h3 className="text-sm font-bold text-white flex items-center gap-2">
-            <UserCheck className="w-4 h-4 text-amber-400" />
-            <span>Calibrate Parental Support &amp; Health Protection</span>
+        <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-4">
+          <h3 className="text-sm font-mono font-black text-black uppercase">
+            CALIBRATE PARENTAL SUPPORT &amp; PROTECTION
           </h3>
 
           {/* Monthly Remittance */}
-          <div className="space-y-1.5 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Monthly Remittance Sent Home:</span>
-              <span className="font-mono font-bold text-amber-300">₹{remittance.toLocaleString("en-IN")}/mo</span>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">MONTHLY REMITTANCE:</span>
+              <span className="text-black">₹{remittance.toLocaleString("en-IN")}/mo</span>
             </div>
             <input
               type="range"
@@ -113,15 +107,15 @@ export const FamilyRemittanceCalibrator: React.FC<FamilyRemittanceCalibratorProp
               step={1000}
               value={remittance}
               onChange={(e) => setRemittance(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
           </div>
 
           {/* Parent Age */}
-          <div className="space-y-1.5 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Eldest Parent Age:</span>
-              <span className="font-mono font-bold text-white">{parentAge} Years</span>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">ELDEST PARENT AGE:</span>
+              <span className="text-black">{parentAge} YEARS</span>
             </div>
             <input
               type="range"
@@ -130,18 +124,18 @@ export const FamilyRemittanceCalibrator: React.FC<FamilyRemittanceCalibratorProp
               step={1}
               value={parentAge}
               onChange={(e) => setParentAge(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
-            <span className="text-[10px] text-slate-500 font-mono block">
-              Parent healthcare inflation in India averages 14% p.a.
+            <span className="text-[10px] text-neutral-500 font-mono block">
+              Healthcare inflation for senior parents in India averages 14% p.a.
             </span>
           </div>
 
           {/* Existing Parent Insurance */}
-          <div className="space-y-1.5 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Existing Parent Health Cover:</span>
-              <span className="font-mono font-bold text-white">₹{existingCover} Lakhs</span>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">PARENT HEALTH COVER:</span>
+              <span className="text-black">₹{existingCover} LAKHS</span>
             </div>
             <input
               type="range"
@@ -150,62 +144,62 @@ export const FamilyRemittanceCalibrator: React.FC<FamilyRemittanceCalibratorProp
               step={1}
               value={existingCover}
               onChange={(e) => setExistingCover(Number(e.target.value))}
-              className="w-full cursor-pointer"
+              className="w-full cursor-pointer accent-black"
             />
           </div>
         </div>
 
-        {/* Real Backend Intelligence Result Panel */}
-        <div className="p-6 rounded-3xl bg-[#090d18] border border-white/[0.08] shadow-inner space-y-5 flex flex-col justify-between">
+        {/* Intelligence Result Panel */}
+        <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-4 flex flex-col justify-between">
           {result ? (
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-                <span className="text-xs font-bold text-slate-300">Parental Health Shield Math</span>
-                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                  FastAPI Engine Verified
+              <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
+                <span className="text-xs font-mono font-bold text-black uppercase">PARENTAL HEALTH SHIELD MODEL</span>
+                <span className="text-[10px] font-mono text-black bg-neutral-100 border border-neutral-300 px-2 py-0.5 rounded font-bold uppercase">
+                  VERIFIED
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-xl bg-[#0c111e] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-                    Projected Medical Shock
+                <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-200">
+                  <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+                    PROJECTED MEDICAL SHOCK
                   </span>
-                  <span className="text-lg font-black text-rose-400 font-mono tabular-nums">
-                    ₹{result.parent_medical_shock_risk_lakhs} Lakhs
+                  <span className="text-xl font-black text-black font-mono tabular-nums">
+                    ₹{result.parent_medical_shock_risk_lakhs} LAKHS
                   </span>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-[#0c111e] border border-white/[0.06]">
-                  <span className="text-[10px] uppercase font-bold text-emerald-400 block font-mono">
-                    Recommended Cover
+                <div className="p-4 rounded-xl bg-neutral-100 border border-neutral-300">
+                  <span className="text-[10px] uppercase font-mono font-bold text-black block">
+                    RECOMMENDED COVER
                   </span>
-                  <span className="text-lg font-black text-emerald-300 font-mono tabular-nums">
-                    ₹{result.suggested_super_topup_cover_lakhs} Lakhs
+                  <span className="text-xl font-black text-black font-mono tabular-nums">
+                    ₹{result.suggested_super_topup_cover_lakhs} LAKHS
                   </span>
                 </div>
               </div>
 
-              <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-xs text-amber-200 leading-relaxed">
+              <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-300 text-xs font-mono text-neutral-700 leading-relaxed">
                 <p>
-                  <strong>Strategic Playbook:</strong> Taking a ₹{result.suggested_super_topup_cover_lakhs}L super top-up policy (estimated annual premium:{" "}
-                  <strong className="text-white">₹{result.estimated_annual_insurance_premium.toLocaleString("en-IN")}/yr</strong>) guarantees that {result.emergency_fund_protection_percent}% of your emergency fund stays un-depleted if an emergency strikes.
+                  <strong>STRATEGIC PLAYBOOK:</strong> Taking a ₹{result.suggested_super_topup_cover_lakhs}L super top-up policy (estimated annual premium:{" "}
+                  <strong className="text-black font-bold">₹{result.estimated_annual_insurance_premium.toLocaleString("en-IN")}/yr</strong>) ensures {result.emergency_fund_protection_percent}% of your emergency fund stays un-depleted if an emergency strikes.
                 </p>
               </div>
 
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-neutral-600 leading-relaxed font-medium">
                 {result.insight}
               </p>
             </div>
           ) : (
-            <div className="flex items-center justify-center py-12 text-slate-500 text-xs">
-              <Loader2 className="w-5 h-5 animate-spin mr-2" /> Computing parental medical shield...
+            <div className="flex items-center justify-center py-12 text-neutral-500 text-xs font-mono">
+              CALCULATING PARENTAL MEDICAL SHIELD...
             </div>
           )}
 
-          <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>Guilt-Free Filial Duty</span>
-            <span>Zero Emotional Compromise</span>
+          <div className="pt-3 border-t border-neutral-200 flex items-center justify-between text-xs font-mono text-neutral-500">
+            <span>GUILT-FREE FILIAL DUTY</span>
+            <span className="font-bold text-black">[ZERO COMPROMISE]</span>
           </div>
         </div>
       </div>

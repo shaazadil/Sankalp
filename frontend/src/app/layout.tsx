@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Outfit, JetBrains_Mono } from "next/font/google";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -39,7 +40,10 @@ export default function RootLayout({
       lang="en"
       className={`${plusJakarta.variable} ${outfit.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans bg-[#F4F5F7] text-[#09090B]">
+        <SmoothScroll />
+        {children}
+      </body>
     </html>
   );
 }

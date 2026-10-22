@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Compass, BatteryCharging, ShieldAlert, Sparkles, AlertCircle, Calendar, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { calculateSabbaticalRunway } from "@/lib/api";
 
 interface SabbaticalRunwayProps {
@@ -43,46 +43,41 @@ export const SabbaticalRunwayTank: React.FC<SabbaticalRunwayProps> = ({ initialS
   }, [savings, rentAndBills, familySupport, emis, pauseDiscretionary, discretionarySpend]);
 
   return (
-    <div id="sabbatical-runway" className="w-full max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
+    <div id="sabbatical-runway" className="w-full max-w-6xl mx-auto space-y-6">
       {/* Header */}
-      <div className="p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
-            <Compass className="w-6 h-6" />
+      <div className="p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              [FREEDOM RESERVOIR // ENGINE 08]
+            </span>
+            <span className="text-[10px] bg-neutral-100 text-neutral-800 border border-neutral-300 px-2.5 py-0.5 rounded font-mono font-bold uppercase">
+              ZERO-INCOME BURN MODEL
+            </span>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400">
-                Career Pivot &amp; Freedom
-              </span>
-              <span className="text-[10px] bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 px-2 py-0.5 rounded-full font-mono">
-                Real Burn Reservoir
-              </span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-heading mt-0.5">
-              Sabbatical &amp; Upskilling Runway Tank
-            </h2>
-            <p className="text-xs text-slate-400">
-              Calculate exact days of zero-income survival before taking a startup plunge, higher studies, or mental break.
-            </p>
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight font-heading mt-1">
+            Sabbatical &amp; Upskilling Runway Tank
+          </h2>
+          <p className="text-xs sm:text-sm text-neutral-600 font-medium">
+            Calculate exact days of zero-income survival before taking a startup plunge, higher studies, or career break.
+          </p>
         </div>
 
         {result && (
-          <div className="flex items-center gap-3 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.08]">
-            <div className="h-12 w-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex flex-col items-center justify-center text-cyan-300">
-              <span className="text-base font-black font-mono leading-none">{result.runway_months}</span>
-              <span className="text-[9px] font-mono uppercase text-cyan-400/80">Months</span>
+          <div className="flex items-center gap-4 bg-neutral-50 p-4 rounded-xl border border-neutral-300">
+            <div className="h-11 w-11 rounded-lg bg-black text-white flex flex-col items-center justify-center font-mono">
+              <span className="text-base font-black leading-none">{result.runway_months}</span>
+              <span className="text-[9px] font-mono uppercase text-neutral-300 font-bold">MONTHS</span>
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 block font-mono">
-                Survival Capacity
+              <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 block">
+                SURVIVAL CAPACITY
               </span>
-              <p className="text-xs font-bold text-white">
-                {result.runway_days} Continuous Days
+              <p className="text-sm font-black text-black font-mono">
+                {result.runway_days} CONTINUOUS DAYS
               </p>
-              <p className="text-[11px] text-cyan-400 font-mono">
-                Until {result.max_sabbatical_date}
+              <p className="text-xs text-neutral-600 font-mono">
+                UNTIL {result.max_sabbatical_date}
               </p>
             </div>
           </div>
@@ -91,18 +86,20 @@ export const SabbaticalRunwayTank: React.FC<SabbaticalRunwayProps> = ({ initialS
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Controls (7 Cols) */}
-        <div className="lg:col-span-7 p-6 rounded-3xl bg-[#0c111e] border border-white/[0.08] space-y-5">
-          <h3 className="text-sm font-bold text-white flex items-center justify-between">
-            <span>Liquid Reserves &amp; Survival Cash Burn</span>
-            <span className="text-xs font-mono text-cyan-400">Deterministic Engine</span>
-          </h3>
+        {/* Controls */}
+        <div className="lg:col-span-7 p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs space-y-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-mono font-black text-black uppercase">
+              RESERVOIR &amp; SURVIVAL BURN
+            </h3>
+            <span className="text-xs font-mono text-neutral-500">[FASTAPI ENGINE]</span>
+          </div>
 
           {/* Liquid Savings */}
-          <div className="space-y-2 bg-[#080d17] p-4 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-400">Liquid Savings Reservoir (Cash + FDs):</span>
-              <span className="font-mono font-bold text-cyan-300">₹{savings.toLocaleString("en-IN")}</span>
+          <div className="space-y-2 bg-[#F8F9FA] p-4 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">LIQUID SAVINGS RESERVOIR:</span>
+              <span className="text-black">₹{savings.toLocaleString("en-IN")}</span>
             </div>
             <input
               type="range"
@@ -111,9 +108,9 @@ export const SabbaticalRunwayTank: React.FC<SabbaticalRunwayProps> = ({ initialS
               step={25000}
               value={savings}
               onChange={(e) => setSavings(Number(e.target.value))}
-              className="w-full cursor-pointer accent-cyan-400"
+              className="w-full cursor-pointer accent-black"
             />
-            <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+            <div className="flex justify-between text-[10px] text-neutral-500 font-mono">
               <span>₹1 Lakh</span>
               <span>₹10 Lakh</span>
               <span>₹25 Lakh</span>
@@ -122,10 +119,10 @@ export const SabbaticalRunwayTank: React.FC<SabbaticalRunwayProps> = ({ initialS
 
           {/* Fixed Survival Costs */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1.5 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.06]">
-              <div className="flex justify-between text-[11px]">
-                <span className="text-slate-400">Survival Rent &amp; Food:</span>
-                <span className="font-mono font-bold text-white">₹{rentAndBills.toLocaleString("en-IN")}</span>
+            <div className="space-y-1.5 bg-[#F8F9FA] p-3.5 rounded-xl border border-neutral-200">
+              <div className="flex justify-between text-xs font-mono font-bold">
+                <span className="text-neutral-700">RENT &amp; FOOD:</span>
+                <span className="text-black">₹{rentAndBills.toLocaleString("en-IN")}</span>
               </div>
               <input
                 type="range"
@@ -134,14 +131,14 @@ export const SabbaticalRunwayTank: React.FC<SabbaticalRunwayProps> = ({ initialS
                 step={1000}
                 value={rentAndBills}
                 onChange={(e) => setRentAndBills(Number(e.target.value))}
-                className="w-full cursor-pointer accent-cyan-400"
+                className="w-full cursor-pointer accent-black"
               />
             </div>
 
-            <div className="space-y-1.5 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.06]">
-              <div className="flex justify-between text-[11px]">
-                <span className="text-slate-400">Parent Support / Remittance:</span>
-                <span className="font-mono font-bold text-amber-300">₹{familySupport.toLocaleString("en-IN")}</span>
+            <div className="space-y-1.5 bg-[#F8F9FA] p-3.5 rounded-xl border border-neutral-200">
+              <div className="flex justify-between text-xs font-mono font-bold">
+                <span className="text-neutral-700">FAMILY SUPPORT:</span>
+                <span className="text-black">₹{familySupport.toLocaleString("en-IN")}</span>
               </div>
               <input
                 type="range"
@@ -150,16 +147,16 @@ export const SabbaticalRunwayTank: React.FC<SabbaticalRunwayProps> = ({ initialS
                 step={1000}
                 value={familySupport}
                 onChange={(e) => setFamilySupport(Number(e.target.value))}
-                className="w-full cursor-pointer accent-amber-400"
+                className="w-full cursor-pointer accent-black"
               />
             </div>
           </div>
 
           {/* Active EMIs */}
-          <div className="space-y-1.5 bg-[#080d17] p-3.5 rounded-2xl border border-white/[0.06]">
-            <div className="flex justify-between text-[11px]">
-              <span className="text-slate-400">Active EMIs (Education/Gadgets - cannot pause):</span>
-              <span className="font-mono font-bold text-rose-300">₹{emis.toLocaleString("en-IN")}</span>
+          <div className="space-y-1.5 bg-[#F8F9FA] p-3.5 rounded-xl border border-neutral-200">
+            <div className="flex justify-between text-xs font-mono font-bold">
+              <span className="text-neutral-700">ACTIVE EMIS (CANNOT PAUSE):</span>
+              <span className="text-black">₹{emis.toLocaleString("en-IN")}</span>
             </div>
             <input
               type="range"
@@ -168,86 +165,78 @@ export const SabbaticalRunwayTank: React.FC<SabbaticalRunwayProps> = ({ initialS
               step={1000}
               value={emis}
               onChange={(e) => setEmis(Number(e.target.value))}
-              className="w-full cursor-pointer accent-rose-400"
+              className="w-full cursor-pointer accent-black"
             />
           </div>
 
           {/* Discretionary Pause Switch */}
-          <div className="p-4 rounded-2xl bg-[#080d17] border border-white/[0.06] flex items-center justify-between">
+          <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-200 flex items-center justify-between">
             <div>
-              <span className="text-xs font-bold text-white block">Austerity Mode: Pause Discretionary Spend</span>
-              <span className="text-[11px] text-slate-400">
-                Swiggy, weekend getaways, and dining out paused during career pause
+              <span className="text-xs font-mono font-bold text-black block">AUSTERITY MODE: PAUSE DISCRETIONARY</span>
+              <span className="text-[11px] text-neutral-500 font-mono">
+                Pause Swiggy, leisure &amp; weekend trips during sabbatical
               </span>
             </div>
             <button
               type="button"
               onClick={() => setPauseDiscretionary(!pauseDiscretionary)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold font-mono transition-colors border ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold font-mono transition-colors border cursor-pointer ${
                 pauseDiscretionary
-                  ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
-                  : "bg-slate-800 text-slate-400 border-white/10"
+                  ? "bg-black text-white border-black"
+                  : "bg-white text-neutral-700 border-neutral-300"
               }`}
             >
-              {pauseDiscretionary ? "PAUSED (+2.5 mo)" : "ACTIVE (-₹12k/mo)"}
+              {pauseDiscretionary ? "[PAUSED: +2.5 MO]" : "[ACTIVE: -₹12K/MO]"}
             </button>
           </div>
         </div>
 
-        {/* Intelligence Tank Display (5 Cols) */}
-        <div className="lg:col-span-5 p-6 rounded-3xl bg-[#090d18] border border-white/[0.08] flex flex-col justify-between space-y-5">
+        {/* Intelligence Tank Display */}
+        <div className="lg:col-span-5 p-6 rounded-2xl bg-white border border-neutral-300 shadow-xs flex flex-col justify-between space-y-5">
           {result ? (
             <div className="space-y-4">
               {/* Runway Gauge Card */}
-              <div className="p-4 rounded-2xl bg-[#0c111e] border border-white/[0.08] relative overflow-hidden">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-[10px] font-mono uppercase text-slate-400">Reservoir Depletion Speed</span>
-                  <span className="text-xs font-mono font-bold text-cyan-400">
-                    ₹{result.monthly_burn_rate.toLocaleString("en-IN")} / mo
+              <div className="p-4 rounded-xl bg-[#F8F9FA] border border-neutral-200 space-y-2">
+                <div className="flex justify-between items-center text-xs font-mono">
+                  <span className="text-neutral-500 uppercase">MONTHLY BURN RATE</span>
+                  <span className="font-bold text-black">
+                    ₹{result.monthly_burn_rate.toLocaleString("en-IN")} / MO
                   </span>
                 </div>
 
-                {/* Reservoir Tank Bar */}
-                <div className="w-full h-4 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-white/10">
+                <div className="w-full h-3.5 bg-neutral-200 rounded-md overflow-hidden p-0.5 border border-neutral-300">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 transition-all duration-500"
+                    className="h-full rounded-xs bg-black transition-all duration-500"
                     style={{ width: `${Math.min(100, Math.max(10, (result.runway_months / 24) * 100))}%` }}
                   />
                 </div>
 
-                <div className="flex justify-between text-[10px] text-slate-500 font-mono mt-1.5">
-                  <span>Critical (&lt;3mo)</span>
-                  <span>Target Safe (6-12mo)</span>
-                  <span>Fortress (&gt;18mo)</span>
+                <div className="flex justify-between text-[10px] text-neutral-500 font-mono">
+                  <span>CRITICAL (&lt;3MO)</span>
+                  <span>SAFE (6-12MO)</span>
+                  <span>FORTRESS (&gt;18MO)</span>
                 </div>
               </div>
 
               {/* Status Verdict */}
-              <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${
-                result.runway_months >= 9
-                  ? "bg-emerald-950/20 border-emerald-500/30 text-emerald-200"
-                  : result.runway_months >= 4
-                  ? "bg-cyan-950/20 border-cyan-500/30 text-cyan-200"
-                  : "bg-rose-950/20 border-rose-500/30 text-rose-200"
-              }`}>
-                <div className="font-bold flex items-center gap-1.5 mb-1">
-                  <BatteryCharging className="w-4 h-4" />
+              <div className="p-4 rounded-xl bg-neutral-100 border border-neutral-300 text-xs leading-relaxed font-mono">
+                <div className="font-black text-black uppercase mb-1">
                   {result.sustainability_verdict}
                 </div>
-                <p className="text-[11px] opacity-90">
-                  With your current fixed obligations (including family support and active debt), your liquid net worth sustains you cleanly until <strong className="underline">{result.max_sabbatical_date}</strong>.
+                <p className="text-xs text-neutral-600 font-sans">
+                  With your current fixed obligations (including family remittance and active EMIs), your liquid reservoir sustains you cleanly until <strong className="underline text-black font-mono">{result.max_sabbatical_date}</strong>.
                 </p>
               </div>
 
               {/* Runway Extension Playbook */}
               <div className="space-y-2">
-                <span className="text-[10px] uppercase font-bold text-slate-400 font-mono block">
-                  Actionable Runway Multipliers
+                <span className="text-[10px] uppercase font-mono font-bold text-black block">
+                  ACTIONABLE RUNWAY MULTIPLIERS
                 </span>
-                <div className="space-y-1.5">
+                <div className="space-y-1.5 font-mono">
                   {result.burn_reduction_tips?.map((tip: string, idx: number) => (
-                    <div key={idx} className="flex items-start gap-2 text-[11px] text-slate-300 bg-[#0c111e] p-2.5 rounded-xl border border-white/[0.05]">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
+                    <div key={idx} className="flex items-start gap-2 text-xs text-neutral-700 bg-[#F8F9FA] p-2.5 rounded-lg border border-neutral-200">
+                      <span className="text-black font-bold shrink-0">[{idx + 1}]</span>
                       <span>{tip}</span>
                     </div>
                   ))}
@@ -255,14 +244,14 @@ export const SabbaticalRunwayTank: React.FC<SabbaticalRunwayProps> = ({ initialS
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center py-16 text-slate-500 text-xs">
-              <Loader2 className="w-5 h-5 animate-spin mr-2" /> Calculating runway reservoir...
+            <div className="flex items-center justify-center py-16 text-neutral-500 text-xs font-mono">
+              CALCULATING RUNWAY RESERVOIR...
             </div>
           )}
 
-          <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>Burn Rate Protection</span>
-            <span>Zero-Income Simulation</span>
+          <div className="pt-3 border-t border-neutral-200 flex items-center justify-between text-xs font-mono text-neutral-500">
+            <span>BURN RATE GOVERNANCE</span>
+            <span className="font-bold text-black">[ZERO-INCOME SIM]</span>
           </div>
         </div>
       </div>
